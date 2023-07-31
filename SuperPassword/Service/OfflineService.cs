@@ -1,0 +1,27 @@
+﻿using SuperPassword.Common.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SuperPassword.Service
+{
+    class OfflineService : IOfflineService
+    {
+        public async Task<PWDto> AddAsync(PWDto entity)
+        {
+            return null;
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            
+        }
+
+        public async Task<PWDto> UpdateAsync(PWDto entity)
+        {
+            return null;
+        }
+    }
+}
