@@ -9,62 +9,63 @@ using System.Threading.Tasks;
 
 namespace SuperPassword.Common.Models
 {
-	public class PWDto
-	{
-		private int _id;
+    public class PWDto
+    {
+        private int _id;
 
-		public int ID
-		{
-			get { return _id; }
-			set { _id = value; }
-		}
+        public int ID
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
-		private string _website;
+        private string _website;
 
-		public string Website
-		{
-			get { return _website; }
-			set { _website = value; }
-		}
+        public string Website
+        {
+            get { return _website; }
+            set { _website = value; }
+        }
 
-		private string _username;
+        private string _username;
 
-		public string Username
-		{
-			get { return _username; }
-			set { _username = value; }
-		}
+        public string Username
+        {
+            get { return _username; }
+            set { _username = value; }
+        }
 
-		private string _password;
-		public string Password
-		{
-			get { return _password; }
-			set { _password = value; }
-		}
+        private string _password;
+        public string Password
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
 
 
-        private ObservableCollection<Tag> _tags;
+        private ObservableCollection<TagDto> _tagDtos;
 
-		public ObservableCollection<Tag> Tags
-		{
-			get { return _tags; }
-			set { _tags = value; }
-		}
+        public ObservableCollection<TagDto> TagDtos
+        {
+            get { return _tagDtos; }
+            set { _tagDtos = value; }
+        }
 
         public PWDto()
-		{
-			_id = -1;
-			_website = string.Empty;
-			_username = string.Empty;
-			_password = string.Empty;
+        {
+            _id = -1;
+            _website = string.Empty;
+            _username = string.Empty;
+            _password = string.Empty;
 
-			_tags = new ObservableCollection<Tag>();
-            for (int i = 0; i < 10; i++)
-                _tags.Add(new Tag() { Content = "a"+i, Color="#f00" });
-		}
+            _tagDtos = new ObservableCollection<TagDto>();
+            for (int i = 0; i < 5; i++)
+                _tagDtos.Add(new TagDto() { Content = "a" + i, Color = "#f00" });
+            _tagDtos.Add(new TagDto() { IsNewButton = true });
+        }
 
-	}
-    public class Tag
+    }
+    public class TagDto
     {
         private string _content;
 
@@ -74,18 +75,28 @@ namespace SuperPassword.Common.Models
             set { _content = value; }
         }
 
-		private string _color;
+        private string _color;
 
-		public string Color
-		{
-			get { return _color; }
-			set { _color = value; }
-		}
+        public string Color
+        {
+            get { return _color; }
+            set { _color = value; }
+        }
 
-		public Tag()
-		{
+        private bool _isNewButton;
+
+        public bool IsNewButton
+        {
+            get { return _isNewButton; }
+            set { _isNewButton = value; }
+        }
+
+
+        public TagDto()
+        {
             _content = string.Empty;
             _color = string.Empty;
-		}
-	}
+            _isNewButton = false;
+        }
+    }
 }

@@ -41,7 +41,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="5">
+                            <Grid Margin="15,5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="auto" />
                                     <RowDefinition />
@@ -49,56 +49,76 @@
 
                                 <Border
                                     Grid.RowSpan="2"
-                                    Background="#1f000000"
-                                    CornerRadius="5" />
+                                    Background="#fff"
+                                    BorderBrush="#999"
+                                    BorderThickness="0"
+                                    CornerRadius="5">
+                                    <Border.Effect>
+                                        <DropShadowEffect
+                                            BlurRadius="8"
+                                            ShadowDepth="0"
+                                            Color="#bbb" />
+                                    </Border.Effect>
+                                </Border>
 
-                                <DockPanel>
+
+                                <DockPanel Margin="0,0,0,0">
                                     <custom:Website DockPanel.Dock="Left" Text="{Binding Website}" />
-                                    <Button
-                                        Width="20"
-                                        Background="#0f0"
-                                        Content="x"
-                                        DockPanel.Dock="Right"
+                                    <custom:BaseButton
+                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}"
-                                        Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType=ItemsControl}}"/>
+                                        Content="X"
+                                        CornerRadius="20"
+                                        DockPanel.Dock="Right" />
                                     <CheckBox
                                         x:Name="ReadableToggle"
                                         Width="20"
-                                        Background="#0f0"
+                                        Background="#fff"
                                         Content="o"
                                         DockPanel.Dock="Right" />
-                                    <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding Tags}">
+                                    <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding TagDtos}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <StackPanel Orientation="Horizontal" />
+                                                <WrapPanel />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
 
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <StackPanel>
-                                                    <custom:Tag
-                                                        Grid.Row="1"
-                                                        Background="{Binding Color}"
-                                                        Text="{Binding Content}" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemTemplateSelector>
+                                            <custom:TagTemplateSelector>
+                                                <custom:TagTemplateSelector.TagTemplate>
+                                                    <DataTemplate>
+                                                        <custom:Tag
+                                                            Grid.Row="1"
+                                                            Background="{Binding Color}"
+                                                            Text="{Binding Content}" />
+                                                    </DataTemplate>
+                                                </custom:TagTemplateSelector.TagTemplate>
+                                                <custom:TagTemplateSelector.NewTagTemplate>
+                                                    <DataTemplate>
+                                                        <Grid>
+                                                            <custom:BaseButton
+                                                                Margin="3"
+                                                                Padding="25,10"
+                                                                BorderThickness="2"
+                                                                Content="+"
+                                                                CornerRadius="10" />
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </custom:TagTemplateSelector.NewTagTemplate>
+                                            </custom:TagTemplateSelector>
+                                        </ItemsControl.ItemTemplateSelector>
                                     </ItemsControl>
-
-                                    <Button
-                                        Width="20"
-                                        HorizontalAlignment="Left"
-                                        Background="#c10"
-                                        Content="+" />
                                 </DockPanel>
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
-                                    <custom:Password Text="{Binding Username}" />
-                                    <custom:Password Grid.Column="1" Text="{Binding Password}" />
+                                    <custom:Password Margin="10,5" Text="{Binding Username}" />
+                                    <custom:Password
+                                        Grid.Column="1"
+                                        Margin="10,5"
+                                        Text="{Binding Password}" />
                                 </Grid>
                             </Grid>
                         </DataTemplate>

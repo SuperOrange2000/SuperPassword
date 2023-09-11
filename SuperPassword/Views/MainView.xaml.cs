@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace SuperPassword.Views
 {
     /// <summary>
-    /// PasswordView.xaml 的交互逻辑
+    /// MainView.xaml 的交互逻辑
     /// </summary>
     public partial class MainView : UserControl
     {
