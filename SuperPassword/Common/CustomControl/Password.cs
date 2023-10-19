@@ -2,7 +2,7 @@
 
 namespace SuperPassword.Common.CustomControl
 {
-    class Password : EditableText
+    class Password : EditableBox
     {
         static Password()
         {

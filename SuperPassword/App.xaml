@@ -7,10 +7,12 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes/TagStyle.xaml" />
-                <ResourceDictionary Source="Themes/WebsiteStyle.xaml" />
-                <ResourceDictionary Source="Themes/PasswordStyle.xaml" />
-                <ResourceDictionary Source="Themes/TagWrapPanelStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/BaseStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/TagStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/WebsiteStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/PasswordStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/TagWrapPanelStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/BaseButton.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -3,13 +3,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:custom="clr-namespace:SuperPassword.Common.CustomControl"
+    xmlns:converter="clr-namespace:SuperPassword.Common.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:SuperPassword.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-
+    <UserControl.Resources>
+        <converter:SolidColorBrushToColorConvertrer x:Key="ColorConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -48,6 +50,7 @@
                                 </Grid.RowDefinitions>
 
                                 <Border
+                                    x:Name="BoxShadow"
                                     Grid.RowSpan="2"
                                     Background="#fff"
                                     BorderBrush="#999"
@@ -55,9 +58,10 @@
                                     CornerRadius="5">
                                     <Border.Effect>
                                         <DropShadowEffect
-                                            BlurRadius="8"
+                                            BlurRadius="2"
                                             ShadowDepth="0"
-                                            Color="#bbb" />
+                                            Color="#bbb" >
+                                        </DropShadowEffect>
                                     </Border.Effect>
                                 </Border>
 
@@ -65,15 +69,17 @@
                                 <DockPanel Margin="0,0,0,0">
                                     <custom:Website DockPanel.Dock="Left" Text="{Binding Website}" />
                                     <custom:BaseButton
-                                        Height="25"
+                                        Height="20"
+                                        Margin="10,0"
                                         Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding}"
                                         Content="X"
-                                        CornerRadius="10"
+                                        CornerRadius="5"
                                         DockPanel.Dock="Right" />
                                     <CheckBox
                                         x:Name="ReadableToggle"
                                         Width="20"
+                                        Visibility="Hidden"
                                         Background="#fff"
                                         Content="o"
                                         DockPanel.Dock="Right" />
@@ -90,7 +96,7 @@
                                                     <DataTemplate>
                                                         <custom:Tag
                                                             Grid.Row="1"
-                                                            Background="{Binding Color}"
+                                                            Color="{Binding Color}"
                                                             Text="{Binding Content}" />
                                                     </DataTemplate>
                                                 </custom:TagTemplateSelector.TagTemplate>
@@ -98,7 +104,7 @@
                                                     <DataTemplate>
                                                         <Grid>
                                                             <custom:BaseButton
-                                                                Margin="3"
+                                                                Margin="5"
                                                                 Padding="25,10"
                                                                 BorderThickness="2"
                                                                 Content="+"
@@ -115,14 +121,28 @@
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
-                                    <custom:Password Margin="10,5" Text="{Binding Username}" />
+                                    <custom:Password  Text="{Binding Username}" />
                                     <custom:Password
                                         Grid.Column="1"
-                                        Margin="10,5"
                                         Text="{Binding Password}" />
                                 </Grid>
                             </Grid>
+
+                            <DataTemplate.Triggers>
+                                <Trigger Property="IsMouseOver"  Value="true">
+                                    <Setter TargetName="BoxShadow" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect
+                                                    BlurRadius="8"
+                                                    ShadowDepth="0"
+                                                    Color="{StaticResource c.orange}" >
+                                            </DropShadowEffect>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </DataTemplate.Triggers>
                         </DataTemplate>
+
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </StackPanel>
