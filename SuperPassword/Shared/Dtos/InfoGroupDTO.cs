@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace SuperPassword.Common.Models
+namespace SuperPassword.Shared.Dtos
 {
-    public class PWDto
+    public class InfoGroupDTO
     {
         private int _id;
 
@@ -51,7 +51,7 @@ namespace SuperPassword.Common.Models
             set { _tagDtos = value; }
         }
 
-        public PWDto()
+        public InfoGroupDTO()
         {
             _id = -1;
             _website = string.Empty;

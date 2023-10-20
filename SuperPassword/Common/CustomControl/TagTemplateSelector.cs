@@ -1,4 +1,4 @@
-﻿using SuperPassword.Common.Models;
+﻿using SuperPassword.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;

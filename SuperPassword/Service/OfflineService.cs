@@ -1,4 +1,4 @@
-﻿using SuperPassword.Common.Models;
+﻿using SuperPassword.Shared.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace SuperPassword.Service
 {
     class OfflineService : IOfflineService
     {
-        public async Task<PWDto> AddAsync(PWDto entity)
+        public async Task<InfoGroupDTO> AddAsync(InfoGroupDTO entity)
         {
             return null;
         }
@@ -19,7 +19,7 @@ namespace SuperPassword.Service
             
         }
 
-        public async Task<PWDto> UpdateAsync(PWDto entity)
+        public async Task<InfoGroupDTO> UpdateAsync(InfoGroupDTO entity)
         {
             return null;
         }
