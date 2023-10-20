@@ -2,7 +2,7 @@
 
 namespace SuperPassword.Common.CustomControl
 {
-    class Tag : EditableBox
+    class Tag : DragableBox
     {
         static Tag()
         {

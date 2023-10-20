@@ -26,11 +26,29 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Text="Hello1234" />
-            <Button Grid.Column="1" Content="Search" />
-            <TextBox Grid.Column="2" />
-            <Button Grid.Column="3" Content="筛选" />
-            <Button Grid.Column="4" Content="新增" />
+            <custom:InputBox Text="Hello1234" />
+            <custom:BaseButton
+                Grid.Column="1"
+                Height="25"
+                Margin="0,10"
+                Content="Search"
+                CornerRadius="5" />
+            <custom:InputBox Grid.Column="2" />
+            <custom:BaseButton
+                Grid.Column="3"
+                Height="25"
+                Margin="0,10"
+                Content="筛选"
+                CornerRadius="5" />
+
+            <custom:BaseButton
+                Grid.Column="4"
+                Height="25"
+                Margin="0,10"
+                HorizontalContentAlignment="Center"
+                Command="{Binding AddCommand}"
+                Content="+"
+                CornerRadius="5" />
         </Grid>
         <ScrollViewer Grid.Row="1">
             <StackPanel Orientation="Vertical">
@@ -75,13 +93,14 @@
                                         Content="X"
                                         CornerRadius="5"
                                         DockPanel.Dock="Right" />
-                                    <CheckBox
-                                        x:Name="ReadableToggle"
-                                        Width="20"
-                                        Background="#fff"
-                                        Content="o"
-                                        DockPanel.Dock="Right"
-                                        Visibility="Hidden" />
+                                    <custom:BaseButton
+                                        Height="20"
+                                        Margin="10,0"
+                                        Command="{Binding DataContext.EditCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Content="修改"
+                                        CornerRadius="5"
+                                        DockPanel.Dock="Right" />
                                     <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding TagDtos}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
@@ -100,16 +119,7 @@
                                                     </DataTemplate>
                                                 </custom:TagTemplateSelector.TagTemplate>
                                                 <custom:TagTemplateSelector.NewTagTemplate>
-                                                    <DataTemplate>
-                                                        <Grid>
-                                                            <custom:BaseButton
-                                                                Margin="5"
-                                                                Padding="25,10"
-                                                                BorderThickness="2"
-                                                                Content="+"
-                                                                CornerRadius="10" />
-                                                        </Grid>
-                                                    </DataTemplate>
+                                                    <DataTemplate />
                                                 </custom:TagTemplateSelector.NewTagTemplate>
                                             </custom:TagTemplateSelector>
                                         </ItemsControl.ItemTemplateSelector>
@@ -143,17 +153,5 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
-        <DockPanel Grid.Row="1">
-            <custom:BaseButton
-                Width="45"
-                Height="25"
-                Margin="0,10"
-                VerticalAlignment="Bottom"
-                HorizontalContentAlignment="Center"
-                Command="{Binding ExecuteCommand}"
-                CommandParameter="Add"
-                Content="+"
-                CornerRadius="5" />
-        </DockPanel>
     </Grid>
 </UserControl>

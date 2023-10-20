@@ -10,11 +10,11 @@ using System.Windows.Media;
 
 namespace SuperPassword.Common.CustomControl
 {
-    public class EditableBox : Control
+    public class DragableBox : Control
     {
-        static EditableBox()
+        static DragableBox()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(EditableBox), new FrameworkPropertyMetadata(typeof(EditableBox)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DragableBox), new FrameworkPropertyMetadata(typeof(DragableBox)));
         }
 
         public bool IsReadOnly
@@ -25,7 +25,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(EditableBox), new PropertyMetadata(true));
+            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DragableBox), new PropertyMetadata(true));
 
 
 
@@ -37,7 +37,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
-            DependencyProperty.Register("Text", typeof(string), typeof(EditableBox), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register("Text", typeof(string), typeof(DragableBox), new PropertyMetadata(string.Empty));
 
         public int CornerRadius
         {
@@ -47,7 +47,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CornerRadiusProperty =
-            DependencyProperty.Register("CornerRadius", typeof(int), typeof(EditableBox), new PropertyMetadata(0));
+            DependencyProperty.Register("CornerRadius", typeof(int), typeof(DragableBox), new PropertyMetadata(0));
 
 
         public Brush HoverBackground
@@ -58,7 +58,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for HoverBackground.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HoverBackgroundProperty =
-            DependencyProperty.Register("HoverBackground", typeof(Brush), typeof(EditableBox), new PropertyMetadata(null));
+            DependencyProperty.Register("HoverBackground", typeof(Brush), typeof(DragableBox), new PropertyMetadata(null));
 
 
 
@@ -70,7 +70,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for HoverBorderBrush.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HoverBorderBrushProperty =
-            DependencyProperty.Register("HoverBorderBrush", typeof(Brush), typeof(EditableBox), new PropertyMetadata(null));
+            DependencyProperty.Register("HoverBorderBrush", typeof(Brush), typeof(DragableBox), new PropertyMetadata(null));
 
 
         public Brush HoverForeground
@@ -81,7 +81,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for HoverForeground.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HoverForegroundProperty =
-            DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(EditableBox), new PropertyMetadata(null));
+            DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(DragableBox), new PropertyMetadata(null));
 
 
 
