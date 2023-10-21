@@ -14,7 +14,7 @@ namespace SuperPassword.Service
             return null;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(long id)
         {
             
         }
