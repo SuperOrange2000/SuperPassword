@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using SuperPassword.Views;
+using SuperPassword.Shared.Dtos;
+using DryIoc;
 
 namespace SuperPassword
 {
@@ -38,7 +40,15 @@ namespace SuperPassword
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
+            containerRegistry.GetContainer()
+                .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
+            containerRegistry.GetContainer().RegisterInstance(@"https://s.oragne.top/", serviceKey: "webUrl");
+
             containerRegistry.Register<IOfflineService, OfflineService>();
+            containerRegistry.Register<IOnlineService, OnlineService>();
+            containerRegistry.Register<IDialogService, DialogService>();
+
+
             containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
             containerRegistry.RegisterForNavigation<AddInfoGroupView, AddInfoGroupViewModel>();

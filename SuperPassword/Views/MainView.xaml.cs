@@ -24,5 +24,10 @@ namespace SuperPassword.Views
         {
             InitializeComponent();
         }
+
+        private void Password_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
     }
 }

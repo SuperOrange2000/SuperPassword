@@ -6,27 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace SuperPassword.Common.CustomControl
 {
-    public class DragableBox : Control
+    public class DragableBox : Control, ICommandSource
     {
         static DragableBox()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(DragableBox), new FrameworkPropertyMetadata(typeof(DragableBox)));
         }
-
-        public bool IsReadOnly
-        {
-            get { return (bool)GetValue(IsReadOnlyProperty); }
-            set { SetValue(IsReadOnlyProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsReadOnly.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsReadOnlyProperty =
-            DependencyProperty.Register("IsReadOnly", typeof(bool), typeof(DragableBox), new PropertyMetadata(true));
-
 
 
         public string Text
@@ -84,6 +74,27 @@ namespace SuperPassword.Common.CustomControl
             DependencyProperty.Register("HoverForeground", typeof(Brush), typeof(DragableBox), new PropertyMetadata(null));
 
 
+        public bool Dragable
+        {
+            get { return (bool)GetValue(DragableProperty); }
+            set { SetValue(DragableProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for Dragable.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty DragableProperty =
+            DependencyProperty.Register("Dragable", typeof(bool), typeof(DragableBox), new PropertyMetadata(false));
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (Dragable)
+                DragDrop.DoDragDrop(this, Text, DragDropEffects.Copy);
+        }
+
+        public ICommand Command => throw new NotImplementedException();
+
+        public object CommandParameter => throw new NotImplementedException();
+
+        public IInputElement CommandTarget => throw new NotImplementedException();
     }
 }

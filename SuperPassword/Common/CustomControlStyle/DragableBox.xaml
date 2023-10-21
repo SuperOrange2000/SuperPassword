@@ -7,7 +7,6 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="DragableBox" TargetType="{x:Type custom:DragableBox}">
-        <Setter Property="IsReadOnly" Value="True" />
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="BorderBrush" Value="{StaticResource Default.Black}" />
         <Setter Property="Foreground" Value="{StaticResource Default.Black}" />

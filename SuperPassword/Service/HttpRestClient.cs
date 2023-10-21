@@ -22,12 +22,11 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse> ExecuteAsync(BaseRequest baseRequest)
         {
-            var request = new RestRequest(baseRequest.Route,baseRequest.Method);
+            var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
             request.AddHeader("Content-Type", baseRequest.ContentType);
 
             if (baseRequest.Parameter != null)
                 request.AddParameter("param", JsonConvert.SerializeObject(baseRequest.Parameter), ParameterType.RequestBody);
-            //client.BaseUrl = new Uri(apiUrl + baseRequest.Route);
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 return JsonConvert.DeserializeObject<ApiResponse>(response.Content);
@@ -43,12 +42,11 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
         {
-            var request = new RestRequest(baseRequest.Route, baseRequest.Method);
+            var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
             request.AddHeader("Content-Type", baseRequest.ContentType);
 
             if (baseRequest.Parameter != null)
                 request.AddParameter("param", JsonConvert.SerializeObject(baseRequest.Parameter), ParameterType.RequestBody);
-            //client.BaseUrl = new Uri(apiUrl + baseRequest.Route);
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 return JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);

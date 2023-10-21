@@ -18,7 +18,7 @@
         <TextBlock
             HorizontalAlignment="Center"
             FontSize="24"
-            Text="新建项" />
+            Text="{Binding Title}" />
         <Grid Grid.Row="1" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -56,7 +56,7 @@
                 Grid.Column="1"
                 Margin="10,0"
                 Text="{Binding Model.Username}" />
-            <custom:BaseButton
+            <custom:CustomButton
                 Grid.Row="1"
                 Grid.Column="3"
                 Height="25"
@@ -75,7 +75,7 @@
                 Grid.Column="1"
                 Margin="10,0"
                 Text="{Binding Model.Password}" />
-            <custom:BaseButton
+            <custom:CustomButton
                 Grid.Row="2"
                 Grid.Column="3"
                 Height="25"
@@ -106,7 +106,7 @@
                         <custom:TagTemplateSelector.NewTagTemplate>
                             <DataTemplate>
                                 <Grid>
-                                    <custom:BaseButton
+                                    <custom:CustomButton
                                         Margin="5"
                                         Padding="25,10"
                                         BorderThickness="2"
@@ -120,14 +120,14 @@
             </ItemsControl>
         </Grid>
         <WrapPanel Grid.Row="2" HorizontalAlignment="Center">
-            <custom:BaseButton
+            <custom:CustomButton
                 Width="75"
                 Height="40"
                 Margin="20,5"
                 Content="确认"
                 Command="{Binding SaveCommand}"
                 CornerRadius="10" />
-            <custom:BaseButton
+            <custom:CustomButton
                 Width="75"
                 Height="40"
                 Margin="20,5"

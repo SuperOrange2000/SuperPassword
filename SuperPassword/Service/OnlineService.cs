@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SuperPassword.Shared.Parameters;
+using SuperPassword.Shared.Dtos;
 
 namespace SuperPassword.Service
 {
-    class OnlineService<TEntity> where TEntity : class
+    class OnlineService : IOnlineService
     {
         private readonly HttpRestClient client;
 
@@ -17,13 +18,13 @@ namespace SuperPassword.Service
             this.client = client;
         }
 
-        public async Task<ApiResponse<TEntity>> AddAsync(TEntity entity)
+        public async Task<ApiResponse<InfoGroupDTO>> AddAsync(InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/Add";
             request.Parameter = entity;
-            return await client.ExecuteAsync<TEntity>(request);
+            return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
         public async Task<ApiResponse> DeleteAsync(int id)
@@ -34,31 +35,31 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ApiResponse<PagedList<TEntity>>> GetAllAsync(QueryParameter parameter)
+        public async Task<ApiResponse<PagedList<InfoGroupDTO>>> GetAllAsync(QueryParameter parameter)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
             request.Route = $"api/GetAll?pageIndex={parameter.PageIndex}" +
                 $"&pageSize={parameter.PageSize}" +
                 $"&search={parameter.Search}";
-            return await client.ExecuteAsync<PagedList<TEntity>>(request);
+            return await client.ExecuteAsync<PagedList<InfoGroupDTO>>(request);
         }
 
-        public async Task<ApiResponse<TEntity>> GetFirstOfDefaultAsync(int id)
+        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(int id)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
             request.Route = $"api/Get?id={id}";
-            return await client.ExecuteAsync<TEntity>(request);
+            return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse<TEntity>> UpdateAsync(TEntity entity)
+        public async Task<ApiResponse<InfoGroupDTO>> UpdateAsync(InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/Update";
             request.Parameter = entity;
-            return await client.ExecuteAsync<TEntity>(request);
+            return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
     }
 }

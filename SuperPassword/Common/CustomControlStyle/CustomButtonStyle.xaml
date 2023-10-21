@@ -6,7 +6,7 @@
         <ResourceDictionary Source="BaseStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type custom:BaseButton}">
+    <Style TargetType="{x:Type custom:CustomButton}">
         <Setter Property="Dragable" Value="false" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="BorderBrush" Value="{StaticResource Default.Black}" />
@@ -14,7 +14,7 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type custom:BaseButton}">
+                <ControlTemplate TargetType="{x:Type custom:CustomButton}">
                     <Border
                         x:Name="border"
                         Width="{TemplateBinding Width}"

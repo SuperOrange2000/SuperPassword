@@ -12,7 +12,7 @@
                 <ResourceDictionary Source="Common/CustomControlStyle/WebsiteStyle.xaml" />
                 <ResourceDictionary Source="Common/CustomControlStyle/PasswordStyle.xaml" />
                 <ResourceDictionary Source="Common/CustomControlStyle/TagWrapPanelStyle.xaml" />
-                <ResourceDictionary Source="Common/CustomControlStyle/BaseButtonStyle.xaml" />
+                <ResourceDictionary Source="Common/CustomControlStyle/CustomButtonStyle.xaml" />
                 <ResourceDictionary Source="Common/CustomControlStyle/InputBoxStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

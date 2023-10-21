@@ -25,21 +25,15 @@ namespace SuperPassword.ViewModels
             set { _infoGroupDTOs = value; RaisePropertyChanged(); }
         }
 
-        private List<long> _idList;
-
+        private long _tail = 0;
         public long Tail
         {
-            get
-            {
-                int i = 0;
-                for (; i < _idList.Count; i++)
-                    if (i != _idList[i])
-                        break;
-                return i;
-            }
+            get { return _tail; }
+            set { _tail = value; }
         }
 
         private readonly IOfflineService _offlineService;
+        private readonly IOnlineService _onlineService;
 
         //private readonly IRegionManager regionManager;
 
@@ -49,20 +43,16 @@ namespace SuperPassword.ViewModels
         public DelegateCommand<InfoGroupDTO> AddCommand { get; private set; }
         public DelegateCommand<InfoGroupDTO> EditCommand { get; private set; }
 
-        public MainViewModel(IDialogService dialogService, IOfflineService offlineService)
+        public MainViewModel(IContainerProvider provider)
         {
-            this._offlineService = offlineService;
-            this._dialogService = dialogService;
-
-            //provider.Resolve<IOfflineService>();
-            //provider.Resolve<IRegionManager>();
+            this._offlineService = provider.Resolve<IOfflineService>();
+            this._onlineService = provider.Resolve<IOnlineService>();
+            this._dialogService = provider.Resolve<IDialogService>();
 
             InfoGroupDTOs = new ObservableDictionary<long, InfoGroupDTO>();
             DeleteCommand = new DelegateCommand<InfoGroupDTO>(Delete);
             AddCommand = new DelegateCommand<InfoGroupDTO>(Add);
             EditCommand = new DelegateCommand<InfoGroupDTO>(Add);
-
-            _idList = new List<long>();
 
             CreateTestToDoList();
         }
@@ -71,15 +61,18 @@ namespace SuperPassword.ViewModels
         {
             _offlineService.DeleteAsync(dto.ID);
             InfoGroupDTOs.Remove(dto.ID);
+            Tail--;
         }
 
-        private void Add(InfoGroupDTO dto)
+        async void Add(InfoGroupDTO dto)
         {
             DialogParameters param = new DialogParameters();
             if (dto != null)
                 param.Add("Value", dto);
+            else
+                param.Add("Title", "新建");
 
-            Action<IDialogResult> eventHandler = (IDialogResult dialogResult) =>
+            Action<IDialogResult> eventHandler = async (IDialogResult dialogResult) =>
             {
                 if (dialogResult.Result == ButtonResult.OK)
                 {
@@ -90,8 +83,11 @@ namespace SuperPassword.ViewModels
                         bool isNew = dialogResult.Parameters.GetValue<bool>("isNew");
                         if (isNew)
                         {
-                            InfoGroupDTOs.Add(Tail, infoGroup);
-                            _idList.Add(Tail);
+                            var updateResult = await _onlineService.UpdateAsync(infoGroup);
+                            if (updateResult.Status)
+                            {
+                                InfoGroupDTOs.Add(Tail++, infoGroup);
+                            }
                         }
                         else
                         {
@@ -113,8 +109,7 @@ namespace SuperPassword.ViewModels
             SecurityModule securityM = new SecurityModule();
             for (int i = 0; i < 10; i++)
             {
-                InfoGroupDTOs.Add(Tail, new InfoGroupDTO() { ID = i, Website = "TestWebsite" + i, Username = "用户名", Password = "密码" });
-                _idList.Add(i);
+                InfoGroupDTOs.Add(Tail, new InfoGroupDTO() { ID = Tail++, Website = "TestWebsite" + i, Username = "用户名", Password = "密码" });
             }
         }
     }

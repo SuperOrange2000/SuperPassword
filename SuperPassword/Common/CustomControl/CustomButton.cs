@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SuperPassword.Common.CustomControl
 {
-    class BaseButton:Button
+    class CustomButton : Button
     {
-        static BaseButton()
+        static CustomButton()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(BaseButton), new FrameworkPropertyMetadata(typeof(BaseButton)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomButton), new FrameworkPropertyMetadata(typeof(CustomButton)));
         }
 
         public bool Dragable
@@ -19,7 +20,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for Dragable.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty DragableProperty =
-            DependencyProperty.Register("Dragable", typeof(bool), typeof(BaseButton), new PropertyMetadata(false));
+            DependencyProperty.Register("Dragable", typeof(bool), typeof(CustomButton), new PropertyMetadata(false));
 
 
         public int CornerRadius
@@ -30,7 +31,7 @@ namespace SuperPassword.Common.CustomControl
 
         // Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty CornerRadiusProperty =
-            DependencyProperty.Register("CornerRadius", typeof(int), typeof(BaseButton), new PropertyMetadata(0));
+            DependencyProperty.Register("CornerRadius", typeof(int), typeof(CustomButton), new PropertyMetadata(0));
 
 
     }

@@ -91,7 +91,7 @@ namespace SuperPassword.ViewModels
             if (parameters.ContainsKey("Title"))
                 Title = parameters.GetValue<string>("Title");
             else
-                Title = "新建项";
+                Title = "修改";
         }
     }
 }
