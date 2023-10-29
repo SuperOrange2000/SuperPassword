@@ -64,7 +64,7 @@ namespace SuperPassword.ViewModels
             Tail--;
         }
 
-        async void Add(InfoGroupDTO dto)
+        void Add(InfoGroupDTO dto)
         {
             DialogParameters param = new DialogParameters();
             if (dto != null)
@@ -83,7 +83,7 @@ namespace SuperPassword.ViewModels
                         bool isNew = dialogResult.Parameters.GetValue<bool>("isNew");
                         if (isNew)
                         {
-                            var updateResult = await _onlineService.UpdateAsync(infoGroup);
+                            var updateResult = await _onlineService.AddAsync(infoGroup);
                             if (updateResult.Status)
                             {
                                 InfoGroupDTOs.Add(Tail++, infoGroup);

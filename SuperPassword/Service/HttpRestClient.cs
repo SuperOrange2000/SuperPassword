@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.PortableExecutable;
+using System.Net;
 
 namespace SuperPassword.Service
 {
@@ -17,27 +19,9 @@ namespace SuperPassword.Service
         public HttpRestClient(string apiUrl)
         {
             this.apiUrl = apiUrl;
-            client = new RestClient();
-        }
-
-        public async Task<ApiResponse> ExecuteAsync(BaseRequest baseRequest)
-        {
-            var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
-            request.AddHeader("Content-Type", baseRequest.ContentType);
-
-            if (baseRequest.Parameter != null)
-                request.AddParameter("param", JsonConvert.SerializeObject(baseRequest.Parameter), ParameterType.RequestBody);
-            var response = await client.ExecuteAsync(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                return JsonConvert.DeserializeObject<ApiResponse>(response.Content);
-
-            else
-                return new ApiResponse()
-                {
-                    Status = false,
-                    Result = null,
-                    Message = response.ErrorMessage
-                };
+            RestClientOptions options = new RestClientOptions();
+            options.CookieContainer = new CookieContainer();
+            client = new RestClient(options);
         }
 
         public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
@@ -49,13 +33,21 @@ namespace SuperPassword.Service
                 request.AddParameter("param", JsonConvert.SerializeObject(baseRequest.Parameter), ParameterType.RequestBody);
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                CookieCollection responseCookies = response.Cookies ?? new CookieCollection();
+                foreach (Cookie cookie in responseCookies)
+                {
+                    client.Options.CookieContainer?.Add(cookie);
+                    if (cookie.Name == "csrftoken")
+                        client.AddDefaultHeader("X-CSRFToken", cookie.Value);
+                }
                 return JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-
+            }
             else
                 return new ApiResponse<T>()
                 {
                     Status = false,
-                    Message = response.ErrorMessage
+                    Message = response.ErrorMessage ?? ""
                 };
         }
     }

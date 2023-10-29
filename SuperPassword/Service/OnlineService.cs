@@ -16,23 +16,27 @@ namespace SuperPassword.Service
         public OnlineService(HttpRestClient client)
         {
             this.client = client;
+            BaseRequest request = new BaseRequest();
+            request.Method = RestSharp.Method.Get;
+            request.Route = $"login/csrf/";
+            client.ExecuteAsync<object>(request);
         }
 
         public async Task<ApiResponse<InfoGroupDTO>> AddAsync(InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"api/Add";
+            request.Route = $"api/add/";
             request.Parameter = entity;
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse> DeleteAsync(int id)
+        public async Task<ApiResponse<object>> DeleteAsync(int id)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Delete;
             request.Route = $"api/Delete?id={id}";
-            return await client.ExecuteAsync(request);
+            return await client.ExecuteAsync<object>(request);
         }
 
         public async Task<ApiResponse<PagedList<InfoGroupDTO>>> GetAllAsync(QueryParameter parameter)
