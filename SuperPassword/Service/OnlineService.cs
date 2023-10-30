@@ -18,7 +18,7 @@ namespace SuperPassword.Service
             this.client = client;
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
-            request.Route = $"login/csrf/";
+            request.Route = $"log/csrf/";
             client.ExecuteAsync<object>(request);
         }
 
@@ -27,7 +27,11 @@ namespace SuperPassword.Service
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/add/";
-            request.Parameter = entity;
+            request.Parameters.Add("id", entity.ID);
+            request.Parameters.Add("user name", entity.Username);
+            request.Parameters.Add("password", entity.Password);
+            request.Parameters.Add("site", entity.Website);
+            request.Parameters.Add("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
@@ -62,7 +66,7 @@ namespace SuperPassword.Service
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/Update";
-            request.Parameter = entity;
+            //request.Parameters = entity;
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
     }

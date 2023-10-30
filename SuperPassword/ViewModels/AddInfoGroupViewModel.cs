@@ -28,7 +28,6 @@ namespace SuperPassword.ViewModels
             get { return _title; }
             set { _title = value; }
         }
-        public bool isNew { get; set; }
 
         public string DialogHostName { get; set; }
         public DelegateCommand SaveCommand { get; set; }
@@ -52,9 +51,10 @@ namespace SuperPassword.ViewModels
                 string.IsNullOrWhiteSpace(Model.Username)) return;
 
             //确定时,把编辑的实体返回并且返回OK
-            DialogParameters param = new DialogParameters();
-            param.Add("Value", Model);
-            param.Add("isNew", isNew);
+            DialogParameters param = new DialogParameters
+            {
+                { "Value", Model }
+            };
             RequestClose(new DialogResult(ButtonResult.OK, param));
         }
 
@@ -80,12 +80,10 @@ namespace SuperPassword.ViewModels
             if (parameters.ContainsKey("Value"))
             {
                 Model = parameters.GetValue<InfoGroupDTO>("Value");
-                isNew = false;
             }
             else
             {
                 Model = new InfoGroupDTO();
-                isNew = true;
             }
 
             if (parameters.ContainsKey("Title"))

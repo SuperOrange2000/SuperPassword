@@ -29,8 +29,12 @@ namespace SuperPassword.Service
             var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
             request.AddHeader("Content-Type", baseRequest.ContentType);
 
-            if (baseRequest.Parameter != null)
-                request.AddParameter("param", JsonConvert.SerializeObject(baseRequest.Parameter), ParameterType.RequestBody);
+            if (baseRequest.Parameters.Count != 0)
+                //foreach (var kvp in baseRequest.Parameters)
+                //{
+                //    request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
+                //}
+                request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -46,7 +50,7 @@ namespace SuperPassword.Service
             else
                 return new ApiResponse<T>()
                 {
-                    Status = false,
+                    Status = "",
                     Message = response.ErrorMessage ?? ""
                 };
         }

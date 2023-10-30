@@ -52,7 +52,7 @@ namespace SuperPassword.ViewModels
             InfoGroupDTOs = new ObservableDictionary<long, InfoGroupDTO>();
             DeleteCommand = new DelegateCommand<InfoGroupDTO>(Delete);
             AddCommand = new DelegateCommand<InfoGroupDTO>(Add);
-            EditCommand = new DelegateCommand<InfoGroupDTO>(Add);
+            EditCommand = new DelegateCommand<InfoGroupDTO>(Update);
 
             CreateTestToDoList();
         }
@@ -64,13 +64,12 @@ namespace SuperPassword.ViewModels
             Tail--;
         }
 
-        void Add(InfoGroupDTO dto)
+        private void Add(InfoGroupDTO dto)
         {
-            DialogParameters param = new DialogParameters();
-            if (dto != null)
-                param.Add("Value", dto);
-            else
-                param.Add("Title", "新建");
+            DialogParameters param = new DialogParameters
+            {
+                { "Title", "新建" }
+            };
 
             Action<IDialogResult> eventHandler = async (IDialogResult dialogResult) =>
             {
@@ -80,16 +79,39 @@ namespace SuperPassword.ViewModels
                     {
                         //UpdateLoading(true);
                         var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
-                        bool isNew = dialogResult.Parameters.GetValue<bool>("isNew");
-                        if (isNew)
+                        var result = await _onlineService.AddAsync(infoGroup);
+                        if (result.Status == "success")
                         {
-                            var updateResult = await _onlineService.AddAsync(infoGroup);
-                            if (updateResult.Status)
-                            {
-                                InfoGroupDTOs.Add(Tail++, infoGroup);
-                            }
+                            InfoGroupDTOs.Add(Tail++, infoGroup);
                         }
-                        else
+                    }
+                    finally
+                    {
+                        //UpdateLoading(false);
+                    }
+                }
+            };
+
+            _dialogService.ShowDialog("AddInfoGroupView", param, eventHandler);
+        }
+
+        private void Update(InfoGroupDTO dto)
+        {
+            DialogParameters param = new DialogParameters
+            {
+                { "Value", dto }
+            };
+
+            Action<IDialogResult> eventHandler = async (IDialogResult dialogResult) =>
+            {
+                if (dialogResult.Result == ButtonResult.OK)
+                {
+                    try
+                    {
+                        //UpdateLoading(true);
+                        var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
+                        var result = await _onlineService.UpdateAsync(infoGroup);
+                        if (result.Status == "success")
                         {
                             InfoGroupDTOs[infoGroup.ID] = infoGroup;
                         }
@@ -103,7 +125,6 @@ namespace SuperPassword.ViewModels
 
             _dialogService.ShowDialog("AddInfoGroupView", param, eventHandler);
         }
-
         void CreateTestToDoList()
         {
             SecurityModule securityM = new SecurityModule();
