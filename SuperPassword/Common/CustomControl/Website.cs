@@ -2,11 +2,11 @@
 
 namespace SuperPassword.Common.CustomControl
 {
-    public class Website : DragableBox
+    public class Site : DragableBox
     {
-        static Website()
+        static Site()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(Website), new FrameworkPropertyMetadata(typeof(Website)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(Site), new FrameworkPropertyMetadata(typeof(Site)));
         }
     }
 }

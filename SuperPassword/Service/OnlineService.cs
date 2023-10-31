@@ -22,38 +22,38 @@ namespace SuperPassword.Service
             client.ExecuteAsync<object>(request);
         }
 
-        public async Task<ApiResponse<InfoGroupDTO>> AddAsync(InfoGroupDTO entity)
+        public async Task<ApiResponse<object>> AddAsync(InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/add/";
             request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("user name", entity.Username);
+            request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
-            request.Parameters.Add("site", entity.Website);
+            request.Parameters.Add("site", entity.Site);
             request.Parameters.Add("tags", entity.TagDtos);
-            return await client.ExecuteAsync<InfoGroupDTO>(request);
-        }
-
-        public async Task<ApiResponse<object>> DeleteAsync(int id)
-        {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Delete;
-            request.Route = $"api/Delete?id={id}";
             return await client.ExecuteAsync<object>(request);
         }
 
-        public async Task<ApiResponse<PagedList<InfoGroupDTO>>> GetAllAsync(QueryParameter parameter)
+        public async Task<ApiResponse<object>> DeleteAsync(string id)
+        {
+            BaseRequest request = new BaseRequest();
+            request.Method = RestSharp.Method.Delete;
+            request.Route = $"api/delete/";
+            request.Parameters.Add("ids", new List<string> { id });
+            return await client.ExecuteAsync<object>(request);
+        }
+
+        public async Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync()
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
-            request.Route = $"api/GetAll?pageIndex={parameter.PageIndex}" +
-                $"&pageSize={parameter.PageSize}" +
-                $"&search={parameter.Search}";
-            return await client.ExecuteAsync<PagedList<InfoGroupDTO>>(request);
+            request.Route = $"api/get/";
+            request.Parameters.Add("ids", new List<string> { });
+            return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
         }
 
-        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(int id)
+        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(string id)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
@@ -65,8 +65,12 @@ namespace SuperPassword.Service
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"api/Update";
-            //request.Parameters = entity;
+            request.Route = $"api/update/";
+            request.Parameters.Add("id", entity.ID);
+            request.Parameters.Add("username", entity.Username);
+            request.Parameters.Add("password", entity.Password);
+            request.Parameters.Add("site", entity.Site);
+            request.Parameters.Add("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
     }

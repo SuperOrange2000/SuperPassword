@@ -18,18 +18,11 @@ namespace SuperPassword.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        private ObservableDictionary<long, InfoGroupDTO> _infoGroupDTOs;
-        public ObservableDictionary<long, InfoGroupDTO> InfoGroupDTOs
+        private ObservableCollection<InfoGroupDTO> _infoGroupDTOs;
+        public ObservableCollection<InfoGroupDTO> InfoGroupDTOs
         {
             get { return _infoGroupDTOs; }
             set { _infoGroupDTOs = value; RaisePropertyChanged(); }
-        }
-
-        private long _tail = 0;
-        public long Tail
-        {
-            get { return _tail; }
-            set { _tail = value; }
         }
 
         private readonly IOfflineService _offlineService;
@@ -49,19 +42,19 @@ namespace SuperPassword.ViewModels
             this._onlineService = provider.Resolve<IOnlineService>();
             this._dialogService = provider.Resolve<IDialogService>();
 
-            InfoGroupDTOs = new ObservableDictionary<long, InfoGroupDTO>();
+            InfoGroupDTOs = new ObservableCollection<InfoGroupDTO>();
             DeleteCommand = new DelegateCommand<InfoGroupDTO>(Delete);
             AddCommand = new DelegateCommand<InfoGroupDTO>(Add);
             EditCommand = new DelegateCommand<InfoGroupDTO>(Update);
 
-            CreateTestToDoList();
+            InitToDoList();
         }
 
-        private void Delete(InfoGroupDTO dto)
+        private async void Delete(InfoGroupDTO dto)
         {
-            _offlineService.DeleteAsync(dto.ID);
-            InfoGroupDTOs.Remove(dto.ID);
-            Tail--;
+            var result = await _onlineService.DeleteAsync(dto.ID);
+            if (result.Status == "success")
+                InfoGroupDTOs.Remove(dto);
         }
 
         private void Add(InfoGroupDTO dto)
@@ -79,10 +72,15 @@ namespace SuperPassword.ViewModels
                     {
                         //UpdateLoading(true);
                         var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
+
+                        while (InfoGroupDTOs.Any(t => t.ID == infoGroup.ID))
+                        {
+                            infoGroup.ID = RandomString.GenerateRandomString(32);
+                        }
                         var result = await _onlineService.AddAsync(infoGroup);
                         if (result.Status == "success")
                         {
-                            InfoGroupDTOs.Add(Tail++, infoGroup);
+                            InfoGroupDTOs.Add(infoGroup);
                         }
                     }
                     finally
@@ -113,7 +111,14 @@ namespace SuperPassword.ViewModels
                         var result = await _onlineService.UpdateAsync(infoGroup);
                         if (result.Status == "success")
                         {
-                            InfoGroupDTOs[infoGroup.ID] = infoGroup;
+                            var todoModel = InfoGroupDTOs.FirstOrDefault(t => t.ID.Equals(infoGroup.ID));
+                            if (todoModel != null)
+                            {
+                                todoModel.Username = infoGroup.Username;
+                                todoModel.Password = infoGroup.Password;
+                                todoModel.Site = infoGroup.Site;
+                                todoModel.TagDtos = infoGroup.TagDtos;
+                            }
                         }
                     }
                     finally
@@ -125,13 +130,18 @@ namespace SuperPassword.ViewModels
 
             _dialogService.ShowDialog("AddInfoGroupView", param, eventHandler);
         }
-        void CreateTestToDoList()
+        async void InitToDoList()
         {
             SecurityModule securityM = new SecurityModule();
-            for (int i = 0; i < 10; i++)
+            var result = await _onlineService.GetAllAsync();
+            if (result.Status == "success")
             {
-                InfoGroupDTOs.Add(Tail, new InfoGroupDTO() { ID = Tail++, Website = "TestWebsite" + i, Username = "用户名", Password = "密码" });
+                InfoGroupDTOs.AddRange(result.Content);
             }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    InfoGroupDTOs.Add(new InfoGroupDTO() {Site = "TestWebsite" + i, Username = "用户名", Password = "密码" });
+            //}
         }
     }
 }

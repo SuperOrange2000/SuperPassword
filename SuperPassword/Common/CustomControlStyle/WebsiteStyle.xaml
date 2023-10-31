@@ -6,10 +6,10 @@
         <ResourceDictionary Source="BaseStyle.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type custom:Website}">
+    <Style TargetType="{x:Type custom:Site}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type custom:Website}">
+                <ControlTemplate TargetType="{x:Type custom:Site}">
                     <Grid Margin="3" VerticalAlignment="Stretch">
                         <TextBlock
                             Padding="2,0"

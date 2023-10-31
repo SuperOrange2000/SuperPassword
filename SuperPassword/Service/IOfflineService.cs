@@ -13,6 +13,6 @@ namespace SuperPassword.Service
 
         Task<InfoGroupDTO> UpdateAsync(InfoGroupDTO entity);
 
-        Task DeleteAsync(long id);
+        Task DeleteAsync(string id);
     }
 }

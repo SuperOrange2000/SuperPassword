@@ -11,14 +11,14 @@ namespace SuperPassword.Service
 {
     public interface IOnlineService
     {
-        Task<ApiResponse<InfoGroupDTO>> AddAsync(InfoGroupDTO entity);
+        Task<ApiResponse<object>> AddAsync(InfoGroupDTO entity);
 
         Task<ApiResponse<InfoGroupDTO>> UpdateAsync(InfoGroupDTO entity);
 
-        Task<ApiResponse<object>> DeleteAsync(int id);
+        Task<ApiResponse<object>> DeleteAsync(string id);
 
-        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(int id);
+        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(string id);
 
-        Task<ApiResponse<PagedList<InfoGroupDTO>>> GetAllAsync(QueryParameter parameter);
+        Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync();
     }
 }

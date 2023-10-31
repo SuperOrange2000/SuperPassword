@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SuperPassword.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Formats.Asn1;
@@ -11,20 +12,20 @@ namespace SuperPassword.Shared.Dtos
 {
     public class InfoGroupDTO
     {
-        private long _id;
+        private string _id;
 
-        public long ID
+        public string ID
         {
             get { return _id; }
             set { _id = value; }
         }
 
-        private string _website;
+        private string _site;
 
-        public string Website
+        public string Site
         {
-            get { return _website; }
-            set { _website = value; }
+            get { return _site; }
+            set { _site = value; }
         }
 
         private string _username;
@@ -53,8 +54,8 @@ namespace SuperPassword.Shared.Dtos
 
         public InfoGroupDTO()
         {
-            _id = -1;
-            _website = string.Empty;
+            _id = RandomString.GenerateRandomString(32);
+            _site = string.Empty;
             _username = string.Empty;
             _password = string.Empty;
 
