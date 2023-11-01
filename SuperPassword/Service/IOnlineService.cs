@@ -1,4 +1,5 @@
-﻿using SuperPassword.Shared.Contact;
+﻿using SuperPassword.Shared;
+using SuperPassword.Shared.Contact;
 using SuperPassword.Shared.Dtos;
 using SuperPassword.Shared.Parameters;
 using System;
@@ -20,5 +21,7 @@ namespace SuperPassword.Service
         Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(string id);
 
         Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync();
+
+        Task<ApiResponse<string>> SignUp(User user);
     }
 }

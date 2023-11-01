@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SuperPassword.Shared.Parameters;
 using SuperPassword.Shared.Dtos;
+using SuperPassword.Shared;
 
 namespace SuperPassword.Service
 {
@@ -73,5 +74,16 @@ namespace SuperPassword.Service
             request.Parameters.Add("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
+
+        public async Task<ApiResponse<string>> SignUp(User entity)
+        {
+            BaseRequest request = new BaseRequest();
+            request.Method = RestSharp.Method.Post;
+            request.Route = $"log/sign-up/";
+            request.Parameters.Add("username", entity.Username);
+            request.Parameters.Add("password", entity.Password);
+            return await client.ExecuteAsync<string>(request);
+        }
+
     }
 }
