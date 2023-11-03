@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SuperPassword.Shared.Dtos
 {
@@ -18,7 +13,7 @@ namespace SuperPassword.Shared.Dtos
         /// 实现通知更新
         /// </summary>
         /// <param name="propertyName"></param>
-        public void OnPropertyChanged([CallerMemberName] string propertyName="")
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

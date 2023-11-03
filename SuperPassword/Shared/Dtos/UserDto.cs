@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SuperPassword.Shared.Dtos
+﻿namespace SuperPassword.Shared.Dtos
 {
     public class UserDto : BaseDto
     {
@@ -15,7 +9,7 @@ namespace SuperPassword.Shared.Dtos
             get { return userName; }
             set { userName = value; OnPropertyChanged(); }
         }
-         
+
         private string account;
 
         public string Account
@@ -23,13 +17,13 @@ namespace SuperPassword.Shared.Dtos
             get { return account; }
             set { account = value; OnPropertyChanged(); }
         }
-         
-        private string passWord;
 
-        public string PassWord
+        private string password;
+
+        public string Password
         {
-            get { return passWord; }
-            set { passWord = value; OnPropertyChanged(); }
-        } 
+            get { return password; }
+            set { password = value; OnPropertyChanged(); }
+        }
     }
 }

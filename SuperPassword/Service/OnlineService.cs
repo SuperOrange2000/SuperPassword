@@ -1,12 +1,7 @@
 ﻿using SuperPassword.Shared.Contact;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SuperPassword.Shared.Parameters;
 using SuperPassword.Shared.Dtos;
-using SuperPassword.Shared;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperPassword.Service
 {
@@ -29,7 +24,7 @@ namespace SuperPassword.Service
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/add/";
             request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("username", entity.Username);
+            request.Parameters.Add("account", entity.Username);
             request.Parameters.Add("password", entity.Password);
             request.Parameters.Add("site", entity.Site);
             request.Parameters.Add("tags", entity.TagDtos);
@@ -68,19 +63,19 @@ namespace SuperPassword.Service
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/update/";
             request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("username", entity.Username);
+            request.Parameters.Add("account", entity.Username);
             request.Parameters.Add("password", entity.Password);
             request.Parameters.Add("site", entity.Site);
             request.Parameters.Add("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse<string>> SignUp(User entity)
+        public async Task<ApiResponse<string>> SignUp(UserDto entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"log/sign-up/";
-            request.Parameters.Add("username", entity.Username);
+            request.Parameters.Add("account", entity.Account);
             request.Parameters.Add("password", entity.Password);
             return await client.ExecuteAsync<string>(request);
         }

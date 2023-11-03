@@ -1,11 +1,5 @@
 ﻿using SuperPassword.Common;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Formats.Asn1;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace SuperPassword.Shared.Dtos

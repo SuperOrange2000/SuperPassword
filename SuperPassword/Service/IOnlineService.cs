@@ -1,11 +1,6 @@
-﻿using SuperPassword.Shared;
-using SuperPassword.Shared.Contact;
+﻿using SuperPassword.Shared.Contact;
 using SuperPassword.Shared.Dtos;
-using SuperPassword.Shared.Parameters;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SuperPassword.Service
@@ -22,6 +17,6 @@ namespace SuperPassword.Service
 
         Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync();
 
-        Task<ApiResponse<string>> SignUp(User user);
+        Task<ApiResponse<string>> SignUp(UserDto user);
     }
 }

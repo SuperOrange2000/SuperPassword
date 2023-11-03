@@ -1,19 +1,12 @@
-﻿using Prism.DryIoc;
+﻿using DryIoc;
+using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
+using SuperPassword.Common;
 using SuperPassword.Service;
 using SuperPassword.ViewModels;
-using SuperPassword.Common;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
 using SuperPassword.Views;
-using SuperPassword.Shared.Dtos;
-using DryIoc;
+using System.Windows;
 
 namespace SuperPassword
 {
@@ -51,6 +44,7 @@ namespace SuperPassword
 
             containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();
+            containerRegistry.RegisterForNavigation<LoginView, LoginViewModel>();
             containerRegistry.RegisterForNavigation<AddInfoGroupView, AddInfoGroupViewModel>();
             containerRegistry.RegisterDialog<AddInfoGroupView>();
         }

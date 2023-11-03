@@ -1,14 +1,8 @@
-﻿using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using SuperPassword.Common;
-using Prism.Commands;
+﻿using Prism.Commands;
+using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using SuperPassword.Shared.Dtos;
+using System;
 
 namespace SuperPassword.ViewModels
 {
