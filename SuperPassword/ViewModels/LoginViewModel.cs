@@ -1,4 +1,7 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Ioc;
+using Prism.Mvvm;
+using SuperPassword.Service;
 using SuperPassword.Shared.Dtos;
 using System.Collections.ObjectModel;
 namespace SuperPassword.ViewModels
@@ -21,6 +24,19 @@ namespace SuperPassword.ViewModels
             set { _allUsers = value; RaisePropertyChanged(); }
         }
 
-        //public DelegateCommand<InfoGroupDTO> DeleteCommand { get; private set; }
+        private readonly IOnlineService _onlineService;
+
+        public DelegateCommand<UserDto> LoginCommand { get; private set; }
+
+        public LoginViewModel(IContainerProvider provider)
+        {
+            LoginCommand = new DelegateCommand<UserDto>(Login);
+            _onlineService = provider.Resolve<OnlineService>();
+        }
+
+        private void Login(UserDto user)
+        {
+            var result = _onlineService.Login(user);
+        }
     }
 }

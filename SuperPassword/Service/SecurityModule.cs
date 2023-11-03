@@ -3,73 +3,76 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-public class SecurityModule
+namespace SuperPassword.SecurityModule
 {
-    private static byte[] key; // 16字节密钥  
-    private static byte[] iv; // 16字节初始向量  
-
-    public SecurityModule()
+    public class SecurityModule
     {
-        key = Encoding.UTF8.GetBytes("1234567890123456");
-        iv = Encoding.UTF8.GetBytes("1234567890123456");
-    }
+        private static byte[] key; // 16字节密钥  
+        private static byte[] iv; // 16字节初始向量  
 
-    public static string Encrypt(string plainText)
-    {
-        try
+        public SecurityModule()
         {
-            using (Aes aes = Aes.Create())
-            {
-                aes.Key = key;
-                aes.IV = iv;
-
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-                    {
-                        using (StreamWriter sw = new StreamWriter(cs))
-                        {
-                            sw.Write(plainText);
-                        }
-                        return Convert.ToBase64String(ms.ToArray());
-                    }
-                }
-            }
+            key = Encoding.UTF8.GetBytes("1234567890123456");
+            iv = Encoding.UTF8.GetBytes("1234567890123456");
         }
-        catch (Exception ex)
-        {
-            throw new Exception("加密失败：" + ex.Message);
-        }
-    }
 
-    public static string Decrypt(string cipherText)
-    {
-        try
+        public static string Encrypt(string plainText)
         {
-            using (Aes aes = Aes.Create())
+            try
             {
-                aes.Key = key;
-                aes.IV = iv;
-
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(cipherText)))
+                using (Aes aes = Aes.Create())
                 {
-                    using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        using (StreamReader sr = new StreamReader(cs))
+                        using (CryptoStream cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
                         {
-                            return sr.ReadToEnd();
+                            using (StreamWriter sw = new StreamWriter(cs))
+                            {
+                                sw.Write(plainText);
+                            }
+                            return Convert.ToBase64String(ms.ToArray());
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception("加密失败：" + ex.Message);
+            }
         }
-        catch (Exception ex)
+
+        public static string Decrypt(string cipherText)
         {
-            throw new Exception("解密失败：" + ex.Message);
+            try
+            {
+                using (Aes aes = Aes.Create())
+                {
+                    aes.Key = key;
+                    aes.IV = iv;
+
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(cipherText)))
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader sr = new StreamReader(cs))
+                            {
+                                return sr.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("解密失败：" + ex.Message);
+            }
         }
     }
 }

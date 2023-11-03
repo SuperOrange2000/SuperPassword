@@ -1,4 +1,4 @@
-﻿using MyToDo.Extensions;
+﻿using SuperPassword.Extensions;
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;

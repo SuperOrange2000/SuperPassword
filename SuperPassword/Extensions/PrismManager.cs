@@ -1,4 +1,4 @@
-﻿namespace MyToDo.Extensions
+﻿namespace SuperPassword.Extensions
 {
     public static class PrismManager
     {

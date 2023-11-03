@@ -80,5 +80,14 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync<string>(request);
         }
 
+        public async Task<ApiResponse<string>> Login(UserDto entity)
+        {
+            BaseRequest request = new BaseRequest();
+            request.Method = RestSharp.Method.Post;
+            request.Route = $"log/login/";
+            request.Parameters.Add("account", entity.Account);
+            request.Parameters.Add("password", entity.Password);
+            return await client.ExecuteAsync<string>(request);
+        }
     }
 }

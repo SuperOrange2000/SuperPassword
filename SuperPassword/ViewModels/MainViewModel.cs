@@ -127,7 +127,7 @@ namespace SuperPassword.ViewModels
         }
         async void InitToDoList()
         {
-            SecurityModule securityM = new SecurityModule();
+            //SecurityModule securityM = new SecurityModule();
             var result = await _onlineService.GetAllAsync();
             if (result.Status == "success")
             {

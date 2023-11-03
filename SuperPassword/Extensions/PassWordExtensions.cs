@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MyToDo.Extensions
+namespace SuperPassword.Extensions
 {
     public class PassWordExtensions
     {
