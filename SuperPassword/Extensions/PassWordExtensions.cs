@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace SuperPassword.Extensions
 {
-    public class PassWordExtensions
+    public class PasswordExtensions
     {
         public static string GetPassWord(DependencyObject obj)
         {
@@ -17,7 +17,7 @@ namespace SuperPassword.Extensions
         }
 
         public static readonly DependencyProperty PassWordProperty =
-            DependencyProperty.RegisterAttached("PassWord", typeof(string), typeof(PassWordExtensions), new FrameworkPropertyMetadata(string.Empty, OnPassWordPropertyChanged));
+            DependencyProperty.RegisterAttached("PassWord", typeof(string), typeof(PasswordExtensions), new FrameworkPropertyMetadata(string.Empty, OnPassWordPropertyChanged));
 
         static void OnPassWordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
@@ -40,10 +40,10 @@ namespace SuperPassword.Extensions
         private void AssociatedObject_PasswordChanged(object sender, RoutedEventArgs e)
         {
             PasswordBox passwordBox = sender as PasswordBox;
-            string password = PassWordExtensions.GetPassWord(passwordBox);
+            string password = PasswordExtensions.GetPassWord(passwordBox);
 
             if (passwordBox != null && passwordBox.Password != password)
-                PassWordExtensions.SetPassWord(passwordBox, passwordBox.Password);
+                PasswordExtensions.SetPassWord(passwordBox, passwordBox.Password);
         }
 
         protected override void OnDetaching()

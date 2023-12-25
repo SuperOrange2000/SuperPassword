@@ -17,7 +17,7 @@ namespace SuperPassword.Service
 
         Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync();
 
-        Task<ApiResponse<string>> SignUp(UserDto user);
+        Task<ApiResponse<string>> SignUp(UserDto user, string password);
 
         Task<ApiResponse<string>> Login(UserDto user, string password);
     }

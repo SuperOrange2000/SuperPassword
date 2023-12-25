@@ -70,22 +70,22 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse<string>> SignUp(string username, string password)
+        public async Task<ApiResponse<string>> SignUp(UserDto User, string password)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/sign-up/";
-            request.Parameters.Add("username", username);
+            request.Parameters.Add("username", User.UserName);
             request.Parameters.Add("password", password);
             return await client.ExecuteAsync<string>(request);
         }
 
-        public async Task<ApiResponse<string>> Login(string username, string password)
+        public async Task<ApiResponse<string>> Login(UserDto User, string password)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/login/";
-            request.Parameters.Add("username", username);
+            request.Parameters.Add("username", User.UserName);
             request.Parameters.Add("password", password);
             return await client.ExecuteAsync<string>(request);
         }
