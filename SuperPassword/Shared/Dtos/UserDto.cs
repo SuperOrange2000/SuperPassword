@@ -18,12 +18,6 @@
             set { account = value; OnPropertyChanged(); }
         }
 
-        private string password;
-
-        public string Password
-        {
-            get { return password; }
-            set { password = value; OnPropertyChanged(); }
-        }
+        
     }
 }
