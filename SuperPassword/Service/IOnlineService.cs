@@ -19,6 +19,6 @@ namespace SuperPassword.Service
 
         Task<ApiResponse<string>> SignUp(UserDto user);
 
-        Task<ApiResponse<string>> Login(UserDto user);
+        Task<ApiResponse<string>> Login(UserDto user, string password);
     }
 }

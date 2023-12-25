@@ -1,6 +1,4 @@
-﻿using System.Net;
-
-namespace SuperPassword.Shared.Contact
+﻿namespace SuperPassword.Shared.Contact
 {
     public class ApiResponse
     {
@@ -15,7 +13,7 @@ namespace SuperPassword.Shared.Contact
     {
         public string Message { get; set; }
 
-        public HttpStatusCode Status { get; set; }
+        public string Status { get; set; }
 
         public T Content { get; set; }
     }

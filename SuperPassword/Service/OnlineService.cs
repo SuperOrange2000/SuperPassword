@@ -14,7 +14,7 @@ namespace SuperPassword.Service
             this.client = client;
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
-            request.Route = $"log/csrf/";
+            request.Route = $"api/csrf/";
             client.ExecuteAsync<object>(request);
         }
 
@@ -63,30 +63,30 @@ namespace SuperPassword.Service
             request.Method = RestSharp.Method.Post;
             request.Route = $"api/update/";
             request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("account", entity.Username);
+            request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
             request.Parameters.Add("site", entity.Site);
             request.Parameters.Add("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse<string>> SignUp(UserDto entity)
+        public async Task<ApiResponse<string>> SignUp(string username, string password)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"log/sign-up/";
-            request.Parameters.Add("account", entity.Account);
-            request.Parameters.Add("password", entity.Password);
+            request.Route = $"api/sign-up/";
+            request.Parameters.Add("username", username);
+            request.Parameters.Add("password", password);
             return await client.ExecuteAsync<string>(request);
         }
 
-        public async Task<ApiResponse<string>> Login(UserDto entity)
+        public async Task<ApiResponse<string>> Login(string username, string password)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"log/login/";
-            request.Parameters.Add("account", entity.Account);
-            request.Parameters.Add("password", entity.Password);
+            request.Route = $"api/login/";
+            request.Parameters.Add("username", username);
+            request.Parameters.Add("password", password);
             return await client.ExecuteAsync<string>(request);
         }
     }
