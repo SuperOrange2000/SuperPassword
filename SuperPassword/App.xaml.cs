@@ -24,10 +24,19 @@ namespace SuperPassword
         {
             var dialog = Container.Resolve<IDialogService>();
 
-            var service = App.Current.MainWindow.DataContext as IConfigureService;
-            if (service != null)
-                service.Configure();
-            base.OnInitialized();
+            dialog.ShowDialog("LoginView", callback =>
+            {
+                if (callback.Result != ButtonResult.OK)
+                {
+                    App.Current.Shutdown(0);
+                    return;
+                }
+
+                var service = App.Current.MainWindow.DataContext as IConfigureService;
+                if (service != null)
+                    service.Configure();
+                base.OnInitialized();
+            });
         }
 
 

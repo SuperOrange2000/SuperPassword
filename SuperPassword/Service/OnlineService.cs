@@ -87,6 +87,7 @@ namespace SuperPassword.Service
             request.Route = $"api/login/";
             request.Parameters.Add("username", User.UserName);
             request.Parameters.Add("password", password);
+            request.Parameters.Add("device", "windows");
             return await client.ExecuteAsync<string>(request);
         }
     }

@@ -52,22 +52,28 @@ namespace SuperPassword.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public DelegateCommand<object> LoginCommand { get; private set; }
+        public DelegateCommand<UserDto> LoginCommand { get; private set; }
+        public DelegateCommand<UserDto> SignUpCommand { get; private set; }
 
         public string Title { get; set; } = "SuperPassword";
 
         public LoginViewModel(IContainerProvider provider)
         {
-            LoginCommand = new DelegateCommand<object>(Login);
+            LoginCommand = new DelegateCommand<UserDto>(Login);
+            SignUpCommand = new DelegateCommand<UserDto>(SignUp);
             _onlineService = provider.Resolve<OnlineService>();
             ActiveUser = new UserDto();
         }
 
-        private async void Login(object parameter)
+        private async void Login(UserDto user)
         {
-            var result = await _onlineService.Login(ActiveUser, Password);
+            var result = await _onlineService.Login(user, Password);
         }
 
+        private async void SignUp(UserDto user)
+        {
+            var result = await _onlineService.SignUp(user, Password);
+        }
 
     }
 }

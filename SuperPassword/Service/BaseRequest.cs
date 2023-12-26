@@ -7,7 +7,7 @@ namespace SuperPassword.Service
     {
         public Method Method { get; set; }
         public string Route { get; set; }
-        public string ContentType { get; set; } = "application/json";
+        public string ContentType { get; set; } = "application/x-www-form-urlencoded";
         public Dictionary<string, object> Parameters { get; set; }
 
         public BaseRequest()

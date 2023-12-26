@@ -8,13 +8,17 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Common/Themes/BaseStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/TagStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/WebsiteStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/PasswordStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/TagWrapPanelStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/CustomButtonStyle.xaml" />
-                <ResourceDictionary Source="Common/Themes/CustomControlStyle/InputBoxStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/TagStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/WebsiteStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/PasswordStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/TagWrapPanelStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/CustomButtonStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/CustomControlStyles/InputBoxStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/Styles/TextBoxStyle.xaml" />
+                <ResourceDictionary Source="Common/Themes/Styles/PasswordBoxStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style BasedOn="{StaticResource CustomTextBoxStyle}" TargetType="TextBox" />
+            <Style BasedOn="{StaticResource CustomPasswordBoxStyle}" TargetType="PasswordBox" />
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

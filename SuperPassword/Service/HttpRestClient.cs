@@ -26,11 +26,11 @@ namespace SuperPassword.Service
             request.AddHeader("Content-Type", baseRequest.ContentType);
 
             if (baseRequest.Parameters.Count != 0)
-                //foreach (var kvp in baseRequest.Parameters)
-                //{
-                //    request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
-                //}
-                request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
+                foreach (var kvp in baseRequest.Parameters)
+                {
+                    request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
+                }
+            //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
             var response = await client.ExecuteAsync(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
