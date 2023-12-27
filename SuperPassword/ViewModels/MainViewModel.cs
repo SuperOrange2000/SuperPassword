@@ -48,7 +48,7 @@ namespace SuperPassword.ViewModels
         private async void Delete(InfoGroupDTO dto)
         {
             var result = await _onlineService.DeleteAsync(dto.ID);
-            if (result.Status == "success")
+            if (result.Status == System.Net.HttpStatusCode.OK)
                 InfoGroupDTOs.Remove(dto);
         }
 
@@ -73,7 +73,7 @@ namespace SuperPassword.ViewModels
                             infoGroup.ID = RandomString.GenerateRandomString(32);
                         }
                         var result = await _onlineService.AddAsync(infoGroup);
-                        if (result.Status == "success")
+                        if (result.Status == System.Net.HttpStatusCode.OK)
                         {
                             InfoGroupDTOs.Add(infoGroup);
                         }
@@ -104,7 +104,7 @@ namespace SuperPassword.ViewModels
                         //UpdateLoading(true);
                         var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
                         var result = await _onlineService.UpdateAsync(infoGroup);
-                        if (result.Status == "success")
+                        if (result.Status == System.Net.HttpStatusCode.OK)
                         {
                             var todoModel = InfoGroupDTOs.FirstOrDefault(t => t.ID.Equals(infoGroup.ID));
                             if (todoModel != null)
@@ -129,7 +129,7 @@ namespace SuperPassword.ViewModels
         {
             //SecurityModule securityM = new SecurityModule();
             var result = await _onlineService.GetAllAsync();
-            if (result.Status == "success")
+            if (result.Status == System.Net.HttpStatusCode.OK)
             {
                 InfoGroupDTOs.AddRange(result.Content);
             }

@@ -67,7 +67,17 @@ namespace SuperPassword.ViewModels
 
         private async void Login(UserDto user)
         {
-            var result = await _onlineService.Login(user, Password);
+            if (string.IsNullOrWhiteSpace(user.UserName) ||
+                string.IsNullOrWhiteSpace(Password))
+            {
+                return;
+            }
+
+            var loginResult = await _onlineService.Login(user, Password);
+            if (loginResult != null && loginResult.Status == System.Net.HttpStatusCode.OK)
+            {
+                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            }
         }
 
         private async void SignUp(UserDto user)

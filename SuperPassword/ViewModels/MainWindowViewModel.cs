@@ -30,7 +30,7 @@ namespace SuperPassword.ViewModels
         {
             //UserName = AppSession.UserName;
             //CreateMenuBar();
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("LoginView");
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView");
         }
     }
 }

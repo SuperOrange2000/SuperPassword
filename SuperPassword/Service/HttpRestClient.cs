@@ -41,14 +41,11 @@ namespace SuperPassword.Service
                     if (cookie.Name == "csrftoken")
                         client.AddDefaultHeader("X-CSRFToken", cookie.Value);
                 }
-                return JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
             }
-            else
-                return new ApiResponse<T>()
-                {
-                    Status = "",
-                    Message = response.ErrorMessage ?? ""
-                };
+            var result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+            if(result != null)
+                result.Status = response.StatusCode;
+            return result;
         }
     }
 }
