@@ -43,7 +43,7 @@ namespace SuperPassword
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.GetContainer()
-                .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
+                            .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
             containerRegistry.GetContainer().RegisterInstance(@"https://s.oragne.top/", serviceKey: "webUrl");
 
             containerRegistry.Register<IOfflineService, OfflineService>();

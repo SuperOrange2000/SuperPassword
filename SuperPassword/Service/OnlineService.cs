@@ -12,19 +12,15 @@ namespace SuperPassword.Service
         public OnlineService(HttpRestClient client)
         {
             this.client = client;
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Get;
-            request.Route = $"api/csrf/";
-            client.ExecuteAsync<object>(request);
         }
 
         public async Task<ApiResponse<object>> AddAsync(InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"api/add/";
+            request.Route = $"api/add";
             request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("account", entity.Username);
+            request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
             request.Parameters.Add("site", entity.Site);
             request.Parameters.Add("tags", entity.TagDtos);
@@ -35,7 +31,7 @@ namespace SuperPassword.Service
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Delete;
-            request.Route = $"api/delete/";
+            request.Route = $"api/delete";
             request.Parameters.Add("ids", new List<string> { id });
             return await client.ExecuteAsync<object>(request);
         }
@@ -44,7 +40,7 @@ namespace SuperPassword.Service
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
-            request.Route = $"api/get/";
+            request.Route = $"api/basic-get";
             request.Parameters.Add("ids", new List<string> { });
             return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
         }
@@ -53,7 +49,7 @@ namespace SuperPassword.Service
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Get;
-            request.Route = $"api/Get?id={id}";
+            request.Route = $"api/detailed-get";
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
@@ -61,7 +57,7 @@ namespace SuperPassword.Service
         {
             BaseRequest request = new BaseRequest();
             request.Method = RestSharp.Method.Post;
-            request.Route = $"api/update/";
+            request.Route = $"api/update";
             request.Parameters.Add("id", entity.ID);
             request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
