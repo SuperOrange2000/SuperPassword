@@ -4,9 +4,12 @@ using Prism.Ioc;
 using Prism.Services.Dialogs;
 using SuperPassword.Common;
 using SuperPassword.Service;
+using SuperPassword.Shared.Dtos;
 using SuperPassword.ViewModels;
 using SuperPassword.Views;
+using System;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace SuperPassword
 {
@@ -33,8 +36,10 @@ namespace SuperPassword
                 }
 
                 var service = App.Current.MainWindow.DataContext as IConfigureService;
+                var activeUser = callback.Parameters.GetValue<UserDto>("User");
+
                 if (service != null)
-                    service.Configure();
+                    service.Configure(activeUser);
                 base.OnInitialized();
             });
         }

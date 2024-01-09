@@ -25,5 +25,13 @@
             get { return password; }
             set { password = value; OnPropertyChanged(); }
         }
+
+        private string _token;
+
+        public string Token
+        {
+            get { return _token; }
+            set { _token = value; }
+        }
     }
 }

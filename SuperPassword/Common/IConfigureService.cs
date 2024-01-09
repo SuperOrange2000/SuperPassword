@@ -1,7 +1,14 @@
-﻿namespace SuperPassword.Common
+﻿using SuperPassword.Shared.Dtos;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SuperPassword.Common
 {
-    public interface IConfigureService
+    internal interface IConfigureService
     {
-        void Configure();
+        void Configure(UserDto user);
     }
 }

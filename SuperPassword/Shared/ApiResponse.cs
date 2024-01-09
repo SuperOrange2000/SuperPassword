@@ -6,7 +6,7 @@ namespace SuperPassword.Shared.Contact
     {
         public string Message { get; set; }
 
-        public bool Status { get; set; }
+        public HttpStatusCode Status { get; set; }
 
         public object Result { get; set; }
     }

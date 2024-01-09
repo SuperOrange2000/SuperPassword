@@ -76,7 +76,8 @@ namespace SuperPassword.ViewModels
             var loginResult = await _onlineService.Login(user, Password);
             if (loginResult != null && loginResult.Status == System.Net.HttpStatusCode.OK)
             {
-                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+                user.Token = loginResult.Content;
+                RequestClose?.Invoke(new DialogResult(ButtonResult.OK, new DialogParameters() { { "User", ActiveUser } }));
             }
         }
 
@@ -85,5 +86,9 @@ namespace SuperPassword.ViewModels
             var result = await _onlineService.SignUp(user, Password);
         }
 
+        public UserDto GetActiveUser()
+        {
+            return ActiveUser;
+        }
     }
 }

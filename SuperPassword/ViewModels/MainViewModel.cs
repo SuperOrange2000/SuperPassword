@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
+using Prism.Regions;
 using Prism.Services.Dialogs;
 using SuperPassword.Common;
 using SuperPassword.Service;
@@ -11,7 +12,7 @@ using System.Linq;
 
 namespace SuperPassword.ViewModels
 {
-    public class MainViewModel : BindableBase
+    public class MainViewModel : BindableBase, INavigationAware
     {
         private ObservableCollection<InfoGroupDTO> _infoGroupDTOs;
         public ObservableCollection<InfoGroupDTO> InfoGroupDTOs
@@ -20,11 +21,17 @@ namespace SuperPassword.ViewModels
             set { _infoGroupDTOs = value; RaisePropertyChanged(); }
         }
 
+        private UserDto _activeUser;
+
+        public UserDto ActiveUser
+        {
+            get { return _activeUser; }
+            set { _activeUser = value; }
+        }
+
+
         private readonly IOfflineService _offlineService;
         private readonly IOnlineService _onlineService;
-
-        //private readonly IRegionManager regionManager;
-
         private readonly IDialogService _dialogService;
 
         public DelegateCommand<InfoGroupDTO> DeleteCommand { get; private set; }
@@ -42,13 +49,12 @@ namespace SuperPassword.ViewModels
             AddCommand = new DelegateCommand<InfoGroupDTO>(Add);
             EditCommand = new DelegateCommand<InfoGroupDTO>(Update);
 
-            InitToDoList();
         }
 
         private async void Delete(InfoGroupDTO dto)
         {
-            var result = await _onlineService.DeleteAsync(dto.ID);
-            if (result.Status == System.Net.HttpStatusCode.OK)
+            var result = await _onlineService.DeleteAsync(ActiveUser, dto.ID);
+            if (result.Status == System.Net.HttpStatusCode.NoContent)
                 InfoGroupDTOs.Remove(dto);
         }
 
@@ -72,8 +78,8 @@ namespace SuperPassword.ViewModels
                         {
                             infoGroup.ID = RandomString.GenerateRandomString(32);
                         }
-                        var result = await _onlineService.AddAsync(infoGroup);
-                        if (result.Status == System.Net.HttpStatusCode.OK)
+                        var result = await _onlineService.AddAsync(ActiveUser, infoGroup);
+                        if (result.Status == System.Net.HttpStatusCode.Created)
                         {
                             InfoGroupDTOs.Add(infoGroup);
                         }
@@ -103,8 +109,8 @@ namespace SuperPassword.ViewModels
                     {
                         //UpdateLoading(true);
                         var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
-                        var result = await _onlineService.UpdateAsync(infoGroup);
-                        if (result.Status == System.Net.HttpStatusCode.OK)
+                        var result = await _onlineService.UpdateAsync(ActiveUser, infoGroup);
+                        if (result.Status == System.Net.HttpStatusCode.OK) // !ToDo BUG
                         {
                             var todoModel = InfoGroupDTOs.FirstOrDefault(t => t.ID.Equals(infoGroup.ID));
                             if (todoModel != null)
@@ -128,7 +134,7 @@ namespace SuperPassword.ViewModels
         async void InitToDoList()
         {
             //SecurityModule securityM = new SecurityModule();
-            var result = await _onlineService.GetAllAsync();
+            var result = await _onlineService.GetAllAsync(ActiveUser);
             if (result.Status == System.Net.HttpStatusCode.OK)
             {
                 InfoGroupDTOs.AddRange(result.Content);
@@ -137,6 +143,25 @@ namespace SuperPassword.ViewModels
             //{
             //    InfoGroupDTOs.Add(new InfoGroupDTO() {Site = "TestWebsite" + i, Username = "用户名", Password = "密码" });
             //}
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            if (navigationContext.Parameters.ContainsKey("ActiveUser"))
+            {
+                ActiveUser = navigationContext.Parameters.GetValue<UserDto>("ActiveUser");
+            }
+            InitToDoList();
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+            
         }
     }
 }

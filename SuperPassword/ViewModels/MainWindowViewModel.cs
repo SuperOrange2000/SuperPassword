@@ -3,6 +3,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using SuperPassword.Common;
+using SuperPassword.Shared.Dtos;
 
 namespace SuperPassword.ViewModels
 {
@@ -22,15 +23,11 @@ namespace SuperPassword.ViewModels
         {
             this._regionManager = regionManager;
             this.containerProvider = containerProvider;
-
-            //_regionManager.RegisterViewWithRegion("MainViewRegion", typeof(MainView));
         }
 
-        public void Configure()
+        public void Configure(UserDto user)
         {
-            //UserName = AppSession.UserName;
-            //CreateMenuBar();
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView");
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView", new NavigationParameters { { "ActiveUser", user } });
         }
     }
 }
