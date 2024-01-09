@@ -14,11 +14,10 @@ namespace SuperPassword.Service
             this.client = client;
         }
 
-        public async Task<ApiResponse<object>> AddAsync(InfoGroupDTO entity)
+        public async Task<ApiResponse<object>> AddAsync(UserDto user, InfoGroupDTO entity)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Post;
-            request.Route = $"api/add";
+            BaseRequest request = new BaseRequest("api/add", RestSharp.Method.Post);
+            request.Parameters.Add("token", user.Token);
             request.Parameters.Add("id", entity.ID);
             request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
@@ -27,37 +26,33 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync<object>(request);
         }
 
-        public async Task<ApiResponse<object>> DeleteAsync(string id)
+        public async Task<ApiResponse<object>> DeleteAsync(UserDto user, string id)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Delete;
-            request.Route = $"api/delete";
+            BaseRequest request = new BaseRequest("api/delete", RestSharp.Method.Post);
+            request.Parameters.Add("token", user.Token);
             request.Parameters.Add("ids", new List<string> { id });
             return await client.ExecuteAsync<object>(request);
         }
 
-        public async Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync()
+        public async Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync(UserDto user)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Get;
-            request.Route = $"api/basic-get";
+            BaseRequest request = new BaseRequest("api/basic-get", RestSharp.Method.Post);
             request.Parameters.Add("ids", new List<string> { });
+            request.Parameters.Add("token", user.Token);
             return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
         }
 
-        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(string id)
+        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, string id)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Get;
-            request.Route = $"api/detailed-get";
+            BaseRequest request = new BaseRequest("api/detailed-get", RestSharp.Method.Post);
+            request.Parameters.Add("token", user.Token);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
-        public async Task<ApiResponse<InfoGroupDTO>> UpdateAsync(InfoGroupDTO entity)
+        public async Task<ApiResponse<InfoGroupDTO>> UpdateAsync(UserDto user, InfoGroupDTO entity)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Post;
-            request.Route = $"api/update";
+            BaseRequest request = new BaseRequest("api/update", RestSharp.Method.Post);
+            request.Parameters.Add("token", user.Token);
             request.Parameters.Add("id", entity.ID);
             request.Parameters.Add("username", entity.Username);
             request.Parameters.Add("password", entity.Password);
@@ -68,9 +63,7 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse<string>> SignUp(UserDto User, string password)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Post;
-            request.Route = $"api/sign-up/";
+            BaseRequest request = new BaseRequest("api/sign-up/", RestSharp.Method.Post);
             request.Parameters.Add("username", User.UserName);
             request.Parameters.Add("password", password);
             return await client.ExecuteAsync<string>(request);
@@ -78,9 +71,7 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse<string>> Login(UserDto User, string password)
         {
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Post;
-            request.Route = $"api/login/";
+            BaseRequest request = new BaseRequest("api/login/", RestSharp.Method.Post);
             request.Parameters.Add("username", User.UserName);
             request.Parameters.Add("password", password);
             request.Parameters.Add("device", "windows");

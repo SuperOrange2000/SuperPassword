@@ -7,15 +7,15 @@ namespace SuperPassword.Service
 {
     public interface IOnlineService
     {
-        Task<ApiResponse<object>> AddAsync(InfoGroupDTO entity);
+        Task<ApiResponse<object>> AddAsync(UserDto user, InfoGroupDTO entity);
 
-        Task<ApiResponse<InfoGroupDTO>> UpdateAsync(InfoGroupDTO entity);
+        Task<ApiResponse<InfoGroupDTO>> UpdateAsync(UserDto user, InfoGroupDTO entity);
 
-        Task<ApiResponse<object>> DeleteAsync(string id);
+        Task<ApiResponse<object>> DeleteAsync(UserDto user, string id);
 
-        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(string id);
+        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, string id);
 
-        Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync();
+        Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync(UserDto user);
 
         Task<ApiResponse<string>> SignUp(UserDto user, string password);
 

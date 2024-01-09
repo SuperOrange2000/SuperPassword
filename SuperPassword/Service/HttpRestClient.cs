@@ -2,8 +2,10 @@
 using RestSharp;
 using SuperPassword.Shared.Contact;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace SuperPassword.Service
 {
@@ -19,21 +21,22 @@ namespace SuperPassword.Service
             options.CookieContainer = new CookieContainer();
             client = new RestClient(options);
 
-            BaseRequest request = new BaseRequest();
-            request.Method = RestSharp.Method.Get;
-            request.Route = $"api/csrf/";
+            BaseRequest request = new BaseRequest("api/csrf/", RestSharp.Method.Get);
             Execute<object>(request);
         }
 
-        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest baseRequest)
+        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
         {
-            var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
-            request.AddHeader("Content-Type", baseRequest.ContentType);
+            request.AddHeader("Content-Type", request.ContentType);
 
-            if (baseRequest.Parameters.Count != 0)
-                foreach (var kvp in baseRequest.Parameters)
+            if (request.Parameters.Count != 0)
+                foreach (var kvp in request.Parameters)
                 {
-                    request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
+                    if(kvp.Value is List<string>)
+                        foreach (var kvp2 in (List<string>)kvp.Value)
+                            request.AddParameter(kvp.Key, kvp2, ParameterType.GetOrPost);
+                    else
+                        request.AddParameter(kvp.Key,kvp.Value, ParameterType.GetOrPost);
                 }
             //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
             var response = await client.ExecuteAsync(request);
@@ -47,19 +50,28 @@ namespace SuperPassword.Service
                         client.AddDefaultHeader("X-CSRFToken", cookie.Value);
                 }
             }
-            var result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-            if(result != null)
+
+            if (string.IsNullOrEmpty(response.Content))
+            {
+                ApiResponse<T> result = new ApiResponse<T>();
                 result.Status = response.StatusCode;
-            return result;
+                return result;
+            }
+            else
+            {
+                ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+                if (result != null)
+                    result.Status = response.StatusCode;
+                return result;
+            }
         }
 
-        public ApiResponse<T> Execute<T>(BaseRequest baseRequest)
+        public ApiResponse<T> Execute<T>(BaseRequest request)
         {
-            var request = new RestRequest(new Uri(apiUrl + baseRequest.Route), baseRequest.Method);
-            request.AddHeader("Content-Type", baseRequest.ContentType);
+            request.AddHeader("Content-Type", request.ContentType);
 
-            if (baseRequest.Parameters.Count != 0)
-                foreach (var kvp in baseRequest.Parameters)
+            if (request.Parameters.Count != 0)
+                foreach (var kvp in request.Parameters)
                 {
                     request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
                 }
