@@ -9,20 +9,19 @@ using System.Windows.Documents;
 
 namespace SuperPassword.Service
 {
-    public class HttpRestClient
+    public class HttpRestClient : RestClient
     {
-        private readonly string apiUrl;
-        protected readonly RestClient client;
-
-        public HttpRestClient(string apiUrl)
+        public HttpRestClient(string apiUrl) : base(initOptions())
         {
-            this.apiUrl = apiUrl;
+            BaseRequest request = new BaseRequest("api/csrf/", RestSharp.Method.Get);
+            ExecuteSync<object>(request);
+        }
+
+        private static RestClientOptions initOptions()
+        {
             RestClientOptions options = new RestClientOptions();
             options.CookieContainer = new CookieContainer();
-            client = new RestClient(options);
-
-            BaseRequest request = new BaseRequest("api/csrf/", RestSharp.Method.Get);
-            Execute<object>(request);
+            return options;
         }
 
         public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
@@ -39,7 +38,7 @@ namespace SuperPassword.Service
                         request.AddParameter(kvp.Key,kvp.Value, ParameterType.GetOrPost);
                 }
             //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
-            var response = await client.ExecuteAsync(request);
+            var response = this.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 CookieCollection responseCookies = response.Cookies ?? new CookieCollection();
@@ -47,7 +46,7 @@ namespace SuperPassword.Service
                 {
                     //client.Options.CookieContainer?.Add(cookie);
                     if (cookie.Name == "csrftoken")
-                        client.AddDefaultHeader("X-CSRFToken", cookie.Value);
+                        this.AddDefaultHeader("X-CSRFToken", cookie.Value);
                 }
             }
 
@@ -66,7 +65,7 @@ namespace SuperPassword.Service
             }
         }
 
-        public ApiResponse<T> Execute<T>(BaseRequest request)
+        public ApiResponse<T> ExecuteSync<T>(BaseRequest request)
         {
             request.AddHeader("Content-Type", request.ContentType);
 
@@ -76,7 +75,7 @@ namespace SuperPassword.Service
                     request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
                 }
             //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
-            var response = client.Execute(request);
+            var response = this.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 CookieCollection responseCookies = response.Cookies ?? new CookieCollection();
@@ -84,7 +83,7 @@ namespace SuperPassword.Service
                 {
                     //client.Options.CookieContainer?.Add(cookie);
                     if (cookie.Name == "csrftoken")
-                        client.AddDefaultHeader("X-CSRFToken", cookie.Value);
+                        this.AddDefaultHeader("X-CSRFToken", cookie.Value);
                 }
             }
             var result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
