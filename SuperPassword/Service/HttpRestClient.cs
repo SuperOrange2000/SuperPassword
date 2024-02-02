@@ -26,18 +26,6 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
         {
-            request.AddHeader("Content-Type", request.ContentType);
-
-            if (request.Parameters.Count != 0)
-                foreach (var kvp in request.Parameters)
-                {
-                    if(kvp.Value is List<string>)
-                        foreach (var kvp2 in (List<string>)kvp.Value)
-                            request.AddParameter(kvp.Key, kvp2, ParameterType.GetOrPost);
-                    else
-                        request.AddParameter(kvp.Key,kvp.Value, ParameterType.GetOrPost);
-                }
-            //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
             var response = this.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -67,14 +55,6 @@ namespace SuperPassword.Service
 
         public ApiResponse<T> ExecuteSync<T>(BaseRequest request)
         {
-            request.AddHeader("Content-Type", request.ContentType);
-
-            if (request.Parameters.Count != 0)
-                foreach (var kvp in request.Parameters)
-                {
-                    request.AddParameter(kvp.Key, kvp.Value, ParameterType.GetOrPost);
-                }
-            //request.AddJsonBody(JsonConvert.SerializeObject(baseRequest.Parameters));
             var response = this.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {

@@ -17,64 +17,62 @@ namespace SuperPassword.Service
         public async Task<ApiResponse<object>> AddAsync(UserDto user, InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest("api/add", RestSharp.Method.Post);
-            request.Parameters.Add("token", user.Token);
-            request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("username", entity.Username);
-            request.Parameters.Add("password", entity.Password);
-            request.Parameters.Add("site", entity.Site);
-            request.Parameters.Add("tags", entity.TagDtos);
+            request.AddParameter("token", user.Token);
+            request.AddParameter("id", entity.ID);
+            request.AddParameter("data", entity.ToByteArray());
+            request.AddParameter("salt", entity.Salt);
             return await client.ExecuteAsync<object>(request);
         }
 
         public async Task<ApiResponse<object>> DeleteAsync(UserDto user, string id)
         {
             BaseRequest request = new BaseRequest("api/delete", RestSharp.Method.Post);
-            request.Parameters.Add("token", user.Token);
-            request.Parameters.Add("ids", new List<string> { id });
+            request.AddParameter("token", user.Token);
+            request.AddParameter("ids", new List<string> { id });
             return await client.ExecuteAsync<object>(request);
         }
 
         public async Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync(UserDto user)
         {
-            BaseRequest request = new BaseRequest("api/basic-get", RestSharp.Method.Post);
-            request.Parameters.Add("ids", new List<string> { });
-            request.Parameters.Add("token", user.Token);
+            BaseRequest request = new BaseRequest("api/quick-get-data", RestSharp.Method.Post);
+            request.AddParameter("ids", new List<string> { });
+            request.AddParameter("token", user.Token);
             return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
         }
 
         public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, string id)
         {
-            BaseRequest request = new BaseRequest("api/detailed-get", RestSharp.Method.Post);
-            request.Parameters.Add("token", user.Token);
+            BaseRequest request = new BaseRequest("api/get-data", RestSharp.Method.Post);
+            request.AddParameter("token", user.Token);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
         public async Task<ApiResponse<InfoGroupDTO>> UpdateAsync(UserDto user, InfoGroupDTO entity)
         {
             BaseRequest request = new BaseRequest("api/update", RestSharp.Method.Post);
-            request.Parameters.Add("token", user.Token);
-            request.Parameters.Add("id", entity.ID);
-            request.Parameters.Add("username", entity.Username);
-            request.Parameters.Add("password", entity.Password);
-            request.Parameters.Add("site", entity.Site);
-            request.Parameters.Add("tags", entity.TagDtos);
+            request.AddParameter("token", user.Token);
+            request.AddParameter("id", entity.ID);
+            request.AddParameter("username", entity.Username);
+            request.AddParameter("password", entity.Password);
+            request.AddParameter("site", entity.Site);
+            request.AddParameter("tags", entity.TagDtos);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 
         public async Task<ApiResponse<string>> SignUp(UserDto User, string password)
         {
             BaseRequest request = new BaseRequest("api/sign-up/", RestSharp.Method.Post);
-            request.Parameters.Add("username", User.UserName);
-            request.Parameters.Add("password", password);
+            request.AddParameter("username", User.UserName);
+            request.AddParameter("password", password);
             return await client.ExecuteAsync<string>(request);
         }
 
         public async Task<ApiResponse<string>> Login(UserDto User, string password)
         {
             BaseRequest request = new BaseRequest("api/login/", RestSharp.Method.Post);
-            request.Parameters.Add("username", User.UserName);
-            request.Parameters.Add("password", password);
-            request.Parameters.Add("device", "windows");
+            request.AddParameter("username", User.UserName);
+            request.AddParameter("password", password);
+            request.AddParameter("device", "windows");
             return await client.ExecuteAsync<string>(request);
         }
     }
