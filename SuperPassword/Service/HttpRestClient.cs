@@ -13,8 +13,7 @@ namespace SuperPassword.Service
     {
         public HttpRestClient(string apiUrl) : base(initOptions())
         {
-            BaseRequest request = new BaseRequest("api/csrf/", RestSharp.Method.Get);
-            ExecuteSync<object>(request);
+            SetCSRFHeader();
         }
 
         private static RestClientOptions initOptions()
@@ -24,8 +23,9 @@ namespace SuperPassword.Service
             return options;
         }
 
-        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
+        private void SetCSRFHeader()
         {
+            BaseRequest request = new BaseRequest("api/csrf/", RestSharp.Method.Get);
             var response = this.Execute(request);
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
@@ -37,7 +37,11 @@ namespace SuperPassword.Service
                         this.AddDefaultHeader("X-CSRFToken", cookie.Value);
                 }
             }
+        }
 
+        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
+        {
+            var response = this.Execute(request);
             if (string.IsNullOrEmpty(response.Content))
             {
                 ApiResponse<T> result = new ApiResponse<T>();
@@ -56,20 +60,19 @@ namespace SuperPassword.Service
         public ApiResponse<T> ExecuteSync<T>(BaseRequest request)
         {
             var response = this.Execute(request);
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (string.IsNullOrEmpty(response.Content))
             {
-                CookieCollection responseCookies = response.Cookies ?? new CookieCollection();
-                foreach (Cookie cookie in responseCookies)
-                {
-                    //client.Options.CookieContainer?.Add(cookie);
-                    if (cookie.Name == "csrftoken")
-                        this.AddDefaultHeader("X-CSRFToken", cookie.Value);
-                }
-            }
-            var result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-            if (result != null)
+                ApiResponse<T> result = new ApiResponse<T>();
                 result.Status = response.StatusCode;
-            return result;
+                return result;
+            }
+            else
+            {
+                ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+                if (result != null)
+                    result.Status = response.StatusCode;
+                return result;
+            }
         }
     }
 }
