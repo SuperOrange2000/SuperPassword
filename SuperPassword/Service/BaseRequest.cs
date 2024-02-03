@@ -2,6 +2,7 @@
 using ImTools;
 using RestSharp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
 
@@ -22,6 +23,8 @@ namespace SuperPassword.Service
             if (value is List<string>)
                 foreach (var kvp2 in (List<string>)value)
                     AddParameter(Parameter.CreateParameter(name, kvp2, type));
+            else if (value is byte[])
+                AddParameter(Parameter.CreateParameter(name, Convert.ToBase64String((byte[])value), type));
             else
                 AddParameter(Parameter.CreateParameter(name, value, type));
         }
