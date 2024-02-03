@@ -29,6 +29,7 @@ namespace SuperPassword.ViewModels
             set { _activeUser = value; }
         }
 
+        public uint MaxIndex { get; set; } = 0;
 
         private readonly IOfflineService _offlineService;
         private readonly IOnlineService _onlineService;
@@ -62,7 +63,8 @@ namespace SuperPassword.ViewModels
         {
             DialogParameters param = new DialogParameters
             {
-                { "Title", "新建" }
+                { "Title", "新建" },
+                { "ID", ++MaxIndex }
             };
 
             Action<IDialogResult> eventHandler = async (IDialogResult dialogResult) =>
@@ -73,11 +75,6 @@ namespace SuperPassword.ViewModels
                     {
                         //UpdateLoading(true);
                         var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
-
-                        while (InfoGroupDTOs.Any(t => t.ID == infoGroup.ID))
-                        {
-                            infoGroup.ID = RandomString.GenerateRandomString(32);
-                        }
                         var result = await _onlineService.AddAsync(ActiveUser, infoGroup);
                         if (result.Status == System.Net.HttpStatusCode.Created)
                         {

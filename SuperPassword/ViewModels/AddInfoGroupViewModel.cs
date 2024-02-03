@@ -77,7 +77,7 @@ namespace SuperPassword.ViewModels
             }
             else
             {
-                Model = new InfoGroupDTO();
+                Model = new InfoGroupDTO(parameters.GetValue<uint>("ID"));
             }
 
             if (parameters.ContainsKey("Title"))

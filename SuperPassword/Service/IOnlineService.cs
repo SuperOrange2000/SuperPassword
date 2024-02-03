@@ -11,9 +11,9 @@ namespace SuperPassword.Service
 
         Task<ApiResponse<InfoGroupDTO>> UpdateAsync(UserDto user, InfoGroupDTO entity);
 
-        Task<ApiResponse<object>> DeleteAsync(UserDto user, string id);
+        Task<ApiResponse<object>> DeleteAsync(UserDto user, uint id);
 
-        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, string id);
+        Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, uint id);
 
         Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync(UserDto user);
 

@@ -1,5 +1,7 @@
-﻿using SuperPassword.Shared.Contact;
+﻿using RestSharp;
+using SuperPassword.Shared.Contact;
 using SuperPassword.Shared.Dtos;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,11 +26,11 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync<object>(request);
         }
 
-        public async Task<ApiResponse<object>> DeleteAsync(UserDto user, string id)
+        public async Task<ApiResponse<object>> DeleteAsync(UserDto user, uint id)
         {
             BaseRequest request = new BaseRequest("api/delete", RestSharp.Method.Post);
             request.AddParameter("token", user.Token);
-            request.AddParameter("ids", new List<string> { id });
+            request.AddParameter("ids", new List<uint> { id });
             return await client.ExecuteAsync<object>(request);
         }
 
@@ -40,7 +42,7 @@ namespace SuperPassword.Service
             return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
         }
 
-        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, string id)
+        public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, uint id)
         {
             BaseRequest request = new BaseRequest("api/get-data", RestSharp.Method.Post);
             request.AddParameter("token", user.Token);
