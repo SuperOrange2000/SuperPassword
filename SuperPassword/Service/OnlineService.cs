@@ -3,6 +3,7 @@ using SuperPassword.Shared.Contact;
 using SuperPassword.Shared.Dtos;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperPassword.Service
@@ -36,10 +37,17 @@ namespace SuperPassword.Service
 
         public async Task<ApiResponse<List<InfoGroupDTO>>> GetAllAsync(UserDto user)
         {
-            BaseRequest request = new BaseRequest("api/quick-get-data", RestSharp.Method.Post);
+            BaseRequest request = new BaseRequest("api/get", RestSharp.Method.Post);
             request.AddParameter("ids", new List<string> { });
             request.AddParameter("token", user.Token);
-            return await client.ExecuteAsync<List<InfoGroupDTO>>(request);
+            var response = await client.ExecuteAsync<List<InfoGroupBaseDTO>>(request);
+            var result = new ApiResponse<List<InfoGroupDTO>>
+            {
+                Status = response.Status,
+                Message = response.Message,
+                Content = response.Content.Select(x => new InfoGroupDTO(x)).ToList()
+            };
+            return result;
         }
 
         public async Task<ApiResponse<InfoGroupDTO>> GetFirstOfDefaultAsync(UserDto user, uint id)
@@ -57,7 +65,7 @@ namespace SuperPassword.Service
             request.AddParameter("username", entity.Username);
             request.AddParameter("password", entity.Password);
             request.AddParameter("site", entity.Site);
-            request.AddParameter("tags", entity.TagDtos);
+            request.AddParameter("tags", entity.TagDTOs);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }
 

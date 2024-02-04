@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using SuperPassword.Common.Converter;
 using SuperPassword.Shared.Contact;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace SuperPassword.Service
             }
         }
 
-        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request)
+        public async Task<ApiResponse<T>> ExecuteAsync<T>(BaseRequest request, JsonSerializerSettings? serializerSettings = null)
         {
             var response = this.Execute(request);
             if (string.IsNullOrEmpty(response.Content))
@@ -50,14 +51,24 @@ namespace SuperPassword.Service
             }
             else
             {
-                ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-                if (result != null)
-                    result.Status = response.StatusCode;
-                return result;
+                if (serializerSettings != null)
+                {
+                    ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+                    if (result != null)
+                        result.Status = response.StatusCode;
+                    return result;
+                }
+                else
+                {
+                    ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content, serializerSettings);
+                    if (result != null)
+                        result.Status = response.StatusCode;
+                    return result;
+                }
             }
         }
 
-        public ApiResponse<T> ExecuteSync<T>(BaseRequest request)
+        public ApiResponse<T> ExecuteSync<T>(BaseRequest request, JsonSerializerSettings? serializerSettings = null)
         {
             var response = this.Execute(request);
             if (string.IsNullOrEmpty(response.Content))
@@ -68,10 +79,20 @@ namespace SuperPassword.Service
             }
             else
             {
-                ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
-                if (result != null)
-                    result.Status = response.StatusCode;
-                return result;
+                if (serializerSettings != null)
+                {
+                    ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content);
+                    if (result != null)
+                        result.Status = response.StatusCode;
+                    return result;
+                }
+                else
+                {
+                    ApiResponse<T> result = JsonConvert.DeserializeObject<ApiResponse<T>>(response.Content, serializerSettings);
+                    if (result != null)
+                        result.Status = response.StatusCode;
+                    return result;
+                }
             }
         }
     }

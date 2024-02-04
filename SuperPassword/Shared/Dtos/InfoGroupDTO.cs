@@ -1,5 +1,6 @@
 ﻿using ImTools;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SuperPassword.Common;
 using SuperPassword.Common.CustomControl;
 using System;
@@ -48,12 +49,27 @@ namespace SuperPassword.Shared.Dtos
             set { _password = value; }
         }
 
-        private ObservableCollection<TagDto> _tagDtos;
-
-        public ObservableCollection<TagDto> TagDtos
+        private string _createTime;
+        public string CreateTime
         {
-            get { return _tagDtos; }
-            set { _tagDtos = value; }
+            get { return _createTime; }
+            set { _createTime = value; }
+        }
+
+        private string _updateTime;
+        public string UpdateTime
+        {
+            get { return _updateTime; }
+            set { _updateTime = value; }
+        }
+
+
+        private ObservableCollection<TagDto> _tagDTOs;
+
+        public ObservableCollection<TagDto> TagDTOs
+        {
+            get { return _tagDTOs; }
+            set { _tagDTOs = value; }
         }
 
         private byte[] _salt;
@@ -63,7 +79,6 @@ namespace SuperPassword.Shared.Dtos
             get { return _salt; }
             set { _salt = value; }
         }
-
 
         public InfoGroupDTO(uint id)
         {
@@ -75,75 +90,37 @@ namespace SuperPassword.Shared.Dtos
             Random random = new Random();
             random.NextBytes(Salt);
 
-            TagDtos = new ObservableCollection<TagDto>();
+            TagDTOs = new ObservableCollection<TagDto>();
             for (int i = 0; i < 5; i++)
-                TagDtos.Add(new TagDto() { Content = "a" + i, Color = "#f00" });
-            TagDtos.Add(new TagDto() { IsNewButton = true });
+                TagDTOs.Add(new TagDto() { Content = "a" + i, Color = "#f00" });
+            TagDTOs.Add(new TagDto() { IsNewButton = true });
         }
 
-        public InfoGroupDTO(uint id, byte[] data, byte[] salt)
+
+        public InfoGroupDTO(InfoGroupBaseDTO baseDTO)
         {
-            string jsonString = Encoding.UTF8.GetString(data);
-            var deserializedStringCollection = JsonConvert.DeserializeObject<StringCollection>(jsonString);
-            if(deserializedStringCollection != null)
-            {
-                ID = id;
-                Site = deserializedStringCollection[0];
-                Username = deserializedStringCollection[1];
-                Password = deserializedStringCollection[2];
-                TagDtos = new ObservableCollection<TagDto>();
-                Salt = salt;
-            }
+            ID = baseDTO.ID;
+            CreateTime = baseDTO.CreateTime;
+            UpdateTime = baseDTO.UpdateTime;
+            Salt = baseDTO.Salt;
+            var decodedBytes = Convert.FromBase64String(baseDTO.Base64Data);
+            var decodedString = Encoding.UTF8.GetString(decodedBytes);
+
+            var jArray = (JArray)JsonConvert.DeserializeObject(decodedString);
+            Site = jArray[0].ToString();
+            Username = jArray[1].ToString();
+            Password = jArray[2].ToString();
+            TagDTOs = new ObservableCollection<TagDto>(jArray[3].Select(item => new TagDto(item.ToString())).ToList());
         }
 
         public byte[] ToByteArray()
         {
-            //var list = from item in TagDtos select item.Content;
-            List<object> collectoin = new List<object>() {Site, Username, Password, from item in TagDtos select item.Content };
+            //var list = from item in TagDTOs select item.Content;
+            List<object> collectoin = new List<object>() {Site, Username, Password, from item in TagDTOs select item.Content };
             string jsonString = JsonConvert.SerializeObject(collectoin);
             return Encoding.UTF8.GetBytes(jsonString);
         }
 
     }
-    public class TagDto
-    {
-        private string _content;
 
-        public string Content
-        {
-            get { return _content; }
-            set { _content = value; }
-        }
-
-        private string _color;
-
-        public string Color
-        {
-            get { return _color; }
-            set { _color = value; }
-        }
-
-        private bool _isNewButton;
-
-        public bool IsNewButton
-        {
-            get { return _isNewButton; }
-            set { _isNewButton = value; }
-        }
-
-
-        public TagDto()
-        {
-            Content = string.Empty;
-            Color = string.Empty;
-            IsNewButton = false;
-        }
-
-        public TagDto(string content)
-        {
-            Content = content;
-            Color = string.Empty;
-            IsNewButton = false;
-        }
-    }
 }

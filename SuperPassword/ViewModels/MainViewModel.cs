@@ -115,7 +115,7 @@ namespace SuperPassword.ViewModels
                                 todoModel.Username = infoGroup.Username;
                                 todoModel.Password = infoGroup.Password;
                                 todoModel.Site = infoGroup.Site;
-                                todoModel.TagDtos = infoGroup.TagDtos;
+                                todoModel.TagDTOs = infoGroup.TagDTOs;
                             }
                         }
                     }
