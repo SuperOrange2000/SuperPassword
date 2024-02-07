@@ -4,6 +4,7 @@ using SuperPassword.Shared.Dtos;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SuperPassword.Service
@@ -22,8 +23,11 @@ namespace SuperPassword.Service
             BaseRequest request = new BaseRequest("api/add", RestSharp.Method.Post);
             request.AddParameter("token", user.Token);
             request.AddParameter("id", entity.ID);
-            request.AddParameter("data", entity.ToByteArray());
             request.AddParameter("salt", entity.Salt);
+            request.AddParameter("username", entity.EncryptedUsername);
+            request.AddParameter("password", entity.EncryptedPassword);
+            request.AddParameter("site", entity.EncryptedSite);
+            request.AddParameter("tags", entity.TagDTOs);
             return await client.ExecuteAsync<object>(request);
         }
 
@@ -40,13 +44,7 @@ namespace SuperPassword.Service
             BaseRequest request = new BaseRequest("api/get", RestSharp.Method.Post);
             request.AddParameter("ids", new List<string> { });
             request.AddParameter("token", user.Token);
-            var response = await client.ExecuteAsync<List<InfoGroupBaseDTO>>(request);
-            var result = new ApiResponse<List<InfoGroupDTO>>
-            {
-                Status = response.Status,
-                Message = response.Message,
-                Content = response.Content.Select(x => new InfoGroupDTO(x)).ToList()
-            };
+            var result = await client.ExecuteAsync<List<InfoGroupDTO>>(request);
             return result;
         }
 
@@ -62,9 +60,9 @@ namespace SuperPassword.Service
             BaseRequest request = new BaseRequest("api/update", RestSharp.Method.Post);
             request.AddParameter("token", user.Token);
             request.AddParameter("id", entity.ID);
-            request.AddParameter("username", entity.Username);
-            request.AddParameter("password", entity.Password);
-            request.AddParameter("site", entity.Site);
+            request.AddParameter("username", entity.EncryptedUsername);
+            request.AddParameter("password", entity.EncryptedPassword);
+            request.AddParameter("site", entity.EncryptedSite);
             request.AddParameter("tags", entity.TagDTOs);
             return await client.ExecuteAsync<InfoGroupDTO>(request);
         }

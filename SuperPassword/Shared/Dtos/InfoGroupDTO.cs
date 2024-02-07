@@ -1,17 +1,9 @@
-﻿using ImTools;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SuperPassword.Common;
-using SuperPassword.Common.CustomControl;
+﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
-using System.Text.Unicode;
 
 
 namespace SuperPassword.Shared.Dtos
@@ -19,7 +11,6 @@ namespace SuperPassword.Shared.Dtos
     public class InfoGroupDTO
     {
         private uint _id;
-
         public uint ID
         {
             get { return _id; }
@@ -27,16 +18,26 @@ namespace SuperPassword.Shared.Dtos
         }
 
         private string _site;
-
         public string Site
+        {
+            get { return Decrypt(_site); }
+            set { _site = Encrypt(value); }
+        }
+        [JsonProperty("site")]
+        public string EncryptedSite
         {
             get { return _site; }
             set { _site = value; }
         }
 
         private string _username;
-
         public string Username
+        {
+            get { return Decrypt(_username); }
+            set { _username = Encrypt(value); }
+        }
+        [JsonProperty("username")]
+        public string EncryptedUsername
         {
             get { return _username; }
             set { _username = value; }
@@ -45,19 +46,27 @@ namespace SuperPassword.Shared.Dtos
         private string _password;
         public string Password
         {
+            get { return Decrypt(_password); }
+            set { _password = Encrypt(value); }
+        }
+        [JsonProperty("password")]
+        public string EncryptedPassword
+        {
             get { return _password; }
             set { _password = value; }
         }
 
-        private string _createTime;
-        public string CreateTime
+        private DateTime _createTime;
+        [JsonProperty("create-time")]
+        public DateTime CreateTime
         {
             get { return _createTime; }
             set { _createTime = value; }
         }
 
-        private string _updateTime;
-        public string UpdateTime
+        private DateTime _updateTime;
+        [JsonProperty("update-time")]
+        public DateTime UpdateTime
         {
             get { return _updateTime; }
             set { _updateTime = value; }
@@ -80,45 +89,38 @@ namespace SuperPassword.Shared.Dtos
             set { _salt = value; }
         }
 
-        public InfoGroupDTO(uint id)
+        public InfoGroupDTO()
         {
-            ID = id;
-            Site = string.Empty;
-            Username = string.Empty;
-            Password = string.Empty;
             Salt = new byte[32];
             Random random = new Random();
             random.NextBytes(Salt);
-
-            TagDTOs = new ObservableCollection<TagDto>();
-            for (int i = 0; i < 5; i++)
-                TagDTOs.Add(new TagDto() { Content = "a" + i, Color = "#f00" });
-            TagDTOs.Add(new TagDto() { IsNewButton = true });
-        }
-
-
-        public InfoGroupDTO(InfoGroupBaseDTO baseDTO)
-        {
-            ID = baseDTO.ID;
-            CreateTime = baseDTO.CreateTime;
-            UpdateTime = baseDTO.UpdateTime;
-            Salt = baseDTO.Salt;
-            var decodedBytes = Convert.FromBase64String(baseDTO.Base64Data);
-            var decodedString = Encoding.UTF8.GetString(decodedBytes);
-
-            var jArray = (JArray)JsonConvert.DeserializeObject(decodedString);
-            Site = jArray[0].ToString();
-            Username = jArray[1].ToString();
-            Password = jArray[2].ToString();
-            TagDTOs = new ObservableCollection<TagDto>(jArray[3].Select(item => new TagDto(item.ToString())).ToList());
         }
 
         public byte[] ToByteArray()
         {
             //var list = from item in TagDTOs select item.Content;
-            List<object> collectoin = new List<object>() {Site, Username, Password, from item in TagDTOs select item.Content };
+            List<object> collectoin = new List<object>() { Site, Username, Password, from item in TagDTOs select item.Content };
             string jsonString = JsonConvert.SerializeObject(collectoin);
             return Encoding.UTF8.GetBytes(jsonString);
+        }
+
+        public string Encrypt(string data)
+        {
+            if (data == null)
+                return data;
+
+            var encodedString = Encoding.UTF8.GetBytes(data);
+            return Convert.ToBase64String(encodedString);
+        }
+
+        public string Decrypt(string data)
+        {
+            if (data == null)
+                return data;
+
+            var decodedBytes = Convert.FromBase64String(data);
+            var decodedString = Encoding.UTF8.GetString(decodedBytes);
+            return decodedString;
         }
 
     }

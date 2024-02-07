@@ -130,16 +130,13 @@ namespace SuperPassword.ViewModels
         }
         async void InitToDoList()
         {
-            //SecurityModule securityM = new SecurityModule();
             var result = await _onlineService.GetAllAsync(ActiveUser);
             if (result.Status == System.Net.HttpStatusCode.OK)
             {
                 InfoGroupDTOs.AddRange(result.Content);
             }
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    InfoGroupDTOs.Add(new InfoGroupDTO() {Site = "TestWebsite" + i, Username = "用户名", Password = "密码" });
-            //}
+
+            MaxIndex = InfoGroupDTOs.Max(i => i.ID);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

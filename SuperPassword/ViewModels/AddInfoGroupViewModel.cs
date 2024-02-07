@@ -36,7 +36,7 @@ namespace SuperPassword.ViewModels
 
         private void Cancel()
         {
-            RequestClose(new DialogResult(ButtonResult.Cancel));
+            RequestClose.Invoke(new DialogResult(ButtonResult.Cancel));
         }
 
         private void Save()
@@ -49,7 +49,7 @@ namespace SuperPassword.ViewModels
             {
                 { "Value", Model }
             };
-            RequestClose(new DialogResult(ButtonResult.OK, param));
+            RequestClose.Invoke(new DialogResult(ButtonResult.OK, param));
         }
 
         public event Action<IDialogResult> RequestClose;
@@ -77,7 +77,9 @@ namespace SuperPassword.ViewModels
             }
             else
             {
-                Model = new InfoGroupDTO(parameters.GetValue<uint>("ID"));
+                Model = new InfoGroupDTO();
+                if (parameters.ContainsKey("ID"))
+                    Model.ID = parameters.GetValue<uint>("ID");
             }
 
             if (parameters.ContainsKey("Title"))
