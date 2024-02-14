@@ -5,7 +5,7 @@ using Prism.Regions;
 using Prism.Services.Dialogs;
 using SuperPassword.Common;
 using SuperPassword.Service;
-using SuperPassword.Shared.Dtos;
+using SuperPassword.Shared.DTOs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -21,9 +21,9 @@ namespace SuperPassword.ViewModels
             set { _infoGroupDTOs = value; RaisePropertyChanged(); }
         }
 
-        private UserDto _activeUser;
+        private UserDTO _activeUser;
 
-        public UserDto ActiveUser
+        public UserDTO ActiveUser
         {
             get { return _activeUser; }
             set { _activeUser = value; }
@@ -135,15 +135,15 @@ namespace SuperPassword.ViewModels
             {
                 InfoGroupDTOs.AddRange(result.Content);
             }
-
-            MaxIndex = InfoGroupDTOs.Max(i => i.ID);
+            if(InfoGroupDTOs.Count > 0)
+                MaxIndex = InfoGroupDTOs.Max(i => i.ID);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
             if (navigationContext.Parameters.ContainsKey("ActiveUser"))
             {
-                ActiveUser = navigationContext.Parameters.GetValue<UserDto>("ActiveUser");
+                ActiveUser = navigationContext.Parameters.GetValue<UserDTO>("ActiveUser");
             }
             InitToDoList();
         }

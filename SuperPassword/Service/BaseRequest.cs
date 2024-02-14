@@ -4,6 +4,7 @@ using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Xml.Linq;
 
 namespace SuperPassword.Service
@@ -23,6 +24,13 @@ namespace SuperPassword.Service
             foreach (var v in value)
                 AddParameter(Parameter.CreateParameter(name, v, type));
         }
+
+        public void AddParameter<T>(string name, ObservableCollection<T> value, ParameterType type = ParameterType.GetOrPost)
+        {
+            foreach (var v in value)
+                AddParameter(Parameter.CreateParameter(name, v, type));
+        }
+
         public void AddParameter(string name, byte[] value, ParameterType type = ParameterType.GetOrPost)
         {
             AddParameter(Parameter.CreateParameter(name, Convert.ToBase64String(value), type));

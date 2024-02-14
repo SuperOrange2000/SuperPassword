@@ -1,6 +1,6 @@
-﻿namespace SuperPassword.Shared.Dtos
+﻿namespace SuperPassword.Shared.DTOs
 {
-    public class UserDto : BaseDto
+    public class UserDTO : BaseDTO
     {
         private string userName;
 

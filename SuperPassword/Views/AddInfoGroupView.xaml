@@ -86,7 +86,7 @@
                 Grid.Row="3"
                 Grid.ColumnSpan="3"
                 Margin="20,10"
-                ItemsSource="{Binding Model.TagDtos}">
+                ItemsSource="{Binding Model.TagDTOs}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -124,15 +124,15 @@
                 Width="75"
                 Height="40"
                 Margin="20,5"
-                Content="确认"
                 Command="{Binding SaveCommand}"
+                Content="确认"
                 CornerRadius="10" />
             <custom:CustomButton
                 Width="75"
                 Height="40"
                 Margin="20,5"
-                Content="取消"
                 Command="{Binding CancelCommand}"
+                Content="取消"
                 CornerRadius="10" />
         </WrapPanel>
     </Grid>

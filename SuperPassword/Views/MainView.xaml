@@ -124,6 +124,11 @@
                                             </custom:TagTemplateSelector>
                                         </ItemsControl.ItemTemplateSelector>
                                     </ItemsControl>
+                                    <custom:Tag
+                                        DockPanel.Dock="Left"
+                                        Text="+"
+                                        Color="#666" />
+                                    <StackPanel />
                                 </DockPanel>
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>

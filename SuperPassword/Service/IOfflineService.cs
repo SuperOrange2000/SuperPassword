@@ -1,4 +1,4 @@
-﻿using SuperPassword.Shared.Dtos;
+﻿using SuperPassword.Shared.DTOs;
 using System.Threading.Tasks;
 
 namespace SuperPassword.Service

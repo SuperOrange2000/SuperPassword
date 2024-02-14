@@ -3,7 +3,7 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using SuperPassword.Common;
-using SuperPassword.Shared.Dtos;
+using SuperPassword.Shared.DTOs;
 
 namespace SuperPassword.ViewModels
 {
@@ -25,7 +25,7 @@ namespace SuperPassword.ViewModels
             this.containerProvider = containerProvider;
         }
 
-        public void Configure(UserDto user)
+        public void Configure(UserDTO user)
         {
             _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView", new NavigationParameters { { "ActiveUser", user } });
         }

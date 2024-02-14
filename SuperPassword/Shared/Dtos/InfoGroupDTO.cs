@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Markup;
 
 
-namespace SuperPassword.Shared.Dtos
+namespace SuperPassword.Shared.DTOs
 {
-    public class InfoGroupDTO
+    public class InfoGroupDTO : BaseDTO
     {
         private uint _id;
         public uint ID
@@ -73,12 +74,41 @@ namespace SuperPassword.Shared.Dtos
         }
 
 
-        private ObservableCollection<TagDto> _tagDTOs;
+        private ObservableCollection<TagDTO> _tagDTOs;
 
-        public ObservableCollection<TagDto> TagDTOs
+        public ObservableCollection<TagDTO> TagDTOs
         {
             get { return _tagDTOs; }
             set { _tagDTOs = value; }
+        }
+        [JsonProperty("tags")]
+        public string EncryptedTagDTOs
+        {
+            get {
+                var data = string.Join("&", _tagDTOs.Select(tag => tag.EncryptedContent));
+                var encodedString = Encoding.UTF8.GetBytes(data);
+                return Convert.ToBase64String(encodedString);
+            }
+            set {
+                var decodedBytes = Convert.FromBase64String(value);
+                var decodedString = Encoding.UTF8.GetString(decodedBytes);
+                string[] contentArray = decodedString.Split('&');
+
+                // 创建一个新的ObservableCollection<TagDTO>
+                ObservableCollection<TagDTO> tagCollection = new ObservableCollection<TagDTO>();
+
+                // 遍历分割后的字符串数组，创建TagDTO对象并添加到集合中
+                foreach (string content in contentArray)
+                {
+                    if (!string.IsNullOrEmpty(content)) // 确保内容不为空
+                    {
+                        TagDTO tagDTO = new TagDTO { EncryptedContent = content };
+                        tagCollection.Add(tagDTO);
+                    }
+                }
+
+                _tagDTOs = tagCollection;
+            }
         }
 
         private byte[] _salt;
@@ -91,9 +121,19 @@ namespace SuperPassword.Shared.Dtos
 
         public InfoGroupDTO()
         {
-            Salt = new byte[32];
-            Random random = new Random();
-            random.NextBytes(Salt);
+            if(Salt == null)
+            {
+                Salt = new byte[32];
+                Random random = new Random();
+                random.NextBytes(Salt);
+            }
+
+            if(TagDTOs == null)
+            {
+                TagDTOs = new ObservableCollection<TagDTO>();
+                for (int i = 0; i < 5; i++)
+                    TagDTOs.Add(new TagDTO() { Content = "a" + i, Color = "#f00" });
+            }
         }
 
         public byte[] ToByteArray()
@@ -102,25 +142,6 @@ namespace SuperPassword.Shared.Dtos
             List<object> collectoin = new List<object>() { Site, Username, Password, from item in TagDTOs select item.Content };
             string jsonString = JsonConvert.SerializeObject(collectoin);
             return Encoding.UTF8.GetBytes(jsonString);
-        }
-
-        public string Encrypt(string data)
-        {
-            if (data == null)
-                return data;
-
-            var encodedString = Encoding.UTF8.GetBytes(data);
-            return Convert.ToBase64String(encodedString);
-        }
-
-        public string Decrypt(string data)
-        {
-            if (data == null)
-                return data;
-
-            var decodedBytes = Convert.FromBase64String(data);
-            var decodedString = Encoding.UTF8.GetString(decodedBytes);
-            return decodedString;
         }
 
     }

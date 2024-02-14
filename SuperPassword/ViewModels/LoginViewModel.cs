@@ -4,7 +4,7 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using SuperPassword.Extensions;
 using SuperPassword.Service;
-using SuperPassword.Shared.Dtos;
+using SuperPassword.Shared.DTOs;
 using System;
 using System.Collections.ObjectModel;
 using System.Security;
@@ -24,17 +24,17 @@ namespace SuperPassword.ViewModels
         public void OnDialogOpened(IDialogParameters parameters)
         {
         }
-        private UserDto _activeUser;
+        private UserDTO _activeUser;
 
-        public UserDto ActiveUser
+        public UserDTO ActiveUser
         {
             get { return _activeUser; }
             set { _activeUser = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<UserDto> _allUsers;
+        private ObservableCollection<UserDTO> _allUsers;
 
-        public ObservableCollection<UserDto> AllUsers
+        public ObservableCollection<UserDTO> AllUsers
         {
             get { return _allUsers; }
             set { _allUsers = value; RaisePropertyChanged(); }
@@ -52,20 +52,20 @@ namespace SuperPassword.ViewModels
 
         public event Action<IDialogResult> RequestClose;
 
-        public DelegateCommand<UserDto> LoginCommand { get; private set; }
-        public DelegateCommand<UserDto> SignUpCommand { get; private set; }
+        public DelegateCommand<UserDTO> LoginCommand { get; private set; }
+        public DelegateCommand<UserDTO> SignUpCommand { get; private set; }
 
         public string Title { get; set; } = "SuperPassword";
 
         public LoginViewModel(IContainerProvider provider)
         {
-            LoginCommand = new DelegateCommand<UserDto>(Login);
-            SignUpCommand = new DelegateCommand<UserDto>(SignUp);
+            LoginCommand = new DelegateCommand<UserDTO>(Login);
+            SignUpCommand = new DelegateCommand<UserDTO>(SignUp);
             _onlineService = provider.Resolve<OnlineService>();
-            ActiveUser = new UserDto();
+            ActiveUser = new UserDTO();
         }
 
-        private async void Login(UserDto user)
+        private async void Login(UserDTO user)
         {
             if (string.IsNullOrWhiteSpace(user.UserName) ||
                 string.IsNullOrWhiteSpace(Password))
@@ -81,12 +81,12 @@ namespace SuperPassword.ViewModels
             }
         }
 
-        private async void SignUp(UserDto user)
+        private async void SignUp(UserDTO user)
         {
             var result = await _onlineService.SignUp(user, Password);
         }
 
-        public UserDto GetActiveUser()
+        public UserDTO GetActiveUser()
         {
             return ActiveUser;
         }

@@ -4,13 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SuperPassword.Shared.Dtos
+namespace SuperPassword.Shared.DTOs
 {
-    public class TagDto
+    public class TagDTO : BaseDTO
     {
         private string _content;
 
         public string Content
+        {
+            get { return Decrypt(_content); }
+            set { _content = Encrypt(value); }
+        }
+
+        public string EncryptedContent
         {
             get { return _content; }
             set { _content = value; }
@@ -33,14 +39,14 @@ namespace SuperPassword.Shared.Dtos
         }
 
 
-        public TagDto()
+        public TagDTO()
         {
             Content = string.Empty;
             Color = string.Empty;
             IsNewButton = false;
         }
 
-        public TagDto(string content)
+        public TagDTO(string content)
         {
             Content = content;
             Color = string.Empty;

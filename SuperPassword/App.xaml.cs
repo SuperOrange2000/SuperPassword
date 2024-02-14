@@ -4,7 +4,7 @@ using Prism.Ioc;
 using Prism.Services.Dialogs;
 using SuperPassword.Common;
 using SuperPassword.Service;
-using SuperPassword.Shared.Dtos;
+using SuperPassword.Shared.DTOs;
 using SuperPassword.ViewModels;
 using SuperPassword.Views;
 using System;
@@ -36,7 +36,7 @@ namespace SuperPassword
                 }
 
                 var service = App.Current.MainWindow.DataContext as IConfigureService;
-                var activeUser = callback.Parameters.GetValue<UserDto>("User");
+                var activeUser = callback.Parameters.GetValue<UserDTO>("User");
 
                 if (service != null)
                     service.Configure(activeUser);
