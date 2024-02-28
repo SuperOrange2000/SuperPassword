@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SuperPassword.Shared.DTOs
@@ -22,9 +23,6 @@ namespace SuperPassword.Shared.DTOs
 
         public string Encrypt(string data)
         {
-            if (data == null)
-                return data;
-
             var encodedString = Encoding.UTF8.GetBytes(data);
             return Convert.ToBase64String(encodedString);
         }
