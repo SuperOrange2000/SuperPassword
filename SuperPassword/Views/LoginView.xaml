@@ -37,7 +37,7 @@
             <PasswordBox
                 Margin="10,0"
                 Padding="10,5"
-                e:PasswordExtensions.PassWord="{Binding Password, Mode=TwoWay}">
+                e:PasswordExtensions.PassWord="{Binding ActiveUser.Password, Mode=TwoWay}">
                 <i:Interaction.Behaviors>
                     <e:PasswordBehavior />
                 </i:Interaction.Behaviors>

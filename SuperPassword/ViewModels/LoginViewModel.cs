@@ -2,12 +2,13 @@
 using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using SuperPassword.Extensions;
-using SuperPassword.Service;
-using SuperPassword.Shared.DTOs;
+using SuperPassword.Entity;
 using System;
 using System.Collections.ObjectModel;
 using System.Security;
+using SuperPassword.BLL;
+using SuperPassword.Entity.Data;
+
 namespace SuperPassword.ViewModels
 {
     public class LoginViewModel : BindableBase, IDialogAware 
@@ -24,56 +25,52 @@ namespace SuperPassword.ViewModels
         public void OnDialogOpened(IDialogParameters parameters)
         {
         }
-        private UserDTO _activeUser;
 
-        public UserDTO ActiveUser
+        private UserEntity _activeUser;
+
+        public UserEntity ActiveUser
         {
             get { return _activeUser; }
             set { _activeUser = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<UserDTO> _allUsers;
+        private ObservableCollection<UserEntity> _allUsers;
 
-        public ObservableCollection<UserDTO> AllUsers
+        public ObservableCollection<UserEntity> AllUsers
         {
             get { return _allUsers; }
             set { _allUsers = value; RaisePropertyChanged(); }
         }
 
-        private string _password;
-
-        public string Password
-        {
-            get { return _password; }
-            set { _password = value; RaisePropertyChanged(); }
-        }
-
-        private readonly IOnlineService _onlineService;
+        private readonly IUserServiceBLL _userServiceBLL;
 
         public event Action<IDialogResult> RequestClose;
 
-        public DelegateCommand<UserDTO> LoginCommand { get; private set; }
-        public DelegateCommand<UserDTO> SignUpCommand { get; private set; }
+        public DelegateCommand<UserEntity> LoginCommand { get; private set; }
+        public DelegateCommand<UserEntity> SignUpCommand { get; private set; }
 
         public string Title { get; set; } = "SuperPassword";
 
-        public LoginViewModel(IContainerProvider provider)
+        public LoginViewModel(IUserServiceBLL userServiceBLL)
         {
-            LoginCommand = new DelegateCommand<UserDTO>(Login);
-            SignUpCommand = new DelegateCommand<UserDTO>(SignUp);
-            _onlineService = provider.Resolve<OnlineService>();
-            ActiveUser = new UserDTO();
+            _userServiceBLL = userServiceBLL;
+
+            LoginCommand = new DelegateCommand<UserEntity>(Login);
+            SignUpCommand = new DelegateCommand<UserEntity>(SignUp);
+            ActiveUser = new UserEntity();
+            GlobalEntity.ActiveUsser = ActiveUser;
         }
 
-        private async void Login(UserDTO user)
+
+        private async void Login(UserEntity user)
         {
             if (string.IsNullOrWhiteSpace(user.UserName) ||
-                string.IsNullOrWhiteSpace(Password))
+                string.IsNullOrWhiteSpace(user.UserName))
             {
                 return;
             }
 
-            var loginResult = await _onlineService.Login(user, Password);
+            var loginResult = await _userServiceBLL.Login(user);
             if (loginResult != null && loginResult.Status == System.Net.HttpStatusCode.OK)
             {
                 user.Token = loginResult.Content;
@@ -81,14 +78,9 @@ namespace SuperPassword.ViewModels
             }
         }
 
-        private async void SignUp(UserDTO user)
+        private async void SignUp(UserEntity user)
         {
-            var result = await _onlineService.SignUp(user, Password);
-        }
-
-        public UserDTO GetActiveUser()
-        {
-            return ActiveUser;
+            var result = await _userServiceBLL.SignUp(user);
         }
     }
 }

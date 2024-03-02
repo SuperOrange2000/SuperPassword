@@ -2,12 +2,15 @@
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
+using SuperPassword.BLL;
 using SuperPassword.Common;
-using SuperPassword.Service;
-using SuperPassword.Shared.DTOs;
+using SuperPassword.DAL;
+using SuperPassword.Entity;
+using SuperPassword.Entity.Setting;
 using SuperPassword.ViewModels;
 using SuperPassword.Views;
 using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Navigation;
 
@@ -31,12 +34,12 @@ namespace SuperPassword
             {
                 if (callback.Result != ButtonResult.OK)
                 {
-                    App.Current.Shutdown(0);
+                    Current.Shutdown(0);
                     return;
                 }
 
-                var service = App.Current.MainWindow.DataContext as IConfigureService;
-                var activeUser = callback.Parameters.GetValue<UserDTO>("User");
+                var service = Current.MainWindow.DataContext as IConfigureService;
+                var activeUser = callback.Parameters.GetValue<UserEntity>("User");
 
                 if (service != null)
                     service.Configure(activeUser);
@@ -48,13 +51,14 @@ namespace SuperPassword
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.GetContainer()
-                            .Register<HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "webUrl"));
-            containerRegistry.GetContainer().RegisterInstance(@"https://s.oragne.top/", serviceKey: "webUrl");
+                            .Register<DAL.OnlineService.Clinet.HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "apiUrl"));
+            containerRegistry.GetContainer().RegisterInstance(@"https://s.oragne.top/", serviceKey: "apiUrl");
 
-            containerRegistry.Register<IOfflineService, OfflineService>();
-            containerRegistry.Register<IOnlineService, OnlineService>();
+            containerRegistry.Register<IUserServiceBLL, UserService>();
+            containerRegistry.Register<IDataServiceBLL, DataService>();
+            containerRegistry.Register<IUserServiceDAL, DAL.OnlineService.UserServiceOnline>();
+            containerRegistry.Register<IDataServiceDAL, DAL.OnlineService.DataserviceOnline>();
             containerRegistry.Register<IDialogService, DialogService>();
-
 
             containerRegistry.RegisterForNavigation<MainWindow, MainWindowViewModel>();
             containerRegistry.RegisterForNavigation<MainView, MainViewModel>();

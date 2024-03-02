@@ -101,28 +101,21 @@
                                         Content="修改"
                                         CornerRadius="5"
                                         DockPanel.Dock="Right" />
-                                    <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding TagDTOs}">
+                                    <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding TagEntities}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <WrapPanel />
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
 
-                                        <ItemsControl.ItemTemplateSelector>
-                                            <custom:TagTemplateSelector>
-                                                <custom:TagTemplateSelector.TagTemplate>
-                                                    <DataTemplate>
-                                                        <custom:Tag
-                                                            Grid.Row="1"
-                                                            Text="{Binding Content}"
-                                                            Color="{Binding Color}" />
-                                                    </DataTemplate>
-                                                </custom:TagTemplateSelector.TagTemplate>
-                                                <custom:TagTemplateSelector.NewTagTemplate>
-                                                    <DataTemplate />
-                                                </custom:TagTemplateSelector.NewTagTemplate>
-                                            </custom:TagTemplateSelector>
-                                        </ItemsControl.ItemTemplateSelector>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <custom:Tag
+                                                    Grid.Row="1"
+                                                    Text="{Binding Content}"
+                                                    Color="{Binding Color}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
                                     </ItemsControl>
                                     <custom:Tag
                                         DockPanel.Dock="Left"

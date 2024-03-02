@@ -1,15 +1,15 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
-using SuperPassword.Shared.DTOs;
+using SuperPassword.Entity.Data;
 using System;
 
 namespace SuperPassword.ViewModels
 {
     class AddInfoGroupViewModel : BindableBase, IDialogAware
     {
-        private InfoGroupDTO _model;
-        public InfoGroupDTO Model
+        private InfoGroupEntity _model;
+        public InfoGroupEntity Model
         {
             get { return _model; }
             set { _model = value; }
@@ -73,11 +73,11 @@ namespace SuperPassword.ViewModels
         {
             if (parameters.ContainsKey("Value"))
             {
-                Model = parameters.GetValue<InfoGroupDTO>("Value");
+                Model = parameters.GetValue<InfoGroupEntity>("Value");
             }
             else
             {
-                Model = new InfoGroupDTO();
+                Model = new InfoGroupEntity();
                 if (parameters.ContainsKey("ID"))
                     Model.ID = parameters.GetValue<uint>("ID");
             }

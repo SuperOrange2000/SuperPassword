@@ -3,9 +3,10 @@ using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
+using SuperPassword.BLL;
 using SuperPassword.Common;
-using SuperPassword.Service;
-using SuperPassword.Shared.DTOs;
+using SuperPassword.Entity;
+using SuperPassword.Entity.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,16 +15,16 @@ namespace SuperPassword.ViewModels
 {
     public class MainViewModel : BindableBase, INavigationAware
     {
-        private ObservableCollection<InfoGroupDTO> _infoGroupDTOs;
-        public ObservableCollection<InfoGroupDTO> InfoGroupDTOs
+        private ObservableCollection<InfoGroupEntity> _infoGroupDTOs;
+        public ObservableCollection<InfoGroupEntity> InfoGroupDTOs
         {
             get { return _infoGroupDTOs; }
             set { _infoGroupDTOs = value; RaisePropertyChanged(); }
         }
 
-        private UserDTO _activeUser;
+        private UserEntity _activeUser;
 
-        public UserDTO ActiveUser
+        public UserEntity ActiveUser
         {
             get { return _activeUser; }
             set { _activeUser = value; }
@@ -31,35 +32,33 @@ namespace SuperPassword.ViewModels
 
         public uint MaxIndex { get; set; } = 0;
 
-        private readonly IOfflineService _offlineService;
-        private readonly IOnlineService _onlineService;
         private readonly IDialogService _dialogService;
+        private readonly IDataServiceBLL _dataServiceBLL;
 
-        public DelegateCommand<InfoGroupDTO> DeleteCommand { get; private set; }
-        public DelegateCommand<InfoGroupDTO> AddCommand { get; private set; }
-        public DelegateCommand<InfoGroupDTO> EditCommand { get; private set; }
+        public DelegateCommand<InfoGroupEntity> DeleteCommand { get; private set; }
+        public DelegateCommand<InfoGroupEntity> AddCommand { get; private set; }
+        public DelegateCommand<InfoGroupEntity> EditCommand { get; private set; }
 
-        public MainViewModel(IContainerProvider provider)
+        public MainViewModel(IDialogService dialogService, IDataServiceBLL dataServiceBLL)
         {
-            this._offlineService = provider.Resolve<IOfflineService>();
-            this._onlineService = provider.Resolve<IOnlineService>();
-            this._dialogService = provider.Resolve<IDialogService>();
+            _dialogService = dialogService;
+            _dataServiceBLL = dataServiceBLL;
 
-            InfoGroupDTOs = new ObservableCollection<InfoGroupDTO>();
-            DeleteCommand = new DelegateCommand<InfoGroupDTO>(Delete);
-            AddCommand = new DelegateCommand<InfoGroupDTO>(Add);
-            EditCommand = new DelegateCommand<InfoGroupDTO>(Update);
+            InfoGroupDTOs = new ObservableCollection<InfoGroupEntity>();
 
+            DeleteCommand = new DelegateCommand<InfoGroupEntity>(Delete);
+            AddCommand = new DelegateCommand<InfoGroupEntity>(Add);
+            EditCommand = new DelegateCommand<InfoGroupEntity>(Update);
         }
 
-        private async void Delete(InfoGroupDTO dto)
+        private async void Delete(InfoGroupEntity dto)
         {
-            var result = await _onlineService.DeleteAsync(ActiveUser, dto.ID);
+            var result = await _dataServiceBLL.DeleteAsync(ActiveUser, dto.ID);
             if (result.Status == System.Net.HttpStatusCode.NoContent)
                 InfoGroupDTOs.Remove(dto);
         }
 
-        private void Add(InfoGroupDTO dto)
+        private void Add(InfoGroupEntity dto)
         {
             DialogParameters param = new DialogParameters
             {
@@ -74,8 +73,8 @@ namespace SuperPassword.ViewModels
                     try
                     {
                         //UpdateLoading(true);
-                        var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
-                        var result = await _onlineService.AddAsync(ActiveUser, infoGroup);
+                        var infoGroup = dialogResult.Parameters.GetValue<InfoGroupEntity>("Value");
+                        var result = await _dataServiceBLL.AddAsync(ActiveUser, infoGroup);
                         if (result.Status == System.Net.HttpStatusCode.Created)
                         {
                             InfoGroupDTOs.Add(infoGroup);
@@ -91,7 +90,7 @@ namespace SuperPassword.ViewModels
             _dialogService.ShowDialog("AddInfoGroupView", param, eventHandler);
         }
 
-        private void Update(InfoGroupDTO dto)
+        private void Update(InfoGroupEntity dto)
         {
             DialogParameters param = new DialogParameters
             {
@@ -105,8 +104,8 @@ namespace SuperPassword.ViewModels
                     try
                     {
                         //UpdateLoading(true);
-                        var infoGroup = dialogResult.Parameters.GetValue<InfoGroupDTO>("Value");
-                        var result = await _onlineService.UpdateAsync(ActiveUser, infoGroup);
+                        var infoGroup = dialogResult.Parameters.GetValue<InfoGroupEntity>("Value");
+                        var result = await _dataServiceBLL.UpdateAsync(ActiveUser, infoGroup);
                         if (result.Status == System.Net.HttpStatusCode.OK) // !ToDo BUG
                         {
                             var todoModel = InfoGroupDTOs.FirstOrDefault(t => t.ID.Equals(infoGroup.ID));
@@ -115,7 +114,7 @@ namespace SuperPassword.ViewModels
                                 todoModel.Username = infoGroup.Username;
                                 todoModel.Password = infoGroup.Password;
                                 todoModel.Site = infoGroup.Site;
-                                todoModel.TagDTOs = infoGroup.TagDTOs;
+                                todoModel.TagEntities = infoGroup.TagEntities;
                             }
                         }
                     }
@@ -130,7 +129,7 @@ namespace SuperPassword.ViewModels
         }
         async void InitToDoList()
         {
-            var result = await _onlineService.GetAllAsync(ActiveUser);
+            var result = await _dataServiceBLL.GetAllAsync(ActiveUser);
             if (result.Status == System.Net.HttpStatusCode.OK)
             {
                 InfoGroupDTOs.AddRange(result.Content);
@@ -143,7 +142,7 @@ namespace SuperPassword.ViewModels
         {
             if (navigationContext.Parameters.ContainsKey("ActiveUser"))
             {
-                ActiveUser = navigationContext.Parameters.GetValue<UserDTO>("ActiveUser");
+                ActiveUser = navigationContext.Parameters.GetValue<UserEntity>("ActiveUser");
             }
             InitToDoList();
         }

@@ -93,30 +93,14 @@
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
-                <ItemsControl.ItemTemplateSelector>
-                    <custom:TagTemplateSelector>
-                        <custom:TagTemplateSelector.TagTemplate>
-                            <DataTemplate>
-                                <custom:Tag
-                                    Grid.Row="1"
-                                    Text="{Binding Content}"
-                                    Color="{Binding Color}" />
-                            </DataTemplate>
-                        </custom:TagTemplateSelector.TagTemplate>
-                        <custom:TagTemplateSelector.NewTagTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <custom:CustomButton
-                                        Margin="5"
-                                        Padding="25,10"
-                                        BorderThickness="2"
-                                        Content="+"
-                                        CornerRadius="10" />
-                                </Grid>
-                            </DataTemplate>
-                        </custom:TagTemplateSelector.NewTagTemplate>
-                    </custom:TagTemplateSelector>
-                </ItemsControl.ItemTemplateSelector>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <custom:Tag
+                            Grid.Row="1"
+                            Text="{Binding Content}"
+                            Color="{Binding Color}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
         <WrapPanel Grid.Row="2" HorizontalAlignment="Center">

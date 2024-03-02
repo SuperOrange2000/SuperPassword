@@ -1,4 +1,4 @@
-﻿using SuperPassword.Shared.DTOs;
+﻿using SuperPassword.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace SuperPassword.Common
 {
     internal interface IConfigureService
     {
-        void Configure(UserDTO user);
+        void Configure(UserEntity user);
     }
 }

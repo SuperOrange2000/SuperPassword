@@ -1,13 +1,11 @@
-﻿using DryIoc;
-using ImTools;
-using RestSharp;
+﻿using RestSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
 
-namespace SuperPassword.Service
+namespace SuperPassword.DAL.OnlineService.Clinet
 {
     public class BaseRequest : RestRequest
     {
