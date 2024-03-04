@@ -111,45 +111,53 @@ namespace SuperPassword.Entity.Data
             set { _updateTime = value; }
         }
 
-        private ObservableCollection<TagEntity> _tagEntities;
+        private byte maxTagNonceID = 0x80;
 
+        private ObservableCollection<TagEntity> _tagEntities;
         public ObservableCollection<TagEntity> TagEntities
         {
             get { return _tagEntities; }
             set { _tagEntities = value; }
         }
         [JsonProperty("tags")]
-        public string EncryptedTagEntities
+        public List<string> EncryptedTagEntities
         {
             get
             {
-                string data = string.Join("&", TagEntities.Select(tag => tag.Content));
-                byte[] encodedString = Encoding.UTF8.GetBytes(data);
-                byte[]? encryptedData = EncryptionHandler?.Invoke(encodedString, GetNonce(3));
-                if (encryptedData == null) return string.Empty;
-                else return Convert.ToBase64String(encryptedData);
+                //string data = string.Join("&", TagEntities.Select(tag => tag.Content));
+                //byte[] encodedString = Encoding.UTF8.GetBytes(data);
+                //byte[]? encryptedData = EncryptionHandler?.Invoke(encodedString, GetNonce(3));
+                //if (encryptedData == null) return string.Empty;
+                //else return Convert.ToBase64String(encryptedData);
+                return _tagEntities.Select(t => t.EncryptedContent).ToList();
             }
             set
             {
-                TagEntities = new ObservableCollection<TagEntity>();
-                if (value == null) return;
+                if (value == null)
+                    TagEntities = new ObservableCollection<TagEntity>();
+                else
+                    TagEntities = new ObservableCollection<TagEntity>(
+                        value.Select(s => new TagEntity { EncryptedContent = s, Salt=Salt })
+                    );
 
-                byte[] decodedBytes = Convert.FromBase64String(value);
-                byte[]? plaintext = DecryptionHandler?.Invoke(decodedBytes, GetNonce(3));
-                if (plaintext == null) return;
+                maxTagNonceID = TagEntities.Max(t => t.NonceID);
 
-                var decodedString = Encoding.UTF8.GetString(decodedBytes);
-                string[] contentArray = decodedString.Split('&');
+                //byte[] decodedBytes = Convert.FromBase64String(value);
+                //byte[]? plaintext = DecryptionHandler?.Invoke(decodedBytes, GetNonce(3));
+                //if (plaintext == null) return;
 
-                // 遍历分割后的字符串数组，创建TagDTO对象并添加到集合中
-                for (uint i = 0; i < contentArray.Length; i++)
-                {
-                    if (!string.IsNullOrEmpty(contentArray[i])) // 确保内容不为空
-                    {
-                        TagEntity tagDTO = new TagEntity(contentArray[i]);
-                        TagEntities.Add(tagDTO);
-                    }
-                }
+                //var decodedString = Encoding.UTF8.GetString(decodedBytes);
+                //string[] contentArray = decodedString.Split('&');
+
+                //// 遍历分割后的字符串数组，创建TagDTO对象并添加到集合中
+                //for (uint i = 0; i < contentArray.Length; i++)
+                //{
+                //    if (!string.IsNullOrEmpty(contentArray[i])) // 确保内容不为空
+                //    {
+                //        TagEntity tagDTO = new TagEntity(contentArray[i]);
+                //        TagEntities.Add(tagDTO);
+                //    }
+                //}
             }
         }
 
@@ -166,7 +174,7 @@ namespace SuperPassword.Entity.Data
             {
                 TagEntities = new ObservableCollection<TagEntity>();
                 for (int i = 0; i < 5; i++)
-                    TagEntities.Add(new TagEntity("a" + i));
+                    TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test"+1});
             }
         }
     }

@@ -42,7 +42,7 @@ namespace SuperPassword.BLL
 
         public async Task<ResponseBLL<InfoGroupEntity>> UpdateAsync(UserEntity user, InfoGroupEntity infoGroup)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.AddAsync(user, infoGroup);
+            ResponseDAL responseDAL = await _dataServiceDAL.UpdateAsync(user, infoGroup);
             return Deserialize<InfoGroupEntity>(responseDAL);
         }
     }

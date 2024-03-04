@@ -33,11 +33,10 @@ namespace SuperPassword.Entity
             SwitchCipher(type);
         }
 
-        internal byte[] GetNonce(uint i)
+        internal byte[] GetNonce(byte i)
         {
-            byte[] intBytes = BitConverter.GetBytes(i);
             SHA256 sha256 = SHA256.Create();
-            byte[] hashBytes = sha256.ComputeHash(Salt.Concat(intBytes).ToArray());
+            byte[] hashBytes = sha256.ComputeHash(Salt.Concat(new byte[] { i }).ToArray());
             byte[] first8Bytes = new byte[8];
             Array.Copy(hashBytes, 0, first8Bytes, 0, 8);
             return first8Bytes;
