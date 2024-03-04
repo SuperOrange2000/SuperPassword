@@ -11,7 +11,7 @@ namespace SuperPassword.ViewModels
     {
         private string _title = "Title1";
         private readonly IContainerProvider containerProvider;
-        private readonly IRegionManager? _regionManager;
+        private readonly IRegionManager _regionManager;
 
         public string Title
         {
@@ -25,9 +25,9 @@ namespace SuperPassword.ViewModels
             this.containerProvider = containerProvider;
         }
 
-        public void Configure(UserEntity user)
+        public void Configure()
         {
-            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView", new NavigationParameters { { "ActiveUser", user } });
+            _regionManager.Regions[PrismManager.MainViewRegionName].RequestNavigate("MainView");
         }
     }
 }

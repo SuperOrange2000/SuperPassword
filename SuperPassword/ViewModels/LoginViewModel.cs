@@ -74,7 +74,8 @@ namespace SuperPassword.ViewModels
             if (loginResult != null && loginResult.Status == System.Net.HttpStatusCode.OK)
             {
                 user.Token = loginResult.Content;
-                RequestClose?.Invoke(new DialogResult(ButtonResult.OK, new DialogParameters() { { "User", ActiveUser } }));
+                GlobalEntity.ActiveUsser = user;
+                RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
             }
         }
 

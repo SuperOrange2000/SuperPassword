@@ -140,10 +140,7 @@ namespace SuperPassword.ViewModels
 
         public void OnNavigatedTo(NavigationContext navigationContext)
         {
-            if (navigationContext.Parameters.ContainsKey("ActiveUser"))
-            {
-                ActiveUser = navigationContext.Parameters.GetValue<UserEntity>("ActiveUser");
-            }
+            ActiveUser = GlobalEntity.ActiveUsser;
             InitToDoList();
         }
 

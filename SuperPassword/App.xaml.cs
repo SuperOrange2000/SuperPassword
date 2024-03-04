@@ -39,10 +39,10 @@ namespace SuperPassword
                 }
 
                 var service = Current.MainWindow.DataContext as IConfigureService;
-                var activeUser = callback.Parameters.GetValue<UserEntity>("User");
 
                 if (service != null)
-                    service.Configure(activeUser);
+                    service.Configure();
+
                 base.OnInitialized();
             });
         }
