@@ -1,22 +1,19 @@
-﻿using System;
-using System.Security;
+﻿using SuperPassword.Security.SecurityEntityInterface;
 using System.Security.Cryptography;
-using SuperPassword.Entity.Data;
-using SuperPassword.Security;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace SuperPassword.Entity
 {
-    public class EncryptedBase
+    public class EncryptedBase : IEncryptedBase
     {
-        internal Func<byte[], byte[], byte[]> EncryptionHandler;
-        internal Func<byte[], byte[], byte[]> DecryptionHandler;
-
+        protected Action OnSaltChanged;
         private byte[] _salt;
-
+        [JsonPropertyName("salt")]
         public byte[] Salt
         {
             get { return _salt; }
-            set { _salt = value; }
+            set { _salt = value; OnSaltChanged?.Invoke(); }
         }
 
         private uint _id;
@@ -24,13 +21,6 @@ namespace SuperPassword.Entity
         {
             get { return _id; }
             set { _id = value; }
-        }
-
-        private ISecurityModule _cipher;
-
-        public EncryptedBase(CipherTypes type)
-        {
-            SwitchCipher(type);
         }
 
         internal byte[] GetNonce(byte i)
@@ -42,19 +32,27 @@ namespace SuperPassword.Entity
             return first8Bytes;
         }
 
-        internal void SwitchCipher(CipherTypes type)
+        internal string? Get(byte[] data, byte nonceID)
         {
-            if (EncryptionHandler != null) EncryptionHandler = null;
-            if (DecryptionHandler != null) DecryptionHandler = null;
+            if (data == null) return null;
+            byte[]? plaintext = IEncryptedBase.DecryptionHandler?.Invoke(data, GetNonce(nonceID));
+            if (plaintext == null)
+                return null;
+            return Encoding.UTF8.GetString(plaintext);
+        }
 
-            switch (type)
-            {
-                case CipherTypes.ChaCha20:
-                    _cipher = new ChaCha20(GlobalEntity.ActiveUsser.Key);
-                    EncryptionHandler += _cipher.Encrypt;
-                    DecryptionHandler += _cipher.Decrypt;
-                    break;
-            }
+        internal void Set(string? value, ref byte[] data, byte nonceID)
+        {
+            if (value == null) return;
+            byte[] plaintext = Encoding.UTF8.GetBytes(value);
+            var encryptedData = IEncryptedBase.EncryptionHandler?.Invoke(plaintext, GetNonce(nonceID));
+            if (encryptedData == null) return;
+            else data = encryptedData;
+        }
+
+        public EncryptedBase()
+        {
+
         }
     }
 }

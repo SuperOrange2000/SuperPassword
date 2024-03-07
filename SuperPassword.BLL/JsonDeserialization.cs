@@ -1,16 +1,12 @@
-﻿using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using SuperPassword.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SuperPassword.Entity;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace SuperPassword.BLL
 {
     public class JsonDeserialization
     {
+        private JsonSerializerOptions options = new JsonSerializerOptions(JsonSerializerDefaults.General);
         internal ResponseBLL<T> Deserialize<T>(ResponseDAL resDAL)
         {
             if (string.IsNullOrEmpty(resDAL.Content))
@@ -21,7 +17,7 @@ namespace SuperPassword.BLL
             }
             else
             {
-                ResponseBLL<T>? result = JsonConvert.DeserializeObject<ResponseBLL<T>>(resDAL.Content);
+                ResponseBLL<T>? result = JsonSerializer.Deserialize<ResponseBLL<T>>(resDAL.Content);
                 if (result != null)
                     result.Status = resDAL.Status;
                 else
@@ -30,23 +26,9 @@ namespace SuperPassword.BLL
             }
         }
 
-        internal ResponseBLL<T> Deserialize<T>(ResponseDAL resDAL, JsonSerializerSettings serializerSettings)
+        public JsonDeserialization()
         {
-            if (string.IsNullOrEmpty(resDAL.Content))
-            {
-                ResponseBLL<T> result = new ResponseBLL<T>();
-                result.Status = resDAL.Status;
-                return result;
-            }
-            else
-            {
-                ResponseBLL<T>? result = JsonConvert.DeserializeObject<ResponseBLL<T>>(resDAL.Content, serializerSettings);
-                if (result != null)
-                    result.Status = resDAL.Status;
-                else
-                    result = new ResponseBLL<T>() { Status = System.Net.HttpStatusCode.NoContent, Message = "反序列化失败" };
-                return result;
-            }
+            //options.PropertyNameCaseInsensitive = true;
         }
     }
 }

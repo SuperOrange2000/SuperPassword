@@ -2,7 +2,7 @@
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 
-namespace SuperPassword.Security
+namespace SuperPassword.Security.SecurityModule
 {
     public class ChaCha20 : ISecurityModule
     {
@@ -33,7 +33,7 @@ namespace SuperPassword.Security
             IStreamCipher chacha = new ChaChaEngine();
             chacha.Init(true, parameters);
 
-            byte[] output = new byte[plaintext.Length]; 
+            byte[] output = new byte[plaintext.Length];
             chacha.ProcessBytes(plaintext, 0, plaintext.Length, output, 0);
             chacha.Reset();
 
@@ -46,7 +46,7 @@ namespace SuperPassword.Security
             IStreamCipher chacha = new ChaChaEngine();
             chacha.Init(false, parameters);
 
-            byte[] output = new byte[ciphertext.Length]; 
+            byte[] output = new byte[ciphertext.Length];
             chacha.ProcessBytes(ciphertext, 0, ciphertext.Length, output, 0);
             chacha.Reset();
 

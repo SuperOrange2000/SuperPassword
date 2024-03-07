@@ -11,17 +11,8 @@ namespace SuperPassword.Entity.Setting
     {
         private static readonly UserSetting _instance = new UserSetting();
 
-        private CipherTypes _cipherType;
-
-        public CipherTypes CipherType
-        {
-            get { return _cipherType; }
-            set { _cipherType = value; }
-        }
-
         private UserSetting()
         {
-            CipherType = CipherTypes.ChaCha20;
         }
 
         public static UserSetting Instance

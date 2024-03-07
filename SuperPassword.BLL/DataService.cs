@@ -1,8 +1,7 @@
-﻿using Newtonsoft.Json;
-using Org.BouncyCastle.Asn1.Ocsp;
-using SuperPassword.DAL;
+﻿using SuperPassword.DAL;
 using SuperPassword.Entity;
 using SuperPassword.Entity.Data;
+using SuperPassword.Security.Sercvice;
 
 
 namespace SuperPassword.BLL
@@ -11,7 +10,7 @@ namespace SuperPassword.BLL
     {
         private IDataServiceDAL _dataServiceDAL { get; init; }
 
-        public DataService(IDataServiceDAL dataDAL)
+        public DataService(IDataServiceDAL dataDAL, ISecurityService securityService)
         {
             _dataServiceDAL = dataDAL;
         }

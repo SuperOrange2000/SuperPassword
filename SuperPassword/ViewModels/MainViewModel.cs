@@ -1,10 +1,8 @@
 ﻿using Prism.Commands;
-using Prism.Ioc;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using SuperPassword.BLL;
-using SuperPassword.Common;
 using SuperPassword.Entity;
 using SuperPassword.Entity.Data;
 using System;
@@ -134,7 +132,7 @@ namespace SuperPassword.ViewModels
             {
                 InfoGroupDTOs.AddRange(result.Content);
             }
-            if(InfoGroupDTOs.Count > 0)
+            if (InfoGroupDTOs.Count > 0)
                 MaxIndex = InfoGroupDTOs.Max(i => i.ID);
         }
 
@@ -151,7 +149,7 @@ namespace SuperPassword.ViewModels
 
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
-            
+
         }
     }
 }

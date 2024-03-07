@@ -4,15 +4,12 @@ using Prism.Ioc;
 using Prism.Services.Dialogs;
 using SuperPassword.BLL;
 using SuperPassword.Common;
+using SuperPassword.Config.Service;
 using SuperPassword.DAL;
-using SuperPassword.Entity;
-using SuperPassword.Entity.Setting;
+using SuperPassword.Security.Sercvice;
 using SuperPassword.ViewModels;
 using SuperPassword.Views;
-using System;
-using System.ComponentModel;
 using System.Windows;
-using System.Windows.Navigation;
 
 namespace SuperPassword
 {
@@ -53,6 +50,13 @@ namespace SuperPassword
             containerRegistry.GetContainer()
                             .Register<DAL.OnlineService.Clinet.HttpRestClient>(made: Parameters.Of.Type<string>(serviceKey: "apiUrl"));
             containerRegistry.GetContainer().RegisterInstance(@"https://s.oragne.top/", serviceKey: "apiUrl");
+
+            var configService = new ConfigService();
+            containerRegistry.RegisterSingleton<IConfigService>(sp => configService);
+
+            var securityService = new SecurityService();
+            containerRegistry.RegisterSingleton<ISecurityService>(sp => securityService);
+
 
             containerRegistry.Register<IUserServiceBLL, UserService>();
             containerRegistry.Register<IDataServiceBLL, DataService>();

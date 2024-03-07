@@ -1,12 +1,5 @@
-﻿using Newtonsoft.Json;
-using SuperPassword.Entity.Setting;
-using SuperPassword.Security;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Windows.Markup;
+﻿using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 
 namespace SuperPassword.Entity.Data
@@ -19,22 +12,14 @@ namespace SuperPassword.Entity.Data
         {
             get
             {
-                if (_site == null) return null;
-                byte[]? plaintext = DecryptionHandler?.Invoke(_site, GetNonce(0));
-                if (plaintext == null)
-                    return null;
-                return Encoding.UTF8.GetString(plaintext);
+                return Get(_site, 0x00);
             }
             set
             {
-                if (value == null) return;
-                byte[] plaintext = Encoding.UTF8.GetBytes(value);
-                var encryptedData = EncryptionHandler?.Invoke(plaintext, GetNonce(0));
-                if (encryptedData == null) return;
-                else _site = encryptedData;
+                Set(value, ref _site, 0x00);
             }
         }
-        [JsonProperty("site")]
+        [JsonPropertyName("site")]
         public string EncryptedSite
         {
             get { return Convert.ToBase64String(_site); }
@@ -46,22 +31,14 @@ namespace SuperPassword.Entity.Data
         {
             get
             {
-                if (_username == null) return null;
-                byte[]? plaintext = DecryptionHandler?.Invoke(_username, GetNonce(1));
-                if (plaintext == null)
-                    return null;
-                return Encoding.UTF8.GetString(plaintext);
+                return Get(_username, 0x01);
             }
             set
             {
-                if (value == null) return;
-                byte[] plaintext = Encoding.UTF8.GetBytes(value);
-                var encryptedData = EncryptionHandler?.Invoke(plaintext, GetNonce(1));
-                if (encryptedData == null) return;
-                else _username = encryptedData;
+                Set(value, ref _username, 0x01);
             }
         }
-        [JsonProperty("username")]
+        [JsonPropertyName("username")]
         public string EncryptedUsername
         {
             get { return Convert.ToBase64String(_username); }
@@ -73,22 +50,14 @@ namespace SuperPassword.Entity.Data
         {
             get
             {
-                if (_password == null) return null;
-                byte[]? plaintext = DecryptionHandler?.Invoke(_password, GetNonce(2));
-                if (plaintext == null)
-                    return null;
-                return Encoding.UTF8.GetString(plaintext);
+                return Get(_password, 0x02);
             }
             set
             {
-                if (value == null) return;
-                byte[] plaintext = Encoding.UTF8.GetBytes(value);
-                var encryptedData = EncryptionHandler?.Invoke(plaintext, GetNonce(2));
-                if (encryptedData == null) return;
-                else _password = encryptedData;
+                Set(value, ref _password, 0x02);
             }
         }
-        [JsonProperty("password")]
+        [JsonPropertyName("password")]
         public string EncryptedPassword
         {
             get { return Convert.ToBase64String(_password); }
@@ -96,7 +65,7 @@ namespace SuperPassword.Entity.Data
         }
 
         private DateTime _createTime;
-        [JsonProperty("create-time")]
+        [JsonPropertyName("create-time")]
         public DateTime CreateTime
         {
             get { return _createTime; }
@@ -104,7 +73,7 @@ namespace SuperPassword.Entity.Data
         }
 
         private DateTime _updateTime;
-        [JsonProperty("update-time")]
+        [JsonPropertyName("update-time")]
         public DateTime UpdateTime
         {
             get { return _updateTime; }
@@ -113,22 +82,18 @@ namespace SuperPassword.Entity.Data
 
         private byte maxTagNonceID = 0x80;
 
+
         private ObservableCollection<TagEntity> _tagEntities;
         public ObservableCollection<TagEntity> TagEntities
         {
             get { return _tagEntities; }
             set { _tagEntities = value; }
         }
-        [JsonProperty("tags")]
+        [JsonPropertyName("tags")]
         public List<string> EncryptedTagEntities
         {
             get
             {
-                //string data = string.Join("&", TagEntities.Select(tag => tag.Content));
-                //byte[] encodedString = Encoding.UTF8.GetBytes(data);
-                //byte[]? encryptedData = EncryptionHandler?.Invoke(encodedString, GetNonce(3));
-                //if (encryptedData == null) return string.Empty;
-                //else return Convert.ToBase64String(encryptedData);
                 return _tagEntities.Select(t => t.EncryptedContent).ToList();
             }
             set
@@ -137,31 +102,22 @@ namespace SuperPassword.Entity.Data
                     TagEntities = new ObservableCollection<TagEntity>();
                 else
                     TagEntities = new ObservableCollection<TagEntity>(
-                        value.Select(s => new TagEntity { EncryptedContent = s, Salt=Salt })
+                        value.Select(s => new TagEntity { EncryptedContent = s, Salt = Salt })
                     );
 
                 maxTagNonceID = TagEntities.Max(t => t.NonceID);
-
-                //byte[] decodedBytes = Convert.FromBase64String(value);
-                //byte[]? plaintext = DecryptionHandler?.Invoke(decodedBytes, GetNonce(3));
-                //if (plaintext == null) return;
-
-                //var decodedString = Encoding.UTF8.GetString(decodedBytes);
-                //string[] contentArray = decodedString.Split('&');
-
-                //// 遍历分割后的字符串数组，创建TagDTO对象并添加到集合中
-                //for (uint i = 0; i < contentArray.Length; i++)
-                //{
-                //    if (!string.IsNullOrEmpty(contentArray[i])) // 确保内容不为空
-                //    {
-                //        TagEntity tagDTO = new TagEntity(contentArray[i]);
-                //        TagEntities.Add(tagDTO);
-                //    }
-                //}
             }
         }
 
-        public InfoGroupEntity() : base(UserSetting.Instance.CipherType)
+        private void UpdateTagsSalt()
+        {
+            foreach (var tag in TagEntities)
+            {
+                tag.Salt = Salt;
+            }
+        }
+
+        public InfoGroupEntity() : base()
         {
             if (Salt == null)
             {
@@ -169,12 +125,13 @@ namespace SuperPassword.Entity.Data
                 Random random = new Random();
                 random.NextBytes(Salt);
             }
+            OnSaltChanged += UpdateTagsSalt;
 
             if (TagEntities == null)
             {
                 TagEntities = new ObservableCollection<TagEntity>();
                 for (int i = 0; i < 5; i++)
-                    TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test"+1});
+                    TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test" + 1 });
             }
         }
     }
