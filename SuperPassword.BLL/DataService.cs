@@ -10,7 +10,7 @@ namespace SuperPassword.BLL
     {
         private IDataServiceDAL _dataServiceDAL { get; init; }
 
-        public DataService(IDataServiceDAL dataDAL, ISecurityService securityService)
+        public DataService(IDataServiceDAL dataDAL)
         {
             _dataServiceDAL = dataDAL;
         }

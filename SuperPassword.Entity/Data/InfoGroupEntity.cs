@@ -131,7 +131,7 @@ namespace SuperPassword.Entity.Data
             {
                 TagEntities = new ObservableCollection<TagEntity>();
                 for (int i = 0; i < 5; i++)
-                    TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test" + 1 });
+                    TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test" + i });
             }
         }
     }

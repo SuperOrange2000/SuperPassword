@@ -29,7 +29,7 @@ namespace SuperPassword.Entity
             set 
             {
                 SHA256 sha256 = SHA256.Create();
-                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value));
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value).Concat(Salt).ToArray());
                 Array.Copy(hashBytes, 0, _key, 0, 32);
                 password = value;
             }
@@ -41,6 +41,14 @@ namespace SuperPassword.Entity
         {
             get { return _key; }
             set { _key = value; }
+        }
+
+        private byte[] _salt;
+
+        public byte[] Salt
+        {
+            get { return _salt; }
+            set { _salt = value; }
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -7,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace SuperPassword.Config.Config
 {
-    public interface IConfig
+    public interface IConfig : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        [JsonIgnore] public Action? OnAnyChangedAction { get; set; }
+        string DirName { get; }
+
+        string FileName { get; }
     }
 }

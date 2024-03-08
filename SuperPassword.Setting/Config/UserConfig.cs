@@ -1,16 +1,24 @@
-﻿using SuperPassword.Security;
-using SuperPassword.Config.Config;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json.Serialization;
 
-namespace SuperPassword.Entity.Config
+namespace SuperPassword.Config.Config
 {
     [Serializable]
-    public class UserConfig : IConfig
+    public partial class UserConfig : ObservableObject, IConfig
     {
-        public Action? OnAnyChangedAction {  get; set; }
+        [ObservableProperty] private uint _localId ;
+
+        [ObservableProperty] private byte[] _salt;
+
+        [JsonIgnore] public string DirName => "User";
+
+        [JsonIgnore] public string FileName => LocalId + ".json";
+        
+        public UserConfig()
+        {
+            Salt = new byte[32];
+            var random = new Random();
+            random.NextBytes(Salt);
+        }
     }
 }

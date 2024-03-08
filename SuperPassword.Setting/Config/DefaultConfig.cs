@@ -1,24 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace SuperPassword.Config.Config
 {
-    public class DefaultConfig : IConfig
+    public class DefaultConfig : ObservableObject, IConfig
     {
         public static readonly string Version = "0.0.1";
 
+        public static readonly string DocumentPath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPassword"
+        );
+
+        public static readonly string ConfigPath = Path.Combine(
+            DocumentPath, "Config"
+        );
+
         public static readonly string StartUpPath = AppContext.BaseDirectory;
 
-        public static string AppPath = Absolute("SuperPassword.exe");
+        public static string AppPath = CombineAppPath("SuperPassword.exe");
 
-        public Action? OnAnyChangedAction {  get; set; }
+        [JsonIgnore] public Action? OnAnyChangedAction { get; set; }
 
-        public static string Absolute(string relativePath)
+        [JsonIgnore] public string DirName => string.Empty;
+
+        [JsonIgnore] public string FileName => string.Empty;
+
+        public static string CombineAppPath(string relativePath)
         {
             return Path.Combine(StartUpPath, relativePath);
+        }
+        public static string CombineDocPath(string relativePath)
+        {
+            return Path.Combine(DocumentPath, relativePath);
+        }
+        public static string CombineConfigPath(string relativePath)
+        {
+            return Path.Combine(ConfigPath, relativePath);
         }
     }
 }

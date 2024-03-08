@@ -8,6 +8,9 @@ using System.Collections.ObjectModel;
 using System.Security;
 using SuperPassword.BLL;
 using SuperPassword.Entity.Data;
+using SuperPassword.Config.Service;
+using System.Linq;
+using SuperPassword.Config.Config;
 
 namespace SuperPassword.ViewModels
 {
@@ -43,6 +46,7 @@ namespace SuperPassword.ViewModels
         }
 
         private readonly IUserServiceBLL _userServiceBLL;
+        private readonly IConfigService _configService;
 
         public event Action<IDialogResult> RequestClose;
 
@@ -51,13 +55,26 @@ namespace SuperPassword.ViewModels
 
         public string Title { get; set; } = "SuperPassword";
 
-        public LoginViewModel(IUserServiceBLL userServiceBLL)
+        public LoginViewModel(IUserServiceBLL userServiceBLL, IConfigService configService)
         {
             _userServiceBLL = userServiceBLL;
+            _configService = configService;
 
             LoginCommand = new DelegateCommand<UserEntity>(Login);
             SignUpCommand = new DelegateCommand<UserEntity>(SignUp);
-            ActiveUser = new UserEntity();
+            UserConfig userConfig;
+            if (configService.GlobalConfig.NameMap.Count ==  0)
+            {
+                uint localId = configService.GlobalConfig.MaxLocalId++;
+                userConfig = configService.GetUerConfig(localId);
+                configService.GlobalConfig.NameMap.Add(localId, null);
+            }
+            else
+            {
+                uint localId = configService.GlobalConfig.NameMap.Keys.FirstOrDefault();
+                userConfig = configService.GetUerConfig(localId);
+            }
+            ActiveUser = new UserEntity() { Salt = userConfig.Salt};
             GlobalEntity.ActiveUsser = ActiveUser;
         }
 

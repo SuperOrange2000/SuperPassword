@@ -1,18 +1,29 @@
-﻿using SuperPassword.Config.Config;
-using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SuperPassword.Commom.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace SuperPassword.Entity.Config
+namespace SuperPassword.Config.Config
 {
-    public class GlobalConfig: IConfig
+    [Serializable]
+    public partial class GlobalConfig : ObservableObject, IConfig
     {
-        [JsonIgnore] public Action? OnAnyChangedAction { get; set; }
 
-        private string _apiUrl = @"https://s.oragne.top/";
+        [ObservableProperty] private string _apiUrl = @"https://s.oragne.top/";
+
+        [ObservableProperty] private uint _maxLocalId = 10000;
+
+        [ObservableProperty] private ObservableDictionary<uint, string?> _nameMap = new();
+
+        [JsonIgnore] public uint ActiveId { get; set; }
+
+        [JsonIgnore] public string DirName => string.Empty;
+
+        [JsonIgnore] public string FileName => "global.json";
+
+        public GlobalConfig()
+        {
+            _nameMap.PropertyChanged += (shis, e) => OnPropertyChanged(e);
+        }
     }
 }

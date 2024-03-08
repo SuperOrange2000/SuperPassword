@@ -1,4 +1,5 @@
 ﻿using SuperPassword.Config.Config;
+using System.ComponentModel;
 using System.Text.Json;
 
 namespace SuperPassword.Config.Service;
@@ -16,40 +17,61 @@ public class ConfigService : IConfigService
         AllowTrailingCommas = true
     };
 
-    private Dictionary<Type, IConfig> _configDictionary = new Dictionary<Type, IConfig>();
+    private GlobalConfig _globalConfig;
 
-    public T Get<T>() where T : IConfig, new()
-    {
-        if (_configDictionary.TryGetValue(typeof(T), out IConfig instance))
+    public GlobalConfig GlobalConfig 
+    { 
+        get 
         {
-            return (T)instance;
+            if (_globalConfig == null)
+            {
+                _globalConfig = Read<GlobalConfig>("global.json");
+            }
+            return _globalConfig;
+        }
+    }
+
+    public Dictionary<uint, UserConfig> _userConfigDictionary { get; } = new();
+
+    public DefaultConfig DefaultConfig { get; } = new DefaultConfig();
+
+    public UserConfig GetUerConfig(uint localId)
+    {
+        if (_userConfigDictionary.TryGetValue(localId, out UserConfig? instance))
+        {
+            return instance;
         }
         else
         {
-            T newConfig = Read<T>();
-            _configDictionary.Add(typeof(T), newConfig);
+            UserConfig newConfig = Read<UserConfig>($"User/{localId}.json");
+            _userConfigDictionary.Add(localId, newConfig);
+            Write(newConfig);
             return newConfig;
         }
     }
 
-    public T Read<T>() where T : IConfig, new()
+    public T Read<T>(string path) where T : IConfig, new()
     {
         _rwLock.EnterReadLock();
         try
         {
-            var filePath = DefaultConfig.Absolute(@"User/config.json");
+            var filePath = DefaultConfig.CombineConfigPath(path);
+            T? config;
             if (!File.Exists(filePath))
             {
-                return new T();
+                config = new T();
+            }
+            else
+            {
+                var json = File.ReadAllText(filePath);
+                config = JsonSerializer.Deserialize<T>(json, _options);
             }
 
-            var json = File.ReadAllText(filePath);
-            var config = JsonSerializer.Deserialize<T>(json, _options);
             if (config == null)
             {
-                return new T();
+                config = new T();
             }
-
+            config.PropertyChanged += OnAnyPropertyChanged;
             return config;
         }
         finally
@@ -58,19 +80,19 @@ public class ConfigService : IConfigService
         }
     }
 
-    public void Write<T>() where T : IConfig, new()
+    public void Write(IConfig config)
     {
         _rwLock.EnterWriteLock();
         try
         {
-            var path = DefaultConfig.Absolute("User");
+            var path = DefaultConfig.CombineConfigPath(config.DirName);
             if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }
 
-            var file = Path.Combine(path, "config.json");
-            File.WriteAllText(file, JsonSerializer.Serialize(Get<T>(), _options));
+            var file = Path.Combine(path, config.FileName);
+            File.WriteAllText(file, JsonSerializer.Serialize(config, _options));
         }
         catch (Exception e)
         {
@@ -80,6 +102,15 @@ public class ConfigService : IConfigService
         finally
         {
             _rwLock.ExitWriteLock();
+        }
+    }
+
+    private void OnAnyPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        var config = sender as IConfig;
+        if (config != null)
+        {
+            Write(config);
         }
     }
 }
