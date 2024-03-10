@@ -10,8 +10,8 @@ namespace SuperPassword.Config.Config
 {
     public interface IConfig : INotifyPropertyChanged, INotifyPropertyChanging
     {
-        string DirName { get; }
+        string DirName { get; init; }
 
-        string FileName { get; }
+        string FileName { get; init; }
     }
 }

@@ -25,7 +25,7 @@ public class ConfigService : IConfigService
         {
             if (_globalConfig == null)
             {
-                _globalConfig = Read<GlobalConfig>("global.json");
+                _globalConfig = new();
             }
             return _globalConfig;
         }
@@ -43,74 +43,10 @@ public class ConfigService : IConfigService
         }
         else
         {
-            UserConfig newConfig = Read<UserConfig>($"User/{localId}.json");
+            UserConfig newConfig = new();
+            newConfig.Read();
             _userConfigDictionary.Add(localId, newConfig);
-            Write(newConfig);
             return newConfig;
-        }
-    }
-
-    public T Read<T>(string path) where T : IConfig, new()
-    {
-        _rwLock.EnterReadLock();
-        try
-        {
-            var filePath = DefaultConfig.CombineConfigPath(path);
-            T? config;
-            if (!File.Exists(filePath))
-            {
-                config = new T();
-            }
-            else
-            {
-                var json = File.ReadAllText(filePath);
-                config = JsonSerializer.Deserialize<T>(json, _options);
-            }
-
-            if (config == null)
-            {
-                config = new T();
-            }
-            config.PropertyChanged += OnAnyPropertyChanged;
-            return config;
-        }
-        finally
-        {
-            _rwLock.ExitReadLock();
-        }
-    }
-
-    public void Write(IConfig config)
-    {
-        _rwLock.EnterWriteLock();
-        try
-        {
-            var path = DefaultConfig.CombineConfigPath(config.DirName);
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-
-            var file = Path.Combine(path, config.FileName);
-            File.WriteAllText(file, JsonSerializer.Serialize(config, _options));
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
-        }
-        finally
-        {
-            _rwLock.ExitWriteLock();
-        }
-    }
-
-    private void OnAnyPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        var config = sender as IConfig;
-        if (config != null)
-        {
-            Write(config);
         }
     }
 }

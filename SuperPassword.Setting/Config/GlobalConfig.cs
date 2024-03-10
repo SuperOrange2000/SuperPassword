@@ -1,12 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SuperPassword.Commom.ObjectModel;
 using System.ComponentModel;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace SuperPassword.Config.Config
 {
     [Serializable]
-    public partial class GlobalConfig : ObservableObject, IConfig
+    public partial class GlobalConfig : ConfigBase, IConfig
     {
 
         [ObservableProperty] private string _apiUrl = @"https://s.oragne.top/";
@@ -17,13 +18,38 @@ namespace SuperPassword.Config.Config
 
         [JsonIgnore] public uint ActiveId { get; set; }
 
-        [JsonIgnore] public string DirName => string.Empty;
-
-        [JsonIgnore] public string FileName => "global.json";
-
-        public GlobalConfig()
+        public GlobalConfig() : base(string.Empty, "global.json")
         {
             _nameMap.PropertyChanged += (shis, e) => OnPropertyChanged(e);
+            PropertyChanged += (s, e) => OnAnyPropertyChanged();
+        }
+
+        protected override void Deserialize(JsonElement rootElement)
+        {
+            JsonElement tempElement;
+            string? nullableString;
+            if (rootElement.TryGetProperty("ApiUrl", out tempElement))
+            {
+                nullableString = tempElement.GetString();
+                if (nullableString != null)
+                {
+                    ApiUrl = nullableString;
+                }
+            }
+            if (rootElement.TryGetProperty("MaxLocalId", out tempElement))
+                MaxLocalId = tempElement.GetUInt32();
+            if (rootElement.TryGetProperty("NameMap", out tempElement))
+                foreach (var property in tempElement.EnumerateObject())
+                {
+                    // 获取属性名和对应的 JsonElement
+                    string propertyName = property.Name;
+                    JsonElement propertyValue = property.Value;
+                }
+        }
+
+        protected override string Serialize()
+        {
+            return JsonSerializer.Serialize(this, serializer_options);
         }
     }
 }

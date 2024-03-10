@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace SuperPassword.Config.Config
 {
-    public class DefaultConfig : ObservableObject, IConfig
+    public class DefaultConfig
     {
         public static readonly string Version = "0.0.1";
 
