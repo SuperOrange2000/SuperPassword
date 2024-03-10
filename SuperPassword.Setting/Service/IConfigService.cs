@@ -4,7 +4,7 @@ namespace SuperPassword.Config.Service
 {
     public interface IConfigService
     {
-        UserConfig GetUerConfig(uint localId);
+        UserConfigService UserConfig {  get; }
         GlobalConfig GlobalConfig {  get; }
         DefaultConfig DefaultConfig { get; }
     }

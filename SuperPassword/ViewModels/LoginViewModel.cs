@@ -63,17 +63,17 @@ namespace SuperPassword.ViewModels
             LoginCommand = new DelegateCommand<UserEntity>(Login);
             SignUpCommand = new DelegateCommand<UserEntity>(SignUp);
             UserConfig userConfig;
+            uint localId;
             if (configService.GlobalConfig.NameMap.Count ==  0)
             {
-                uint localId = configService.GlobalConfig.MaxLocalId++;
-                userConfig = configService.GetUerConfig(localId);
+                localId = configService.GlobalConfig.MaxLocalId++;
                 configService.GlobalConfig.NameMap.Add(localId, null);
             }
             else
             {
-                uint localId = configService.GlobalConfig.NameMap.Keys.FirstOrDefault();
-                userConfig = configService.GetUerConfig(localId);
+                localId = configService.GlobalConfig.NameMap.Keys.FirstOrDefault();
             }
+            userConfig = configService.UserConfig[localId];
             ActiveUser = new UserEntity() { Salt = userConfig.Salt};
             GlobalEntity.ActiveUsser = ActiveUser;
         }
