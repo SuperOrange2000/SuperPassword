@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace SuperPassword.Common.CustomControl
+namespace SuperPassword.Controls
 {
     class InputBox : TextBox
     {

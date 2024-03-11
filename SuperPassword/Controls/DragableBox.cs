@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace SuperPassword.Common.CustomControl
+namespace SuperPassword.Controls
 {
     public class DragableBox : Control, ICommandSource
     {
@@ -23,6 +23,14 @@ namespace SuperPassword.Common.CustomControl
         // Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TextProperty =
             DependencyProperty.Register("Text", typeof(string), typeof(DragableBox), new PropertyMetadata(string.Empty));
+
+        public string Content
+        {
+            get { return (string)GetValue(ContentProperty); }
+            set { SetValue(ContentProperty, value); }
+        }
+        public static readonly DependencyProperty ContentProperty =
+            DependencyProperty.Register("Content", typeof(string), typeof(DragableBox), new PropertyMetadata(string.Empty));
 
         public int CornerRadius
         {
@@ -83,7 +91,7 @@ namespace SuperPassword.Common.CustomControl
         {
             base.OnMouseDown(e);
             if (Dragable)
-                DragDrop.DoDragDrop(this, Text, DragDropEffects.Copy);
+                DragDrop.DoDragDrop(this, Content, DragDropEffects.Copy);
         }
 
         public ICommand Command => throw new NotImplementedException();

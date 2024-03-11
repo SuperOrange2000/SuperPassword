@@ -13,8 +13,8 @@ namespace SuperPassword.Common
         { }
 
         private int _index;
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public new KeyCollection Keys
         {
@@ -109,7 +109,7 @@ namespace SuperPassword.Common
                 }
             }
 
-            return default(TValue);
+            return default(TValue)!;
         }
 
         private void SetIndexValue(int index, TValue value)
@@ -133,7 +133,7 @@ namespace SuperPassword.Common
             }
             else
             {
-                return default(TValue);
+                return default(TValue)!;
             }
         }
 

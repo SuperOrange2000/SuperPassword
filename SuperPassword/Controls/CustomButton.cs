@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace SuperPassword.Common.CustomControl
+namespace SuperPassword.Controls
 {
     class CustomButton : Button
     {

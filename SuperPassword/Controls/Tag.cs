@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace SuperPassword.Common.CustomControl
+namespace SuperPassword.Controls
 {
     class Tag : DragableBox
     {
