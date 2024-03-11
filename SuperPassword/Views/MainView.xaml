@@ -128,11 +128,15 @@
                                         <ColumnDefinition Width="1*" />
                                         <ColumnDefinition Width="1*" />
                                     </Grid.ColumnDefinitions>
-                                    <custom:Password Dragable="True" Text="{Binding Username}" />
+                                    <custom:Password
+                                        Content="{Binding Username}"
+                                        Dragable="True"
+                                        Text="用户名" />
                                     <custom:Password
                                         Grid.Column="1"
+                                        Content="{Binding Password}"
                                         Dragable="True"
-                                        Text="{Binding Password}" />
+                                        Text="密码" />
                                 </Grid>
                             </Grid>
 
