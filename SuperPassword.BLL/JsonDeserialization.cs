@@ -1,6 +1,5 @@
 ﻿using SuperPassword.Entity;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 
 namespace SuperPassword.BLL
 {
@@ -17,7 +16,20 @@ namespace SuperPassword.BLL
             }
             else
             {
-                ResponseBLL<T>? result = JsonSerializer.Deserialize<ResponseBLL<T>>(resDAL.Content);
+                ResponseBLL<T>? result;
+                try
+                {
+                    result = JsonSerializer.Deserialize<ResponseBLL<T>>(resDAL.Content);
+                }
+                catch (JsonException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    result = new ResponseBLL<T>() { Status = System.Net.HttpStatusCode.NoContent, Message = "反序列化失败" };
+                }
+                finally
+                {
+
+                }
                 if (result != null)
                     result.Status = resDAL.Status;
                 else

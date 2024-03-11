@@ -6,6 +6,13 @@ namespace SuperPassword.Entity.Data
 {
     public class InfoGroupEntity : EncryptedBase
     {
+        private uint _id;
+        [JsonPropertyName("id")]
+        public uint ID
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
 
         private byte[] _site;
         public string? Site

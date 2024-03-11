@@ -16,13 +16,6 @@ namespace SuperPassword.Entity
             set { _salt = value; OnSaltChanged?.Invoke(); }
         }
 
-        private uint _id;
-        public uint ID
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-
         internal byte[] GetNonce(byte i)
         {
             SHA256 sha256 = SHA256.Create();
