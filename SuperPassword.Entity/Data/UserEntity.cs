@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SuperPassword.Entity
@@ -10,7 +11,7 @@ namespace SuperPassword.Entity
         public string UserName
         {
             get { return userName; }
-            set { userName = value;}
+            set { userName = value; }
         }
 
         private string account;
@@ -18,29 +19,33 @@ namespace SuperPassword.Entity
         public string Account
         {
             get { return account; }
-            set { account = value;}
+            set { account = value; }
         }
 
-        private string password;
+        private byte[] password = new byte[32];
 
         public string Password
         {
-            get { return password; }
+            get
+            {
+                SHA256 sha256 = SHA256.Create();
+                byte[] hashBytes = sha256.ComputeHash(password.Concat(Salt).Concat(new byte[] { 0x01 }).ToArray());
+                return Convert.ToBase64String(hashBytes);
+            }
             set 
             {
                 SHA256 sha256 = SHA256.Create();
                 byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value).Concat(Salt).ToArray());
-                Array.Copy(hashBytes, 0, _key, 0, 32);
-                password = value;
+                Array.Copy(hashBytes, 0, password, 0, 32);
             }
         }
-
-        private byte[] _key = new byte[32];
-
         public byte[] Key
         {
-            get { return _key; }
-            set { _key = value; }
+            get
+            {
+                SHA256 sha256 = SHA256.Create();
+                return sha256.ComputeHash(password.Concat(Salt).Concat(new byte[] {0x02}).ToArray());
+            }
         }
 
         private byte[] _salt;
