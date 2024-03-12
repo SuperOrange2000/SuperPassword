@@ -86,7 +86,7 @@
                 Grid.Row="3"
                 Grid.ColumnSpan="3"
                 Margin="20,10"
-                ItemsSource="{Binding Model.TagDTOs}">
+                ItemsSource="{Binding Model.TagEntities}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />

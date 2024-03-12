@@ -109,7 +109,7 @@ namespace SuperPassword.Entity.Data
                     TagEntities = new ObservableCollection<TagEntity>();
                 else
                     TagEntities = new ObservableCollection<TagEntity>(
-                        value.Select(s => new TagEntity { EncryptedContent = s, Salt = Salt })
+                        value.Select(s => new TagEntity { EncryptedContent = s})
                     );
 
                 maxTagNonceID = TagEntities.Max(t => t.NonceID);
@@ -137,7 +137,7 @@ namespace SuperPassword.Entity.Data
             if (TagEntities == null)
             {
                 TagEntities = new ObservableCollection<TagEntity>();
-                for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 1; i++)
                     TagEntities.Add(new TagEntity(maxTagNonceID++) { Salt = Salt, Content = "test" + i });
             }
         }

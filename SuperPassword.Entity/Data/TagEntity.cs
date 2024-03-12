@@ -1,4 +1,7 @@
-﻿namespace SuperPassword.Entity
+﻿using System.Security.Cryptography;
+using System.Text;
+
+namespace SuperPassword.Entity
 {
     public class TagEntity : EncryptedBase
     {
@@ -37,7 +40,6 @@
                 _nonceID = EncryptedData[^1];
                 _content = new byte[EncryptedData.Length - 1];
                 Array.Copy(EncryptedData, 0, _content, 0, _content.Length);
-                SetColor();
             }
         }
 
@@ -51,17 +53,25 @@
 
         public TagEntity()
         {
-
+            OnSaltChanged += SetColor;
         }
 
         public TagEntity(byte nonceID) : base()
         {
             _nonceID = nonceID;
+            OnSaltChanged += SetColor;
         }
 
         private void SetColor()
         {
             Color = string.Empty;
+            if (Content != null)
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(Content));
+
+                    Color = $"#{Convert.ToUInt16(hashBytes[0]).ToString("X2")}{Convert.ToUInt16(hashBytes[1]).ToString("X2")}{Convert.ToUInt16(hashBytes[2]).ToString("X2")}";
+                }
         }
     }
 }
