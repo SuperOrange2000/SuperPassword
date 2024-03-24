@@ -1,6 +1,7 @@
 ﻿using SuperPassword.Config.Service;
 using SuperPassword.DAL;
 using SuperPassword.Entity;
+using SuperPassword.Entity.Data;
 using SuperPassword.Security.SecurityModule;
 using SuperPassword.Security.Sercvice;
 

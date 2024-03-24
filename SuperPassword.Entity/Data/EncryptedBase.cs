@@ -3,9 +3,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace SuperPassword.Entity
+namespace SuperPassword.Entity.Data
 {
-    public class EncryptedBase : IEncryptedBase
+    public class EncryptedBase : EntityBase, IEncryptedBase
     {
         protected Action OnSaltChanged;
         private byte[] _salt;

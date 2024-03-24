@@ -7,5 +7,9 @@
     <SolidColorBrush x:Key="Orange.Background" Color="#fbf2e3" />
     <SolidColorBrush x:Key="Default.Black" Color="#222" />
     <SolidColorBrush x:Key="Default.White" Color="#fff" />
-    <Color x:Key="c.orange" R="251" G="185" B="87"/>
+    <Color
+        x:Key="c.orange"
+        B="87"
+        G="185"
+        R="251" />
 </ResourceDictionary>

@@ -8,8 +8,8 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style BasedOn="{StaticResource DragableBox}" TargetType="{x:Type custom:Tag}">
-        <Setter Property="BorderBrush" Value="{Binding Path=Color, RelativeSource={RelativeSource Self}, Mode=OneWay}"/>
-        <Setter Property="Foreground" Value="{Binding Path=Color, RelativeSource={RelativeSource Self}, Mode=OneWay}"/>
+        <Setter Property="BorderBrush" Value="{Binding Path=Color, RelativeSource={RelativeSource Self}, Mode=OneWay}" />
+        <Setter Property="Foreground" Value="{Binding Path=Color, RelativeSource={RelativeSource Self}, Mode=OneWay}" />
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="Padding" Value="20,10" />
     </Style>

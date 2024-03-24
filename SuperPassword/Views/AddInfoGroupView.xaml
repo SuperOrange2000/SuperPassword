@@ -30,7 +30,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="0.2*" />
                 <ColumnDefinition />
-                <ColumnDefinition Width="0.15*" />
+                <ColumnDefinition Width="0.2*" />
             </Grid.ColumnDefinitions>
 
             <TextBlock
@@ -56,11 +56,14 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Margin="10,0"
-                Text="{Binding Model.Username}" />
+                Text="{Binding Model.Username, Mode=TwoWay}" />
             <custom:CustomButton
                 Grid.Row="1"
                 Grid.Column="3"
+                Width="80"
                 Height="25"
+                Command="{Binding RandomFillCommand}"
+                CommandParameter="username"
                 Content="随机"
                 CornerRadius="5" />
 
@@ -79,7 +82,10 @@
             <custom:CustomButton
                 Grid.Row="2"
                 Grid.Column="3"
+                Width="80"
                 Height="25"
+                Command="{Binding RandomFillCommand}"
+                CommandParameter="password"
                 Content="随机"
                 CornerRadius="5" />
 

@@ -24,6 +24,7 @@ namespace SuperPassword.Entity.Data
             set
             {
                 Set(value, ref _site, 0x00);
+                OnPropertyChanged();
             }
         }
         [JsonPropertyName("site")]
@@ -43,6 +44,7 @@ namespace SuperPassword.Entity.Data
             set
             {
                 Set(value, ref _username, 0x01);
+                OnPropertyChanged();
             }
         }
         [JsonPropertyName("username")]
@@ -62,6 +64,7 @@ namespace SuperPassword.Entity.Data
             set
             {
                 Set(value, ref _password, 0x02);
+                OnPropertyChanged();
             }
         }
         [JsonPropertyName("password")]

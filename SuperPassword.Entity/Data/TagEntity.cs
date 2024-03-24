@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace SuperPassword.Entity
+namespace SuperPassword.Entity.Data
 {
     public class TagEntity : EncryptedBase
     {

@@ -2,16 +2,16 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SuperPassword.Entity
+namespace SuperPassword.Entity.Data
 {
-    public class UserEntity
+    public class UserEntity : EntityBase
     {
         private string userName;
 
         public string UserName
         {
             get { return userName; }
-            set { userName = value; }
+            set { userName = value; OnPropertyChanged(); }
         }
 
         private string account;
@@ -19,7 +19,7 @@ namespace SuperPassword.Entity
         public string Account
         {
             get { return account; }
-            set { account = value; }
+            set { account = value; OnPropertyChanged(); }
         }
 
         private byte[] password = new byte[32];
@@ -37,6 +37,7 @@ namespace SuperPassword.Entity
                 SHA256 sha256 = SHA256.Create();
                 byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value).Concat(Salt).ToArray());
                 Array.Copy(hashBytes, 0, password, 0, 32);
+                OnPropertyChanged();
             }
         }
         public byte[] Key
