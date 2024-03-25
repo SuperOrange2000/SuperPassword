@@ -1,10 +1,12 @@
-﻿using Prism.Commands;
+﻿using ImTools;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using SuperPassword.BLL;
 using SuperPassword.Entity;
 using SuperPassword.Entity.Data;
+using SuperPassword.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,11 +15,11 @@ namespace SuperPassword.ViewModels
 {
     public class MainViewModel : BindableBase, INavigationAware
     {
-        private ObservableCollection<InfoGroupEntity> _infoGroupDTOs;
-        public ObservableCollection<InfoGroupEntity> InfoGroupDTOs
+        private ObservableCollection<InfoGroupViewItem> _infoGroupDTOs;
+        public ObservableCollection<InfoGroupViewItem> InfoGroupItems
         {
             get { return _infoGroupDTOs; }
-            set { _infoGroupDTOs = value; RaisePropertyChanged(); }
+            set { _infoGroupDTOs = value; }
         }
 
         private UserEntity _activeUser;
@@ -33,30 +35,43 @@ namespace SuperPassword.ViewModels
         private readonly IDialogService _dialogService;
         private readonly IDataServiceBLL _dataServiceBLL;
 
-        public DelegateCommand<InfoGroupEntity> DeleteCommand { get; private set; }
-        public DelegateCommand<InfoGroupEntity> AddCommand { get; private set; }
+        private string filterText;
+
+        public string FilterText
+        {
+            get { return filterText; }
+            set { filterText = value; RaisePropertyChanged(); }
+        }
+
+
+        public DelegateCommand<InfoGroupViewItem> DeleteCommand { get; private set; }
+        public DelegateCommand AddCommand { get; private set; }
         public DelegateCommand<InfoGroupEntity> EditCommand { get; private set; }
+        public DelegateCommand<string> FilterCommand { get; private set; }
+        public DelegateCommand ClearFilterCommand { get; private set; }
 
         public MainViewModel(IDialogService dialogService, IDataServiceBLL dataServiceBLL)
         {
             _dialogService = dialogService;
             _dataServiceBLL = dataServiceBLL;
 
-            InfoGroupDTOs = new ObservableCollection<InfoGroupEntity>();
+            InfoGroupItems = new ObservableCollection<InfoGroupViewItem>();
 
-            DeleteCommand = new DelegateCommand<InfoGroupEntity>(Delete);
-            AddCommand = new DelegateCommand<InfoGroupEntity>(Add);
+            DeleteCommand = new DelegateCommand<InfoGroupViewItem>(Delete);
+            AddCommand = new DelegateCommand(Add);
             EditCommand = new DelegateCommand<InfoGroupEntity>(Update);
+            FilterCommand = new DelegateCommand<string>(Filter);
+            ClearFilterCommand = new DelegateCommand(ClearFilter);
         }
 
-        private async void Delete(InfoGroupEntity dto)
+        private async void Delete(InfoGroupViewItem entity)
         {
-            var result = await _dataServiceBLL.DeleteAsync(ActiveUser, dto.ID);
+            var result = await _dataServiceBLL.DeleteAsync(ActiveUser, entity.InfoGroup.ID);
             if (result.Status == System.Net.HttpStatusCode.NoContent)
-                InfoGroupDTOs.Remove(dto);
+                InfoGroupItems.Remove(entity);
         }
 
-        private void Add(InfoGroupEntity dto)
+        private void Add()
         {
             DialogParameters param = new DialogParameters
             {
@@ -75,7 +90,7 @@ namespace SuperPassword.ViewModels
                         var result = await _dataServiceBLL.AddAsync(ActiveUser, infoGroup);
                         if (result.Status == System.Net.HttpStatusCode.Created)
                         {
-                            InfoGroupDTOs.Add(infoGroup);
+                            InfoGroupItems.Add(new InfoGroupViewItem { InfoGroup = infoGroup });
                         }
                     }
                     finally
@@ -106,7 +121,7 @@ namespace SuperPassword.ViewModels
                         var result = await _dataServiceBLL.UpdateAsync(ActiveUser, infoGroup);
                         if (result.Status == System.Net.HttpStatusCode.OK) // !ToDo BUG
                         {
-                            var todoModel = InfoGroupDTOs.FirstOrDefault(t => t.ID.Equals(infoGroup.ID));
+                            var todoModel = InfoGroupItems.FirstOrDefault(t => t.InfoGroup.ID.Equals(infoGroup.ID))?.InfoGroup;
                             if (todoModel != null)
                             {
                                 todoModel.Username = infoGroup.Username;
@@ -125,15 +140,32 @@ namespace SuperPassword.ViewModels
 
             _dialogService.ShowDialog("AddInfoGroupView", param, eventHandler);
         }
+
+        private void Filter(string site)
+        {
+            foreach (var item in InfoGroupItems)
+            {
+                if(item.InfoGroup.Site != site)
+                    item.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+
+        private void ClearFilter()
+        {
+            foreach (var item in InfoGroupItems)
+                item.Visibility = System.Windows.Visibility.Visible;
+            FilterText = string.Empty;
+        }
+
         async void InitToDoList()
         {
             var result = await _dataServiceBLL.GetAllAsync(ActiveUser);
             if (result.Status == System.Net.HttpStatusCode.OK)
             {
-                InfoGroupDTOs.AddRange(result.Content);
+                InfoGroupItems.AddRange(result.Content!.Select(info => new InfoGroupViewItem { InfoGroup = info }));
             }
-            if (InfoGroupDTOs.Count > 0)
-                MaxIndex = InfoGroupDTOs.Max(i => i.ID);
+            if (InfoGroupItems.Count > 0)
+                MaxIndex = InfoGroupItems.Max(i => i.InfoGroup.ID);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
