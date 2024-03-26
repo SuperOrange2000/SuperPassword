@@ -6,7 +6,7 @@ SuperPassword is a password management software that offers a variety of optiona
 > This project is still in very early stages of development. Use at your own risk.Please do not store important information or use it for commercial purposes!
 
 > [!NOTE]
-> This project has started migrating to Avalonia. There will be no major updates in this repository.
+> This project has started migrating to Avalonia.
 
 # To-Do
 

@@ -9,7 +9,7 @@ SuperPassword是一个密码管理软件，提供可选的~~多种~~加密算法
 
 > [!NOTE]
 >
-> 本项目正式开始向Avalonia迁移，本仓库不再有较大更新。
+> 本项目正式开始向Avalonia迁移。
 
 # ToDo
 
