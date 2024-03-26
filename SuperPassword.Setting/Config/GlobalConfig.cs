@@ -10,7 +10,7 @@ namespace SuperPassword.Config.Config
     public partial class GlobalConfig : ConfigBase, IConfig
     {
 
-        [ObservableProperty] private string _apiUrl = @"https://s.oragne.top/";
+        [ObservableProperty] private string _apiUrl = string.Empty;
 
         [ObservableProperty] private uint _maxLocalId = 10000;
 
