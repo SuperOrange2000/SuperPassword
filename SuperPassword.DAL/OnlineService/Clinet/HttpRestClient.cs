@@ -20,7 +20,7 @@ namespace SuperPassword.DAL.OnlineService.Clinet
 
         private void SetCSRFHeader()
         {
-            BaseRequest request = new BaseRequest("api/csrf/", Method.Get);
+            BaseRequest request = new BaseRequest("api/csrf", Method.Get);
             var response = this.Execute(request);
             if (response.StatusCode == HttpStatusCode.OK)
             {
