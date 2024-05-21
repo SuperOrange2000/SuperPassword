@@ -1,10 +1,8 @@
-﻿using ImTools;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Regions;
 using Prism.Services.Dialogs;
 using SuperPassword.BLL;
-using SuperPassword.Entity;
 using SuperPassword.Entity.Data;
 using SuperPassword.Models;
 using System;
@@ -145,7 +143,7 @@ namespace SuperPassword.ViewModels
         {
             foreach (var item in InfoGroupItems)
             {
-                if(item.InfoGroup.Site != site)
+                if (item.InfoGroup.Site != site)
                     item.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
@@ -157,7 +155,7 @@ namespace SuperPassword.ViewModels
             FilterText = string.Empty;
         }
 
-        async void InitToDoList()
+        private async void InitToDoList()
         {
             var result = await _dataServiceBLL.GetAllAsync(ActiveUser);
             if (result.Status == System.Net.HttpStatusCode.OK)

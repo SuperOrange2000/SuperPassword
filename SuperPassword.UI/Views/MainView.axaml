@@ -1,0 +1,82 @@
+<UserControl
+    x:Class="SuperPassword.UI.Views.MainView"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:SuperPassword.UI.ViewModels"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    x:DataType="vm:MainViewModel"
+    mc:Ignorable="d">
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MaxHeight="45" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+        <DockPanel LastChildFill="True">
+            <Button MinWidth="100" DockPanel.Dock="Right">新增</Button>
+            <TextBox Watermark="筛选" />
+        </DockPanel>
+        <ScrollViewer Grid.Row="1">
+            <ItemsControl ItemsSource="{Binding InfoGroupViewItems}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="Hover" Theme="{StaticResource CardBorder}">
+                            <StackPanel>
+                                <DockPanel>
+                                    <TextBlock VerticalAlignment="Center" Text="腾讯QQ" />
+                                    <Button
+                                        Classes="Danger Small"
+                                        DockPanel.Dock="Right"
+                                        Theme="{DynamicResource SolidButton}">
+                                        删除
+                                    </Button>
+                                    <Button
+                                        Classes="Warning Small"
+                                        DockPanel.Dock="Right"
+                                        Theme="{DynamicResource SolidButton}">
+                                        修改
+                                    </Button>
+                                    <WrapPanel>
+                                        <CheckBox
+                                            Padding="10,5"
+                                            Content="Tag1"
+                                            Theme="{DynamicResource PureCardCheckBox}" />
+                                        <Button Classes="Danger Small" Theme="{DynamicResource SolidButton}">X</Button>
+                                    </WrapPanel>
+                                </DockPanel>
+                                <Grid ColumnDefinitions="*,*">
+                                    <Border
+                                        Padding="0,10"
+                                        Classes="Hover"
+                                        Theme="{StaticResource CardBorder}">
+                                        <TextBlock HorizontalAlignment="Center" Text="用户名" />
+                                    </Border>
+                                    <Border
+                                        Grid.Column="1"
+                                        Padding="0,10"
+                                        Classes="Hover"
+                                        Theme="{StaticResource CardBorder}">
+                                        <TextBlock HorizontalAlignment="Center" Text="密码" />
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
