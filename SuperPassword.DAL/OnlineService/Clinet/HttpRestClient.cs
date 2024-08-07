@@ -1,6 +1,6 @@
 ﻿using RestSharp;
-using SuperPassword.Entity;
 using System.Net;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL.OnlineService.Clinet
 {

@@ -1,7 +1,7 @@
 ﻿using SuperPassword.DAL;
-using SuperPassword.Entity;
-using SuperPassword.Entity.Data;
-using SuperPassword.Security.Sercvice;
+using SuperPassword.DAL.Models;
+using SuperPassword.Entity.Interface;
+using SuperPassword.BLL.Models;
 
 
 namespace SuperPassword.BLL
@@ -15,34 +15,34 @@ namespace SuperPassword.BLL
             _dataServiceDAL = dataDAL;
         }
 
-        public async Task<ResponseBLL<object>> AddAsync(UserEntity user, InfoGroupEntity infoGroup)
+        public async Task<ResponseBLL<object>> AddAsync(string username, string token, IInfoGroup infoGroup)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.AddAsync(user, infoGroup);
+            ResponseDAL responseDAL = await _dataServiceDAL.AddAsync(username, token, infoGroup);
             return Deserialize<object>(responseDAL);
         }
 
-        public async Task<ResponseBLL<object>> DeleteAsync(UserEntity user, uint id)
+        public async Task<ResponseBLL<object>> DeleteAsync(string username, string token, uint id)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.DeleteAsync(user, id);
+            ResponseDAL responseDAL = await _dataServiceDAL.DeleteAsync(username, token, id);
             return Deserialize<object>(responseDAL);
         }
 
-        public async Task<ResponseBLL<List<InfoGroupEntity>>> GetAllAsync(UserEntity user)
+        public async Task<ResponseBLL<List<IInfoGroup>>> GetAllAsync(string username, string token)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.GetAllAsync(user);
-            return Deserialize<List<InfoGroupEntity>>(responseDAL);
+            ResponseDAL responseDAL = await _dataServiceDAL.GetAllAsync(username, token);
+            return Deserialize<List<IInfoGroup>>(responseDAL);
         }
 
-        public async Task<ResponseBLL<InfoGroupEntity>> GetFirstOfDefaultAsync(UserEntity user, uint id)
+        public async Task<ResponseBLL<IInfoGroup>> GetFirstOfDefaultAsync(string username, string token, uint id)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.GetFirstOfDefaultAsync(user, id);
-            return Deserialize<InfoGroupEntity>(responseDAL);
+            ResponseDAL responseDAL = await _dataServiceDAL.GetFirstOfDefaultAsync(username, token, id);
+            return Deserialize<IInfoGroup>(responseDAL);
         }
 
-        public async Task<ResponseBLL<InfoGroupEntity>> UpdateAsync(UserEntity user, InfoGroupEntity infoGroup)
+        public async Task<ResponseBLL<IInfoGroup>> UpdateAsync(string username, string token, IInfoGroup infoGroup)
         {
-            ResponseDAL responseDAL = await _dataServiceDAL.UpdateAsync(user, infoGroup);
-            return Deserialize<InfoGroupEntity>(responseDAL);
+            ResponseDAL responseDAL = await _dataServiceDAL.UpdateAsync(username, token, infoGroup);
+            return Deserialize<IInfoGroup>(responseDAL);
         }
     }
 }

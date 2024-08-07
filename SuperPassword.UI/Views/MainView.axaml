@@ -4,23 +4,39 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="https://irihi.tech/ursa"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainViewModel"
     mc:Ignorable="d">
+
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding ShowLoginDialogCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <Grid>
+    <UserControl.Resources>
+        <StreamGeometry x:Key="Dice" />
+    </UserControl.Resources>
+
+    <Grid Margin="5,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MaxHeight="45" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
         <DockPanel LastChildFill="True">
-            <Button MinWidth="100" DockPanel.Dock="Right">新增</Button>
-            <TextBox Watermark="筛选" />
+            <Button
+                MinWidth="100"
+                Command="{Binding AddCommand}"
+                Content="新增"
+                DockPanel.Dock="Right" />
+            <u:TagInput VerticalAlignment="Center" Watermark="筛选" />
         </DockPanel>
         <ScrollViewer Grid.Row="1">
             <ItemsControl ItemsSource="{Binding InfoGroupViewItems}">
@@ -32,33 +48,63 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Classes="Hover" Theme="{StaticResource CardBorder}">
-                            <StackPanel>
+                            <StackPanel IsVisible="{Binding Visibility}">
                                 <DockPanel>
-                                    <TextBlock VerticalAlignment="Center" Text="腾讯QQ" />
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding !IsEditable}"
+                                        Text="{Binding Site}" />
+                                    <TextBox
+                                        MinWidth="200"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding IsEditable}"
+                                        Text="{Binding Site}"
+                                        Watermark="名称" />
                                     <Button
                                         Classes="Danger Small"
+                                        Command="{ReflectionBinding $parent[ItemsControl].DataContext.DeleteCommand}"
+                                        CommandParameter="{Binding}"
+                                        Content="删除"
                                         DockPanel.Dock="Right"
-                                        Theme="{DynamicResource SolidButton}">
-                                        删除
-                                    </Button>
-                                    <Button
-                                        Classes="Warning Small"
+                                        FontWeight="550"
+                                        Theme="{DynamicResource SolidButton}" />
+                                    <ToggleButton
+                                        Classes="Success Small"
+                                        Classes.isEditable="{Binding $self.IsChecked}"
+                                        Command="{ReflectionBinding $parent[ItemsControl].DataContext.UpdateCommand}"
+                                        CommandParameter="{Binding}"
                                         DockPanel.Dock="Right"
-                                        Theme="{DynamicResource SolidButton}">
-                                        修改
-                                    </Button>
-                                    <WrapPanel>
-                                        <CheckBox
-                                            Padding="10,5"
-                                            Content="Tag1"
-                                            Theme="{DynamicResource PureCardCheckBox}" />
-                                        <Button Classes="Danger Small" Theme="{DynamicResource SolidButton}">X</Button>
-                                    </WrapPanel>
+                                        FontWeight="550"
+                                        IsChecked="{Binding IsEditable}">
+                                        <ToggleButton.Styles>
+                                            <Style Selector="ToggleButton">
+                                                <Setter Property="Content" Value="修改" />
+                                            </Style>
+                                            <Style Selector="ToggleButton.isEditable">
+                                                <Setter Property="Content" Value="完成" />
+                                            </Style>
+                                        </ToggleButton.Styles>
+                                    </ToggleButton>
+                                    <u:TagInput
+                                        Margin="10,0"
+                                        AllowDuplicates="False"
+                                        IsTabStop="True"
+                                        IsVisible="{Binding IsEditable}"
+                                        LostFocusBehavior="Add"
+                                        Tags="{Binding ViewTags}"
+                                        Watermark="标签" />
+                                    <ListBox
+                                        Margin="10,0"
+                                        IsVisible="{Binding !IsEditable}"
+                                        ItemsSource="{Binding ViewTags}"
+                                        SelectionMode="Multiple,Toggle"
+                                        Theme="{DynamicResource ButtonRadioGroupListBox}" />
                                 </DockPanel>
                                 <Grid ColumnDefinitions="*,*">
                                     <Border
                                         Padding="0,10"
                                         Classes="Hover"
+                                        IsVisible="{Binding !IsEditable}"
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="用户名" />
                                     </Border>
@@ -66,10 +112,28 @@
                                         Grid.Column="1"
                                         Padding="0,10"
                                         Classes="Hover"
+                                        IsVisible="{Binding !IsEditable}"
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="密码" />
                                     </Border>
                                 </Grid>
+                                <TextBox
+                                    Margin="0,10"
+                                    IsVisible="{Binding IsEditable}"
+                                    Text="{Binding Username}"
+                                    Watermark="用户名" />
+                                <TextBox
+                                    IsVisible="{Binding IsEditable}"
+                                    Text="{Binding Password}"
+                                    Watermark="密码">
+                                    <TextBox.InnerRightContent>
+                                        <u:IconButton>
+                                            <u:IconButton.Icon>
+                                                <TextBlock Text="🎲" />
+                                            </u:IconButton.Icon>
+                                        </u:IconButton>
+                                    </TextBox.InnerRightContent>
+                                </TextBox>
                             </StackPanel>
                         </Border>
                     </DataTemplate>
@@ -78,5 +142,6 @@
 
             </ItemsControl>
         </ScrollViewer>
+
     </Grid>
 </UserControl>

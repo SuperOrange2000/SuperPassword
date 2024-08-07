@@ -17,26 +17,22 @@ namespace SuperPassword.DAL.OnlineService.Clinet
             AddParameter(new HeaderParameter("Content-Type", "application/x-www-form-urlencoded"));
         }
 
-        public void AddParameter<T>(string name, List<T> value, ParameterType type = ParameterType.GetOrPost)
+        public void AddParameter<T>(string? name, List<T> value, ParameterType type = ParameterType.GetOrPost)
         {
             foreach (var v in value)
                 AddParameter(Parameter.CreateParameter(name, v, type));
         }
 
-        public void AddParameter<T>(string name, ObservableCollection<T> value, ParameterType type = ParameterType.GetOrPost)
+        public void AddParameter<T>(string? name, ObservableCollection<T> value, ParameterType type = ParameterType.GetOrPost)
         {
             foreach (var v in value)
                 AddParameter(Parameter.CreateParameter(name, v, type));
         }
 
-        public void AddParameter(string name, byte[] value, ParameterType type = ParameterType.GetOrPost)
-        {
+        public void AddParameter(string? name, byte[] value, ParameterType type = ParameterType.GetOrPost) =>
             AddParameter(Parameter.CreateParameter(name, Convert.ToBase64String(value), type));
-        }
 
-        public void AddParameter(string name, object value, ParameterType type = ParameterType.GetOrPost)
-        {
+        public void AddParameter(string? name, object? value, ParameterType type = ParameterType.GetOrPost) =>
             AddParameter(Parameter.CreateParameter(name, value, type));
-        }
     }
 }

@@ -1,0 +1,30 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="Avalonia.Xaml.Behaviors" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Xaml.Interactions" Version="11.1.0" />
+    <PackageVersion Include="Avalonia.Xaml.Interactivity" Version="11.1.0" />
+    <PackageVersion Include="Irihi.Ursa" Version="1.0.0" />
+    <PackageVersion Include="Irihi.Ursa.Themes.Semi" Version="1.0.0" />
+    <PackageVersion Include="Mapster" Version="7.4.0" />
+    <PackageVersion Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
+    <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageVersion Include="Prism.DryIoc" Version="9.0.401-pre" />
+    <PackageVersion Include="RestSharp" Version="111.4.1" />
+    <PackageVersion Include="BouncyCastle.Cryptography" Version="2.4.0" />
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageVersion Include="Avalonia" Version="11.1.1" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.1.1" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.1.1" />
+    <PackageVersion Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.1" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0-preview.6.24327.7" />
+    <PackageVersion Include="Semi.Avalonia" Version="11.1.0.1" />
+    <PackageVersion Include="Avalonia.Android" Version="11.1.1" />
+    <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.10" />
+    <PackageVersion Include="Avalonia.Browser" Version="11.1.1" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.1.1" />
+    <PackageVersion Include="Avalonia.iOS" Version="$(AvaloniaVersion)" />
+  </ItemGroup>
+</Project>

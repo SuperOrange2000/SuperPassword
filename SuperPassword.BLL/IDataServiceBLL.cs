@@ -1,23 +1,18 @@
-﻿using SuperPassword.Entity;
-using SuperPassword.Entity.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SuperPassword.Entity.Interface;
+using SuperPassword.BLL.Models;
 
 namespace SuperPassword.BLL
 {
     public interface IDataServiceBLL
     {
-        Task<ResponseBLL<object>> AddAsync(UserEntity user, InfoGroupEntity entity);
+        Task<ResponseBLL<object>> AddAsync(string username, string token, IInfoGroup entity);
 
-        Task<ResponseBLL<InfoGroupEntity>> UpdateAsync(UserEntity user, InfoGroupEntity entity);
+        Task<ResponseBLL<IInfoGroup>> UpdateAsync(string username, string token, IInfoGroup entity);
 
-        Task<ResponseBLL<object>> DeleteAsync(UserEntity user, uint id);
+        Task<ResponseBLL<object>> DeleteAsync(string username, string token, uint id);
 
-        Task<ResponseBLL<InfoGroupEntity>> GetFirstOfDefaultAsync(UserEntity user, uint id);
+        Task<ResponseBLL<IInfoGroup>> GetFirstOfDefaultAsync(string username, string token, uint id);
 
-        Task<ResponseBLL<List<InfoGroupEntity>>> GetAllAsync(UserEntity user);
+        Task<ResponseBLL<List<IInfoGroup>>> GetAllAsync(string username, string token);
     }
 }

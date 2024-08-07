@@ -1,9 +1,9 @@
 ﻿using SuperPassword.Config.Service;
 using SuperPassword.DAL;
-using SuperPassword.Entity;
-using SuperPassword.Entity.Data;
-using SuperPassword.Security.SecurityModule;
+using SuperPassword.Entity.Interface;
 using SuperPassword.Security.Sercvice;
+using SuperPassword.DAL.Models;
+using SuperPassword.BLL.Models;
 
 namespace SuperPassword.BLL
 {
@@ -20,15 +20,14 @@ namespace SuperPassword.BLL
             _configService = configService;
         }
 
-        public async Task<ResponseBLL<string>> SignUp(UserEntity user)
+        public async Task<ResponseBLL<string>> SignUp(IUser user)
         {
             ResponseDAL responseDAL = await _userServiceDAL.SignUp(user);
             return Deserialize<string>(responseDAL);
         }
 
-        public async Task<ResponseBLL<string>> Login(UserEntity user)
+        public async Task<ResponseBLL<string>> Login(IUser user)
         {
-            _securityService.SwitchCipher<ChaCha20>(user.Key);
             ResponseDAL responseDAL = await _userServiceDAL.Login(user);
             return Deserialize<string>(responseDAL);
         }

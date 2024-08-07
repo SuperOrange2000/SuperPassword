@@ -34,6 +34,7 @@ namespace SuperPassword.Entity.Data
             }
             set 
             {
+                if(value == null) return;
                 SHA256 sha256 = SHA256.Create();
                 byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(value).Concat(Salt).ToArray());
                 Array.Copy(hashBytes, 0, password, 0, 32);

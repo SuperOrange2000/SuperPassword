@@ -1,14 +1,53 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SuperPassword.Entity.Data;
+using Mapster;
+using SuperPassword.Entity.Interface;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace SuperPassword.UI.Models
 {
-    public partial class InfoGroupViewItem : ObservableObject
+    public partial class InfoGroupViewItem : ObservableObject, IInfoGroup
     {
-        public InfoGroupEntity InfoGroup { get; set; }
+        [ObservableProperty]
+        private bool visibility;
 
         [ObservableProperty]
-        private bool _visibility;
+        private bool isEditable;
 
+        [ObservableProperty]
+        private uint id;
+
+        [ObservableProperty]
+        private string? site;
+
+        [ObservableProperty]
+        private string? username;
+
+        [ObservableProperty]
+        private string? password;
+
+        [ObservableProperty]
+        private bool isNew = false;
+
+        private ObservableCollection<string> viewTags = new();
+
+        public ObservableCollection<string> ViewTags
+        {
+            get => viewTags;
+            set => SetProperty(ref viewTags, value);
+        }
+        public IList<string> Tags
+        {
+            get => ViewTags.ToList();
+            set => ViewTags = new ObservableCollection<string>(value);
+        }
+
+        public InfoGroupViewItem() { }
+
+        public InfoGroupViewItem(IInfoGroup infoGroup)
+        {
+            this.Adapt(infoGroup);
+        }
     }
 }

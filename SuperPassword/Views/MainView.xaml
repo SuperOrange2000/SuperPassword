@@ -6,6 +6,7 @@
     xmlns:custom="clr-namespace:SuperPassword.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:u="https://irihi.tech/ursa"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -87,7 +88,8 @@
 
                                 <DockPanel Margin="0,0,0,0">
                                     <custom:Site DockPanel.Dock="Left" Text="{Binding InfoGroup.Site}" />
-                                    --><!--<custom:CustomButton
+    -->
+    <!--<custom:CustomButton
                                         Height="20"
                                         Margin="10,0"
                                         Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ItemsControl}}"
@@ -102,7 +104,8 @@
                                         CommandParameter="{Binding InfoGroup}"
                                         Content="修改"
                                         CornerRadius="5"
-                                        DockPanel.Dock="Right" />--><!--
+                                        DockPanel.Dock="Right" />-->
+    <!--
                                     <ItemsControl DockPanel.Dock="Left" ItemsSource="{Binding InfoGroup.TagEntities}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>

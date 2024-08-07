@@ -1,5 +1,6 @@
-﻿using SuperPassword.Entity;
-using System.Text.Json;
+﻿using System.Text.Json;
+using SuperPassword.DAL.Models;
+using SuperPassword.BLL.Models;
 
 namespace SuperPassword.BLL
 {

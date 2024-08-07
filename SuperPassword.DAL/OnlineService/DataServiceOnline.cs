@@ -1,11 +1,6 @@
 ﻿using SuperPassword.DAL.OnlineService.Clinet;
-using SuperPassword.Entity;
-using SuperPassword.Entity.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SuperPassword.Entity.Interface;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL.OnlineService
 {
@@ -18,52 +13,51 @@ namespace SuperPassword.DAL.OnlineService
             this.client = client;
         }
 
-        public async Task<ResponseDAL> AddAsync(UserEntity user, InfoGroupEntity entity)
+        public async Task<ResponseDAL> AddAsync(string username, string token, IInfoGroup entity)
         {
             BaseRequest request = new BaseRequest("api/add", RestSharp.Method.Post);
-            request.AddParameter("token", user.Token);
-            request.AddParameter("id", entity.ID);
-            request.AddParameter("salt", entity.Salt);
-            request.AddParameter("username", entity.EncryptedUsername);
-            request.AddParameter("password", entity.EncryptedPassword);
-            request.AddParameter("site", entity.EncryptedSite);
-            request.AddParameter("tags", entity.EncryptedTagEntities);
+            request.AddParameter("token", token);
+            request.AddParameter("id", entity.Id);
+            //request.AddParameter("salt", entity.Salt);
+            request.AddParameter("username", entity.Username);
+            request.AddParameter("site", entity.Site);
+            request.AddParameter("tags", entity.Tags);
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> DeleteAsync(UserEntity user, uint id)
+        public async Task<ResponseDAL> DeleteAsync(string username, string token, uint id)
         {
             BaseRequest request = new BaseRequest("api/delete", RestSharp.Method.Post);
-            request.AddParameter("token", user.Token);
+            request.AddParameter("token", token);
             request.AddParameter("ids", new List<uint> { id });
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> GetAllAsync(UserEntity user)
+        public async Task<ResponseDAL> GetAllAsync(string username, string token)
         {
             BaseRequest request = new BaseRequest("api/get", RestSharp.Method.Post);
             request.AddParameter("ids", new List<uint> { });
-            request.AddParameter("token", user.Token);
+            request.AddParameter("token", token);
             var result = await client.ExecuteAsync(request);
             return result;
         }
 
-        public async Task<ResponseDAL> GetFirstOfDefaultAsync(UserEntity user, uint id)
+        public async Task<ResponseDAL> GetFirstOfDefaultAsync(string username, string token, uint id)
         {
             BaseRequest request = new BaseRequest("api/get-data", RestSharp.Method.Post);
-            request.AddParameter("token", user.Token);
+            request.AddParameter("token", token);
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> UpdateAsync(UserEntity user, InfoGroupEntity entity)
+        public async Task<ResponseDAL> UpdateAsync(string username, string token, IInfoGroup entity)
         {
             BaseRequest request = new BaseRequest("api/update", RestSharp.Method.Post);
-            request.AddParameter("token", user.Token);
-            request.AddParameter("id", entity.ID);
-            request.AddParameter("username", entity.EncryptedUsername);
-            request.AddParameter("password", entity.EncryptedPassword);
-            request.AddParameter("site", entity.EncryptedSite);
-            request.AddParameter("tags", entity.EncryptedTagEntities);
+            request.AddParameter("token", token);
+            request.AddParameter("id", entity.Id);
+            request.AddParameter("username", entity.Username);
+            request.AddParameter("password", entity.Password);
+            request.AddParameter("site", entity.Site);
+            request.AddParameter("tags", entity.Tags);
             return await client.ExecuteAsync(request);
         }
     }

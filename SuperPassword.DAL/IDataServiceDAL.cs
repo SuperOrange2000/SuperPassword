@@ -1,23 +1,18 @@
-﻿using SuperPassword.Entity;
-using SuperPassword.Entity.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SuperPassword.Entity.Interface;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL
 {
     public interface IDataServiceDAL
     {
-        Task<ResponseDAL> AddAsync(UserEntity user, InfoGroupEntity entity);
+        Task<ResponseDAL> AddAsync(string username, string token, IInfoGroup entity);
 
-        Task<ResponseDAL> UpdateAsync(UserEntity user, InfoGroupEntity entity);
+        Task<ResponseDAL> UpdateAsync(string username, string token, IInfoGroup entity);
 
-        Task<ResponseDAL> DeleteAsync(UserEntity user, uint id);
+        Task<ResponseDAL> DeleteAsync(string username, string token, uint id);
 
-        Task<ResponseDAL> GetFirstOfDefaultAsync(UserEntity user, uint id);
+        Task<ResponseDAL> GetFirstOfDefaultAsync(string username, string token, uint id);
 
-        Task<ResponseDAL> GetAllAsync(UserEntity user);
+        Task<ResponseDAL> GetAllAsync(string username, string token);
     }
 }
