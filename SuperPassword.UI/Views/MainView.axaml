@@ -11,12 +11,6 @@
     x:DataType="vm:MainViewModel"
     mc:Ignorable="d">
 
-    <Interaction.Behaviors>
-        <EventTriggerBehavior EventName="Loaded">
-            <InvokeCommandAction Command="{Binding ShowLoginDialogCommand}" />
-        </EventTriggerBehavior>
-    </Interaction.Behaviors>
-
     <Design.DataContext>
         <vm:MainViewModel />
     </Design.DataContext>
@@ -30,13 +24,14 @@
             <RowDefinition Height="*" MaxHeight="45" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
-        <DockPanel LastChildFill="True">
+        <DockPanel LastChildFill="True" Margin="10">
             <Button
                 MinWidth="100"
+                VerticalAlignment="Stretch"
                 Command="{Binding AddCommand}"
                 Content="新增"
                 DockPanel.Dock="Right" />
-            <u:TagInput VerticalAlignment="Center" Watermark="筛选" />
+            <u:TagInput Margin="0,0,10,0" VerticalAlignment="Stretch" Watermark="筛选" />
         </DockPanel>
         <ScrollViewer Grid.Row="1">
             <ItemsControl ItemsSource="{Binding InfoGroupViewItems}">
@@ -65,6 +60,7 @@
                                         Command="{ReflectionBinding $parent[ItemsControl].DataContext.DeleteCommand}"
                                         CommandParameter="{Binding}"
                                         Content="删除"
+										Margin="10,0,0,0"
                                         DockPanel.Dock="Right"
                                         FontWeight="550"
                                         Theme="{DynamicResource SolidButton}" />

@@ -1,31 +1,32 @@
-﻿using System.Text.Json;
-using SuperPassword.DAL.Models;
-using SuperPassword.BLL.Models;
+﻿using SuperPassword.BLL.Implementations.Models;
+using SuperPassword.DAL.Interfaces.Models;
+using SuperPassword.Entity.Interface;
+using System.Text.Json;
 
-namespace SuperPassword.BLL
+namespace SuperPassword.BLL.Implementations
 {
     public class JsonDeserialization
     {
         private JsonSerializerOptions options = new JsonSerializerOptions(JsonSerializerDefaults.General);
-        internal ResponseBLL<T> Deserialize<T>(ResponseDAL resDAL)
+        internal BLLResponse<T> Deserialize<T>(IDALResponse resDAL)
         {
             if (string.IsNullOrEmpty(resDAL.Content))
             {
-                ResponseBLL<T> result = new ResponseBLL<T>();
-                result.Status = resDAL.Status;
+                BLLResponse<T> result = new BLLResponse<T>();
+                //result.Status = resDAL.Status;
                 return result;
             }
             else
             {
-                ResponseBLL<T>? result;
+                BLLResponse<T>? result;
                 try
                 {
-                    result = JsonSerializer.Deserialize<ResponseBLL<T>>(resDAL.Content);
+                    result = JsonSerializer.Deserialize<BLLResponse<T>>(resDAL.Content);
                 }
                 catch (JsonException ex)
                 {
                     Console.WriteLine(ex.Message);
-                    result = new ResponseBLL<T>() { Status = System.Net.HttpStatusCode.NoContent, Message = "反序列化失败" };
+                    result = new BLLResponse<T>() { Status = ResponseStatus.NoContent, Message = "反序列化失败" };
                 }
                 finally
                 {
@@ -34,7 +35,7 @@ namespace SuperPassword.BLL
                 if (result != null)
                     result.Status = resDAL.Status;
                 else
-                    result = new ResponseBLL<T>() { Status = System.Net.HttpStatusCode.NoContent, Message = "反序列化失败" };
+                    result = new BLLResponse<T>() { Status = ResponseStatus.NoContent, Message = "反序列化失败" };
                 return result;
             }
         }

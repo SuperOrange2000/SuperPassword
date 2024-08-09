@@ -2,9 +2,9 @@
 
 namespace SuperPassword.UI.Views;
 
-public partial class MainWindow : UrsaWindow
+public partial class SingleView : UrsaWindow
 {
-    public MainWindow()
+    public SingleView()
     {
         InitializeComponent();
     }

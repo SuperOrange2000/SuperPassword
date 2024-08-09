@@ -1,8 +1,8 @@
 ﻿using RestSharp;
+using SuperPassword.DAL.Implementations.Models;
 using System.Net;
-using SuperPassword.DAL.Models;
 
-namespace SuperPassword.DAL.OnlineService.Clinet
+namespace SuperPassword.DAL.Online.Clinet
 {
     public class HttpRestClient : RestClient
     {
@@ -34,16 +34,25 @@ namespace SuperPassword.DAL.OnlineService.Clinet
             }
         }
 
-        public async Task<ResponseDAL> ExecuteAsync(BaseRequest request)
+        private Entity.Interface.ResponseStatus AdaptStatus(HttpStatusCode httpStatusCode)
         {
-            RestResponse response = await this.ExecuteAsync<RestResponse>(request);
-            return new ResponseDAL { Status = response.StatusCode, Content = response.Content };
+            switch (httpStatusCode)
+            {
+                case HttpStatusCode.OK: return Entity.Interface.ResponseStatus.Success;
+                default: return Entity.Interface.ResponseStatus.NoContent;
+            }
         }
 
-        public ResponseDAL ExecuteSync(BaseRequest request)
+        public async Task<DALResponse> ExecuteAsync(BaseRequest request)
+        {
+            RestResponse response = await this.ExecuteAsync<RestResponse>(request);
+            return new DALResponse { Status = AdaptStatus(response.StatusCode), Content = response.Content };
+        }
+
+        public DALResponse ExecuteSync(BaseRequest request)
         {
             RestResponse response = this.Execute(request);
-            return new ResponseDAL { Status = response.StatusCode, Content = response.Content };
+            return new DALResponse { Status = AdaptStatus(response.StatusCode), Content = response.Content };
         }
 
     }

@@ -1,19 +1,12 @@
-﻿using SuperPassword.DAL.OnlineService.Clinet;
+﻿using SuperPassword.DAL.Interfaces.Models;
+using SuperPassword.DAL.Online.Clinet;
 using SuperPassword.Entity.Interface;
-using SuperPassword.DAL.Models;
 
-namespace SuperPassword.DAL.OnlineService
+namespace SuperPassword.DAL.Implementations.Online
 {
-    public class DataserviceOnline : IDataServiceDAL
+    internal partial class OnlineService
     {
-        private readonly HttpRestClient client;
-
-        public DataserviceOnline(HttpRestClient client)
-        {
-            this.client = client;
-        }
-
-        public async Task<ResponseDAL> AddAsync(string username, string token, IInfoGroup entity)
+        public async Task<IDALResponse> AddAsync(string username, string token, IInfoGroup entity)
         {
             BaseRequest request = new BaseRequest("api/add", RestSharp.Method.Post);
             request.AddParameter("token", token);
@@ -25,7 +18,7 @@ namespace SuperPassword.DAL.OnlineService
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> DeleteAsync(string username, string token, uint id)
+        public async Task<IDALResponse> DeleteAsync(string username, string token, uint id)
         {
             BaseRequest request = new BaseRequest("api/delete", RestSharp.Method.Post);
             request.AddParameter("token", token);
@@ -33,7 +26,7 @@ namespace SuperPassword.DAL.OnlineService
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> GetAllAsync(string username, string token)
+        public async Task<IDALResponse> GetAllAsync(string username, string token)
         {
             BaseRequest request = new BaseRequest("api/get", RestSharp.Method.Post);
             request.AddParameter("ids", new List<uint> { });
@@ -42,14 +35,14 @@ namespace SuperPassword.DAL.OnlineService
             return result;
         }
 
-        public async Task<ResponseDAL> GetFirstOfDefaultAsync(string username, string token, uint id)
+        public async Task<IDALResponse> GetFirstOfDefaultAsync(string username, string token, uint id)
         {
             BaseRequest request = new BaseRequest("api/get-data", RestSharp.Method.Post);
             request.AddParameter("token", token);
             return await client.ExecuteAsync(request);
         }
 
-        public async Task<ResponseDAL> UpdateAsync(string username, string token, IInfoGroup entity)
+        public async Task<IDALResponse> UpdateAsync(string username, string token, IInfoGroup entity)
         {
             BaseRequest request = new BaseRequest("api/update", RestSharp.Method.Post);
             request.AddParameter("token", token);

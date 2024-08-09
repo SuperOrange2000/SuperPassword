@@ -3,17 +3,14 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
-using SuperPassword.BLL;
+using SuperPassword.BLL.Implementations;
+using SuperPassword.BLL.Interfaces;
 using SuperPassword.Config.Service;
-using SuperPassword.DAL;
-using SuperPassword.DAL.OnlineService;
-using SuperPassword.DAL.OnlineService.Clinet;
 using SuperPassword.Security.Sercvice;
-using SuperPassword.UI.Models;
+using SuperPassword.UI.Services;
 using SuperPassword.UI.ViewModels;
 using SuperPassword.UI.Views;
 using System;
-using Ursa.Controls;
 
 namespace SuperPassword.UI;
 
@@ -23,40 +20,40 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
     }
-    public new static App? Current => Application.Current as App;
-    public IServiceProvider? ServiceProvider { get; private set; }
+    public new static App Current => (Application.Current! as App)!;
+    public IServiceProvider ServiceProvider { get; private set; }
 
     public override void OnFrameworkInitializationCompleted()
     {
         // Line below is needed to remove Avalonia data validation.
         // Without this line you will get duplicate validations from both Avalonia and CT
         BindingPlugins.DataValidators.RemoveAt(0);
-        var services = new ServiceCollection();
-        services.AddSingleton<IConfigService, ConfigService>();
-        services.AddSingleton<ISecurityService, SecurityService>();
-        services.AddSingleton(provider => new HttpRestClient(@"https://s.oragne.top/"));
-        services.AddSingleton<IUserServiceBLL, UserService>();
-        services.AddSingleton<IDataServiceBLL, DataService>();
-        services.AddSingleton<IUserServiceDAL, UserServiceOnline>();
-        services.AddSingleton<IDataServiceDAL, DataserviceOnline>();
+        ServiceCollection container = new ServiceCollection();
+        container.AddSingleton<IConfigService, ConfigService>();
+        container.AddSingleton<ISecurityService, SecurityService>();
+        container.AddSingleton<IBLLService, BLLService>();
 
-        services.AddSingleton<LoginViewModel>();
-        services.AddSingleton<MainViewModel>();
-        ServiceProvider = services.BuildServiceProvider();
+        container.AddSingleton<INavigationService, NavigationService>();
+
+        container.AddTransient<MainWindowViewModel>();
+        container.AddTransient<LoginViewModel>();
+        container.AddTransient<MainViewModel>();
+        ServiceProvider = container.BuildServiceProvider();
+
         if (ServiceProvider == null) throw new NullReferenceException(nameof(ServiceProvider));
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow
+            desktop.MainWindow = new MainWindow()
             {
-                DataContext = ServiceProvider!.GetService<MainViewModel>()
+                DataContext = ServiceProvider.GetService<MainWindowViewModel>()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
             singleViewPlatform.MainView = new MainView
             {
-                DataContext = ServiceProvider!.GetService<MainViewModel>()
+                DataContext = ServiceProvider.GetService<MainViewModel>()
             };
         }
 

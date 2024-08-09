@@ -8,7 +8,7 @@ namespace SuperPassword.UI.Models
     public partial class User : ObservableObject, IUser
     {
         [ObservableProperty]
-        private int id;
+        private uint id;
 
         [ObservableProperty]
         private string? name;

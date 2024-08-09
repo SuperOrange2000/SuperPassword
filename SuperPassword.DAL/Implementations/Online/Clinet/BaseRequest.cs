@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Linq;
 
-namespace SuperPassword.DAL.OnlineService.Clinet
+namespace SuperPassword.DAL.Online.Clinet
 {
     public class BaseRequest : RestRequest
     {

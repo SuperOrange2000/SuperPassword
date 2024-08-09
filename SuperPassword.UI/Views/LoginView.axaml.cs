@@ -1,3 +1,4 @@
+
 using Avalonia.Controls;
 
 namespace SuperPassword.UI.Views

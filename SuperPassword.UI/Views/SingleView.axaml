@@ -1,19 +1,15 @@
 <u:UrsaWindow
-    x:Class="SuperPassword.UI.Views.MainWindow"
+    x:Class="SuperPassword.UI.Views.SingleView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:s="using:SuperPassword.UI.Services"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:views="clr-namespace:SuperPassword.UI.Views"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
     Title="SuperPassword.UI"
-    Width="{Binding Width}"
-    Height="{Binding Height}"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    x:DataType="vm:MainWindowViewModel"
     Icon="/Assets/avalonia-logo.ico"
     mc:Ignorable="d">
     <u:UrsaWindow.RightContent>
@@ -29,12 +25,8 @@
             </u:ThemeToggleButton.Styles>
         </u:ThemeToggleButton>
     </u:UrsaWindow.RightContent>
-    <Panel Margin="0,40,0,0">
-        <ContentControl Content="{Binding CurrentViewModel}">
-            <ContentControl.DataTemplates>
-                <s:ViewLocator />
-            </ContentControl.DataTemplates>
-        </ContentControl>
+    <Panel>
+        <views:MainView Margin="0,26,0,0" />
         <u:OverlayDialogHost />
     </Panel>
 </u:UrsaWindow>
