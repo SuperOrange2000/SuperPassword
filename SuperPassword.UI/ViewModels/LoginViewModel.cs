@@ -12,7 +12,7 @@ namespace SuperPassword.UI.ViewModels;
 public partial class LoginViewModel : ViewModelBase
 {
     [ObservableProperty]
-    private User activeUser;
+    private User activeUser = new();
 
     [ObservableProperty]
     private ObservableCollection<User> allUsers;

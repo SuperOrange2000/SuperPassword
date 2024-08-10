@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using SuperPassword.Config.Service;
 using SuperPassword.DAL.Implementations.Online;
 using SuperPassword.DAL.Interfaces;
 using SuperPassword.DAL.Interfaces.Models;
@@ -10,13 +11,15 @@ namespace SuperPassword.DAL.Implementations
     public class DALService : IDALService
     {
         private IInternalService service;
-        public DALService()
+        public DALService(IServiceProvider serviceProvider, IConfigService configService)
         {
-            ServiceCollection container = new ServiceCollection();
-            container.AddSingleton<IOnlineService, OnlineService>();
-            container.AddSingleton(provider => new HttpRestClient(@"https://s.oragne.top/"));
-            var serviceProvider = container.BuildServiceProvider();
             service = serviceProvider.GetService<IOnlineService>()!;
+        }
+
+        public static void AddService(ServiceCollection container)
+        {
+            container.AddSingleton<IOnlineService, OnlineService>();
+            container.AddSingleton(provider => new HttpRestClient(provider.GetService<IConfigService>()!.AppConfig.ApiUrl));
         }
 
         public async Task<IDALResponse> AddAsync(string username, string token, IInfoGroup entity)

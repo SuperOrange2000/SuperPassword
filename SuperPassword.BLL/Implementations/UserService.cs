@@ -9,7 +9,7 @@ namespace SuperPassword.BLL.Implementations
     {
         public async Task<IBLLResponse> SignUp(IUser user)
         {
-            IDALResponse responseDAL = await DALService.SignUp(user.Name, user.Password);
+            IDALResponse responseDAL = await _DALService.SignUp(user.Name, user.Password);
             var result = Deserialize<string>(responseDAL);
             if (result.Status == ResponseStatus.Success && result.Content != null)
             {
@@ -21,7 +21,7 @@ namespace SuperPassword.BLL.Implementations
 
         public async Task<IBLLResponse> Login(IUser user)
         {
-            IDALResponse responseDAL = await DALService.Login(user.Name, user.Password);
+            IDALResponse responseDAL = await _DALService.Login(user.Name, user.Password);
             var result = Deserialize<string>(responseDAL);
             if (result.Status == ResponseStatus.Success && result.Content != null)
             {

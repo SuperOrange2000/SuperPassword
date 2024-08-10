@@ -32,12 +32,13 @@ public partial class App : Application
         container.AddSingleton<IConfigService, ConfigService>();
         container.AddSingleton<ISecurityService, SecurityService>();
         container.AddSingleton<IBLLService, BLLService>();
-
         container.AddSingleton<INavigationService, NavigationService>();
-
         container.AddTransient<MainWindowViewModel>();
         container.AddTransient<LoginViewModel>();
         container.AddTransient<MainViewModel>();
+
+        BLLService.AddService(container);
+
         ServiceProvider = container.BuildServiceProvider();
 
         if (ServiceProvider == null) throw new NullReferenceException(nameof(ServiceProvider));

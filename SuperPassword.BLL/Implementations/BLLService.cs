@@ -9,15 +9,17 @@ namespace SuperPassword.BLL.Implementations
 {
     public partial class BLLService : JsonDeserialization, IBLLService
     {
-        private ServiceProvider serviceProvider;
-        private IDALService DALService;
+        private IDALService _DALService;
         private BLLUser activeUser;
-        public BLLService()
+        public BLLService(IDALService DALService)
         {
-            ServiceCollection container = new ServiceCollection();
+            _DALService = DALService;
+        }
+
+        public static void AddService(ServiceCollection container)
+        {
             container.AddSingleton<IDALService, DALService>();
-            serviceProvider = container.BuildServiceProvider();
-            DALService = serviceProvider.GetService<IDALService>()!;
+            DALService.AddService(container);
         }
 
         public IBLLUser ActiveUser { get => activeUser; }
