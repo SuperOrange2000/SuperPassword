@@ -1,14 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SuperPassword.BLL.Interfaces;
-using SuperPassword.Config.Config;
 using SuperPassword.Config.Service;
 using SuperPassword.Entity.Interface;
 using SuperPassword.UI.Models;
 using SuperPassword.UI.Services;
-//using SuperPassword.Entity.Data;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperPassword.UI.ViewModels;
@@ -34,20 +31,6 @@ public partial class LoginViewModel : ViewModelBase
         this.BLLService = BLLService;
         this.configService = configService;
         this.navigationService = navigationService;
-
-        UserConfig userConfig;
-        uint localId;
-        if (configService.GlobalConfig.NameMap.Count == 0)
-        {
-            localId = configService.GlobalConfig.MaxLocalId++;
-            configService.GlobalConfig.NameMap.Add(localId, null);
-        }
-        else
-        {
-            localId = configService.GlobalConfig.NameMap.Keys.FirstOrDefault();
-        }
-        userConfig = configService.UserConfig[localId];
-        ActiveUser = new User() { Salt = userConfig.Salt };
     }
 
     //private bool CanLogin() => !string.IsNullOrWhiteSpace(ActiveUser.Name) && !string.IsNullOrWhiteSpace(ActiveUser.Password);
@@ -60,6 +43,7 @@ public partial class LoginViewModel : ViewModelBase
         if (loginResult != null && loginResult.Status == ResponseStatus.Success)
         {
             navigationService.NavigateTo<MainViewModel>();
+            configService.UserConfig.Name = user.Name;
         }
     }
 
@@ -70,6 +54,7 @@ public partial class LoginViewModel : ViewModelBase
         if (loginResult != null && loginResult.Status == ResponseStatus.Success)
         {
             navigationService.NavigateTo<MainViewModel>();
+            configService.UserConfig.Name = user.Name;
         }
     }
 }

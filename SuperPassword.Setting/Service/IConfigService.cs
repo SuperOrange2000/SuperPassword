@@ -1,11 +1,10 @@
-﻿using SuperPassword.Config.Config;
+﻿using SuperPassword.Config.Models;
 
 namespace SuperPassword.Config.Service
 {
     public interface IConfigService
     {
-        UserConfigService UserConfig {  get; }
-        GlobalConfig GlobalConfig {  get; }
-        DefaultConfig DefaultConfig { get; }
+        AppConfig AppConfig {  get; }
+        UserConfig UserConfig {  get; }
     }
 }

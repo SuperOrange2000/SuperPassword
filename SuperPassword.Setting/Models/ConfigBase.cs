@@ -1,11 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System.Text.Json.Serialization;
 
-namespace SuperPassword.Config.Config
+namespace SuperPassword.Config.Models
 {
-    public class DefaultConfig
+    abstract public class ConfigBase : ObservableObject, IConfig
     {
-        public static readonly string Version = "0.0.1";
 
         public static readonly string DocumentPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SuperPassword"
@@ -19,11 +17,13 @@ namespace SuperPassword.Config.Config
 
         public static string AppPath = CombineAppPath("SuperPassword.exe");
 
-        [JsonIgnore] public Action? OnAnyChangedAction { get; set; }
+        public abstract string DirName { get; }
+        public abstract string FileName { get; }
 
-        [JsonIgnore] public string DirName => string.Empty;
+        public ConfigBase()
+        {
 
-        [JsonIgnore] public string FileName => string.Empty;
+        }
 
         public static string CombineAppPath(string relativePath)
         {
