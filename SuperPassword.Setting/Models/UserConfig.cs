@@ -14,9 +14,5 @@ namespace SuperPassword.Config.Models
 
         [JsonIgnore] public override string DirName => CombineAppPath("config");
         [JsonIgnore] public override string FileName => $"{LocalId}.json";
-
-        public UserConfig()
-        {
-        }
     }
 }
