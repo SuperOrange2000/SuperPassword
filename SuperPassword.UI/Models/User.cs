@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SuperPassword.Entity.Interface;
 using Mapster;
+using SuperPassword.Entity.Interface;
+using System;
 
 
 namespace SuperPassword.UI.Models
@@ -28,11 +29,13 @@ namespace SuperPassword.UI.Models
         [ObservableProperty]
         private string? token;
 
+        public Guid UserGuid { get; set; } = Guid.NewGuid();
+
         public User() { }
 
-        public User(IUser user) 
+        public User(IUser user)
         {
-            this.Adapt(user);
+            user.Adapt(this);
         }
     }
 }

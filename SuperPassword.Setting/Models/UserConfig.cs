@@ -6,13 +6,16 @@ namespace SuperPassword.Config.Models
     [Serializable]
     public partial class UserConfig : ConfigBase
     {
-        [ObservableProperty] private uint localId = 0;
+        [ObservableProperty] private Guid _id = Guid.NewGuid();
 
-        [ObservableProperty] private byte[] salt;
+        [ObservableProperty] private string? name;
 
-        [ObservableProperty] private string name;
+        [JsonIgnore] public override string DirName { get => CombineDataPath($"{_id}"); }
+        [JsonIgnore] public override string FileName => $"config.json";
 
-        [JsonIgnore] public override string DirName => CombineAppPath("config");
-        [JsonIgnore] public override string FileName => $"{LocalId}.json";
+        public string CombineUserPath(string relativePath)
+        {
+            return Path.Combine(DataPath, DirName, relativePath);
+        }
     }
 }

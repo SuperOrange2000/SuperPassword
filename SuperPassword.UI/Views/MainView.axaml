@@ -24,14 +24,17 @@
             <RowDefinition Height="*" MaxHeight="45" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
-        <DockPanel LastChildFill="True" Margin="10">
+        <DockPanel Margin="10" LastChildFill="True">
             <Button
                 MinWidth="100"
                 VerticalAlignment="Stretch"
                 Command="{Binding AddCommand}"
                 Content="新增"
                 DockPanel.Dock="Right" />
-            <u:TagInput Margin="0,0,10,0" VerticalAlignment="Stretch" Watermark="筛选" />
+            <u:TagInput
+                Margin="0,0,10,0"
+                VerticalAlignment="Stretch"
+                Watermark="筛选" />
         </DockPanel>
         <ScrollViewer Grid.Row="1">
             <ItemsControl ItemsSource="{Binding InfoGroupViewItems}">
@@ -42,8 +45,11 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Classes="Hover" Theme="{StaticResource CardBorder}">
-                            <StackPanel IsVisible="{Binding Visibility}">
+                        <Border
+                            Classes="Hover"
+                            IsVisible="{Binding Visibility}"
+                            Theme="{StaticResource CardBorder}">
+                            <StackPanel>
                                 <DockPanel>
                                     <TextBlock
                                         VerticalAlignment="Center"
@@ -56,11 +62,11 @@
                                         Text="{Binding Site}"
                                         Watermark="名称" />
                                     <Button
+                                        Margin="10,0,0,0"
                                         Classes="Danger Small"
                                         Command="{ReflectionBinding $parent[ItemsControl].DataContext.DeleteCommand}"
                                         CommandParameter="{Binding}"
                                         Content="删除"
-										Margin="10,0,0,0"
                                         DockPanel.Dock="Right"
                                         FontWeight="550"
                                         Theme="{DynamicResource SolidButton}" />

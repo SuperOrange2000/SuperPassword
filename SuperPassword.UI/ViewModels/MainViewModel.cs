@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SuperPassword.BLL.Interfaces;
+using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.Entity.Interface;
 using SuperPassword.UI.Models;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperPassword.UI.ViewModels;
@@ -41,10 +42,13 @@ public partial class MainViewModel : ViewModelBase
     private async void InitToDoList()
     {
         if (BLLService == null) return;
-        var result = await BLLService.GetAllAsync();
-        if (result.Status == ResponseStatus.Success && result.Content != null)
+        IBLLResponse<IList<IBLLInfoGroup>> result = await BLLService.GetAllAsync();
+        if (result.DataStatus == ResponseDataStatus.Success && result.Content != null)
         {
-            InfoGroupViewItems.Concat(result.Content.Select(info => new InfoGroupViewItem(info)));
+            foreach (var item in result.Content)
+            {
+                InfoGroupViewItems.Add(new InfoGroupViewItem(item));
+            }
         }
     }
 
@@ -57,7 +61,10 @@ public partial class MainViewModel : ViewModelBase
         else
         {
             if (infoGroup.IsNew)
+            {
                 await BLLService.AddAsync(infoGroup);
+                infoGroup.IsNew = false;
+            }
             else
                 await BLLService.UpdateAsync(infoGroup);
         }
@@ -66,9 +73,13 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task Delete(InfoGroupViewItem infoGroup)
     {
-        var result = await BLLService.DeleteAsync(infoGroup.Id);
-        if (result.Status == ResponseStatus.Success)
-            InfoGroupViewItems.Remove(infoGroup);
+        if (!infoGroup.IsNew)
+        {
+            var result = await BLLService.DeleteAsync(infoGroup.InfoGroupGuid);
+            if (result.DataStatus != ResponseDataStatus.Success)
+                return;
+        }
+        InfoGroupViewItems.Remove(infoGroup);
     }
 
     [RelayCommand]

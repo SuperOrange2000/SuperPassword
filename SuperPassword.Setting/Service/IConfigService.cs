@@ -6,5 +6,8 @@ namespace SuperPassword.Config.Service
     {
         AppConfig AppConfig {  get; }
         UserConfig UserConfig {  get; }
+        UserProperties UserProperties { get; }
+        void SwitchUser(string name, Guid? userId = null);
+        void MountSaveFunction();
     }
 }

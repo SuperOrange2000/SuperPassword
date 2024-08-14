@@ -7,6 +7,8 @@ namespace SuperPassword.DAL.Implementations.Online
     {
         private readonly HttpRestClient client;
 
+        private string Token { get; set; }
+
         public OnlineService(HttpRestClient client)
         {
             this.client = client;

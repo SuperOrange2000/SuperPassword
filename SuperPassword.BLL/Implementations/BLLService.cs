@@ -7,7 +7,7 @@ using SuperPassword.DAL.Interfaces;
 
 namespace SuperPassword.BLL.Implementations
 {
-    public partial class BLLService : JsonDeserialization, IBLLService
+    public partial class BLLService : IBLLService
     {
         private IDALService _DALService;
         private BLLUser activeUser;

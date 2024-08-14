@@ -9,26 +9,32 @@ namespace SuperPassword.BLL.Implementations
     {
         public async Task<IBLLResponse> SignUp(IUser user)
         {
-            IDALResponse responseDAL = await _DALService.SignUp(user.Name, user.Password);
-            var result = Deserialize<string>(responseDAL);
-            if (result.Status == ResponseStatus.Success && result.Content != null)
+            IDALResponse<byte[]> responseDAL = await _DALService.SignUpAsync(user);
+            if (responseDAL.DataStatus == ResponseDataStatus.Success)
             {
                 activeUser = new BLLUser(user);
-                activeUser.Token = result.Content;
             }
-            return new BLLResponse() { Status = result.Status, Message = result.Message };
+            return new BLLResponse()
+            {
+                DataStatus = responseDAL.DataStatus,
+                NetworkStatusCode = responseDAL.NetworkStatusCode,
+                ServerMessage = responseDAL.ServerMessage,
+            };
         }
 
         public async Task<IBLLResponse> Login(IUser user)
         {
-            IDALResponse responseDAL = await _DALService.Login(user.Name, user.Password);
-            var result = Deserialize<string>(responseDAL);
-            if (result.Status == ResponseStatus.Success && result.Content != null)
+            IDALResponse<byte[]> responseDAL = await _DALService.LoginAsync(user);
+            if (responseDAL.DataStatus == ResponseDataStatus.Success)
             {
                 activeUser = new BLLUser(user);
-                activeUser.Token = result.Content;
             }
-            return new BLLResponse() { Status = result.Status, Message = result.Message };
+            return new BLLResponse()
+            {
+                DataStatus = responseDAL.DataStatus,
+                NetworkStatusCode = responseDAL.NetworkStatusCode,
+                ServerMessage = responseDAL.ServerMessage,
+            };
         }
     }
 }

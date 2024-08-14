@@ -40,7 +40,7 @@ public partial class LoginViewModel : ViewModelBase
     {
         var loginResult = await BLLService.Login(user);
 
-        if (loginResult != null && loginResult.Status == ResponseStatus.Success)
+        if (loginResult != null && loginResult.DataStatus == ResponseDataStatus.Success)
         {
             navigationService.NavigateTo<MainViewModel>();
             configService.UserConfig.Name = user.Name;
@@ -51,7 +51,7 @@ public partial class LoginViewModel : ViewModelBase
     private async Task SignUp(IUser user)
     {
         var loginResult = await BLLService.SignUp(user);
-        if (loginResult != null && loginResult.Status == ResponseStatus.Success)
+        if (loginResult != null && loginResult.DataStatus == ResponseDataStatus.Success)
         {
             navigationService.NavigateTo<MainViewModel>();
             configService.UserConfig.Name = user.Name;

@@ -2,7 +2,7 @@
 
 namespace SuperPassword.BLL.Interfaces.Models
 {
-    public interface IBLLUser : IUser
+    public interface IBLLInfoGroup : IInfoGroup
     {
     }
 }

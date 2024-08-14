@@ -1,4 +1,5 @@
 ﻿using SuperPassword.Config.Models;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -7,31 +8,56 @@ namespace SuperPassword.Config.Service
     public class ConfigService : IConfigService
     {
         public AppConfig AppConfig { get; init; }
+
+        private UserConfig _userConfig;
         public UserConfig UserConfig { get; set; }
+        public UserProperties UserProperties { get; set; }
 
         public ConfigService()
         {
-            AppConfig = Read<AppConfig>(Path.Combine(ConfigBase.StartUpPath, "config", "config.json"));
-            AppConfig.PropertyChanged += (s, e) => Write(s as AppConfig);
-
-            if (AppConfig.NameMap.Count == 0)
+            var config = Read<AppConfig>(Path.Combine(ConfigBase.DataPath, "config.json"));
+            if (config == null)
             {
-                AppConfig.NameMap.Add(0, null);
-                UserConfig = new UserConfig();
+                AppConfig = new AppConfig();
+                Write(AppConfig);
             }
             else
-                SwitchUser(AppConfig.NameMap.FirstOrDefault().Key);
+            {
+                AppConfig = config;
+                AppConfig.AutoSaveBind();
+            }
+            AppConfig.PropertyChanged += (s, e) => Write(s as AppConfig);
         }
 
-        public void SwitchUser(uint userId)
+        public void SwitchUser(string name, Guid? userId = null)
         {
-            UserConfig = Read<UserConfig>(Path.Combine(ConfigBase.StartUpPath, "config", $"{AppConfig.NameMap[userId]}.json"));
-            UserConfig.PropertyChanged += (s, e) => Write(s as UserConfig);
+            if (UserConfig != null) { UserConfig.PropertyChanged -= OnPropertyChanged<UserConfig>; }
+            if (UserProperties != null) { UserProperties.PropertyChanged -= OnPropertyChanged<UserProperties>; }
+
+            if (!AppConfig.UserNameMap.ContainsKey(name) && userId != null)
+                AppConfig.UserNameMap.Add(name, (Guid)userId);
+
+            UserConfig = Read<UserConfig>(Path.Combine(AppConfig.DataPath, AppConfig.UserNameMap[name].ToString(), "config.json")) ??
+                new() { Name = name, Id = (Guid)userId! };
+            UserProperties = Read<UserProperties>(Path.Combine(AppConfig.DataPath, AppConfig.UserNameMap[name].ToString(), "properties")) ??
+                new() { Id = (Guid)userId! };
         }
+
+        public void MountSaveFunction()
+        {
+            UserConfig.PropertyChanged += (s, e) => Write(s as UserConfig);
+            Write(UserConfig);
+            UserProperties.PropertyChanged += (s, e) => Write(s as UserProperties);
+            Write(UserProperties);
+        }
+
+        private void OnPropertyChanged<T>(object? sender, PropertyChangedEventArgs e) where T : ConfigBase
+        => Write(sender as T);
+
 
         private readonly ReaderWriterLockSlim _rwLock = new();
 
-        public T Read<T>(string filePath) where T : ConfigBase, new()
+        public T? Read<T>(string filePath) where T : ConfigBase, new()
         {
             if (File.Exists(filePath))
             {
@@ -47,21 +73,17 @@ namespace SuperPassword.Config.Service
                 {
                     _rwLock.ExitReadLock();
                 }
-                return JsonSerializer.Deserialize<T>(jsonDocument)!;
+                return JsonSerializer.Deserialize<T>(jsonDocument);
             }
             else
             {
-                var newConfig = new T();
-                Write(newConfig);
-                return newConfig;
+                return null;
             }
-
         }
 
         public void Write<T>(T? config) where T : ConfigBase
         {
             if (config == null) return;
-
             _rwLock.EnterWriteLock();
             try
             {
@@ -83,7 +105,7 @@ namespace SuperPassword.Config.Service
             }
         }
 
-        protected readonly JsonSerializerOptions serializer_options = new()
+        private readonly JsonSerializerOptions serializer_options = new()
         {
             NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
             Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -91,5 +113,30 @@ namespace SuperPassword.Config.Service
             WriteIndented = true,
             AllowTrailingCommas = true
         };
+
+        private List<Guid> GetGuidFolders(string path)
+        {
+            List<Guid> guidList = new List<Guid>();
+            try
+            {
+                string[] directories = Directory.GetDirectories(path);
+                foreach (string dir in directories)
+                {
+                    // 获取当前文件夹的名称
+                    string folderName = Path.GetFileName(dir);
+                    // 尝试将文件夹名称转换为Guid
+                    if (Guid.TryParse(folderName, out Guid guid))
+                    {
+                        guidList.Add(guid);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return guidList;
+        }
     }
 }

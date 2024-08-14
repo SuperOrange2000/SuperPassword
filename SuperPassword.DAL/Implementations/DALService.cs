@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SuperPassword.Config.Service;
+using SuperPassword.DAL.Implementations.Offline;
+using SuperPassword.DAL.Implementations.Offline.DataContext;
 using SuperPassword.DAL.Implementations.Online;
 using SuperPassword.DAL.Interfaces;
 using SuperPassword.DAL.Interfaces.Models;
@@ -10,51 +12,81 @@ namespace SuperPassword.DAL.Implementations
 {
     public class DALService : IDALService
     {
-        private IInternalService service;
-        public DALService(IServiceProvider serviceProvider, IConfigService configService)
+        private IOfflineService offlineService;
+        private IOnlineService onlineService;
+        private IServiceProvider serviceProvider;
+        public DALService(IServiceProvider serviceProvider)
         {
-            service = serviceProvider.GetService<IOnlineService>()!;
+            this.serviceProvider = serviceProvider;
+            offlineService = serviceProvider.GetService<IOfflineService>()!;
         }
 
         public static void AddService(ServiceCollection container)
         {
             container.AddSingleton<IOnlineService, OnlineService>();
             container.AddSingleton(provider => new HttpRestClient(provider.GetService<IConfigService>()!.AppConfig.ApiUrl));
+
+            container.AddSingleton<IOfflineService, OfflineService>();
+            container.AddSingleton((sp) =>
+            {
+                var configService = sp.GetService<IConfigService>()!;
+                return new InfoGroupDbContext(configService.UserConfig.CombineUserPath("data.db"));
+            });
         }
 
-        public async Task<IDALResponse> AddAsync(string username, string token, IInfoGroup entity)
+        public async Task<IDALResponse> AddAsync(string username, IInfoGroup entity)
         {
-            return await service.AddAsync(username, token, entity);
+            return await offlineService.AddAsync(username, entity);
         }
 
-        public async Task<IDALResponse> DeleteAsync(string username, string token, uint id)
+        public async Task<IDALResponse> DeleteAsync(string username, Guid id)
         {
-            return await service.DeleteAsync(username, token, id);
+            return await offlineService.DeleteAsync(username, id);
         }
 
-        public async Task<IDALResponse> GetAllAsync(string username, string token)
+        public async Task<IDALResponse<IList<IDALInfoGroup>>> GetAllAsync(string username)
         {
-            return await service.GetAllAsync(username, token);
+            return await offlineService.GetAllAsync(username);
         }
 
-        public async Task<IDALResponse> GetFirstOfDefaultAsync(string username, string token, uint id)
+        public async Task<IDALResponse<IDALInfoGroup>> GetFirstOfDefaultAsync(string username, Guid id)
         {
-            return await service.GetFirstOfDefaultAsync(username, token, id);
+            return await offlineService.GetFirstOfDefaultAsync(username, id);
+        }
+        public async Task<IDALResponse> UpdateAsync(string username, IInfoGroup entity)
+        {
+            return await offlineService.UpdateAsync(username, entity);
         }
 
-        public async Task<IDALResponse> Login(string name, string password)
+        public async Task<IDALResponse<byte[]>> LoginAsync(IUser user)
         {
-            return await service.Login(name, password);
+            var result = await offlineService.LoginAsync(user);
+            if(result.DataStatus == ResponseDataStatus.Success)
+            {
+                var dbContext =  serviceProvider.GetService<InfoGroupDbContext>();
+                if(dbContext != null)
+                {
+                    offlineService.UpdateInfoGroupDbContext(dbContext);
+                }
+                else throw new ArgumentNullException(nameof(dbContext));
+            }
+            return result;
         }
 
-        public async Task<IDALResponse> SignUp(string name, string password)
+        public async Task<IDALResponse<byte[]>> SignUpAsync(IUser user)
         {
-            return await service.SignUp(name, password);
+            var result = await offlineService.SignUpAsync(user);
+            if (result.DataStatus == ResponseDataStatus.Success)
+            {
+                var dbContext = serviceProvider.GetService<InfoGroupDbContext>();
+                if (dbContext != null)
+                {
+                    offlineService.UpdateInfoGroupDbContext(dbContext);
+                }
+                else throw new ArgumentNullException(nameof(dbContext));
+            }
+            return result;
         }
 
-        public async Task<IDALResponse> UpdateAsync(string username, string token, IInfoGroup entity)
-        {
-            return await service.UpdateAsync(username, token, entity);
-        }
     }
 }
