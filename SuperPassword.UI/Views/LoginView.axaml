@@ -7,16 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
-    Width="{Binding Width}"
-    Height="{Binding Height}"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
-    d:DesignHeight="450"
+    d:DesignHeight="550"
     d:DesignWidth="300"
     x:CompileBindings="True"
     x:DataType="vm:LoginViewModel"
     mc:Ignorable="d">
     <Grid RowDefinitions="5*,*,*,3*">
+        <Image Source="/Assets/logo_512.png" />
         <TextBox
             Grid.Row="1"
             Margin="10,0"

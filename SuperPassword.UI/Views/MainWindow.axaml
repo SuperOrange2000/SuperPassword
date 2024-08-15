@@ -8,26 +8,19 @@
     xmlns:u="https://irihi.tech/ursa"
     xmlns:views="clr-namespace:SuperPassword.UI.Views"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
-    Title="SuperPassword.UI"
+    Title="SuperPassword"
     Width="{Binding Width}"
     Height="{Binding Height}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     x:DataType="vm:MainWindowViewModel"
-    Icon="/Assets/avalonia-logo.ico"
+    Icon="/Assets/logo_32.ico"
     mc:Ignorable="d">
     <u:UrsaWindow.RightContent>
         <u:ThemeToggleButton
             Name="ThemeToggleButton"
             IsThreeState="True"
-            Mode="Controller">
-            <u:ThemeToggleButton.Styles>
-                <Style Selector="#ThemeToggleButton /template/ PathIcon#PART_Icon">
-                    <Setter Property="Width" Value="120" />
-                    <Setter Property="Height" Value="12" />
-                </Style>
-            </u:ThemeToggleButton.Styles>
-        </u:ThemeToggleButton>
+            Mode="Controller" />
     </u:UrsaWindow.RightContent>
     <Panel Margin="0,40,0,0">
         <ContentControl Content="{Binding CurrentViewModel}">
