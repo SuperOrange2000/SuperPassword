@@ -1,14 +1,12 @@
-﻿using SuperPassword.DAL.Implementations.Models;
-using SuperPassword.DAL.Interfaces.Models;
-using SuperPassword.Entity.Interface;
+﻿using SuperPassword.DAL.Interfaces.Models;
 
 namespace SuperPassword.DAL.Interfaces
 {
     public interface IDataService
     {
-        Task<IDALResponse> AddAsync(string username, IInfoGroup entity);
+        Task<IDALResponse> AddAsync(string name, IDALInfoGroup newInfoGroup);
 
-        Task<IDALResponse> UpdateAsync(string username, IInfoGroup entity);
+        Task<IDALResponse> UpdateAsync(string name, IDALInfoGroup newInfoGroup);
 
         Task<IDALResponse> DeleteAsync(string username, Guid id);
 

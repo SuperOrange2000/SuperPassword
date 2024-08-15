@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SuperPassword.Security.SecurityModule
+﻿namespace SuperPassword.Security.SecurityModule
 {
     public interface ISecurityModule
     {
-        public byte[] Encrypt(byte[] plaintext, byte[] nonce);
+        void SetArguments(byte[] key);
+        byte[]? Encrypt(byte[] plaintext, out byte[] nonce, out byte[]? tag);
 
-        public byte[] Decrypt(byte[] encryptedData, byte[] nonce);
+        byte[]? Decrypt(byte[] encryptedData, byte[] nonce,byte[]? tag = null);
 
-        public byte[] GetBytes(byte[] iv, int length);
+        byte[]? GetBytes(byte[] iv, int length);
     }
 }

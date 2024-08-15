@@ -1,38 +1,43 @@
-﻿using SuperPassword.Security.SecurityEntityInterface;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SuperPassword.Security.SecurityModule;
+using SuperPassword.Security.Sercvice;
 
-namespace SuperPassword.Security.Sercvice
+namespace SuperPassword.Security.Service
 {
     public class SecurityService : ISecurityService
     {
-        private Dictionary<Type, ISecurityModule> _securityModuleDictionary = new Dictionary<Type, ISecurityModule>();
+        private ISecurityModule securityModule;
+        private IServiceProvider serviceProvider;
 
-        public T Get<T>(byte[] key) where T : ISecurityModule
+        public SecurityService(IServiceProvider serviceProvider)
         {
-            if (_securityModuleDictionary.TryGetValue(typeof(T), out ISecurityModule? instance))
-            {
-                return (T)instance;
-            }
-            else
-            {
-                T? newSecurityModule = (T?)Activator.CreateInstance(typeof(T), key);
-                if (newSecurityModule != null)
-                {
-                    _securityModuleDictionary.Add(typeof(T), newSecurityModule);
-                    return newSecurityModule;
-                }
-                else
-                {
-                    throw new NullReferenceException();
-                }
-            }
+            this.serviceProvider = serviceProvider;
+        }
+        public static void AddService(ServiceCollection container)
+        {
+            container.AddSingleton<AesGcmModule>();
+            container.AddSingleton<ChaCha20>();
         }
 
-        public void SwitchCipher<T>(byte[] key) where T : ISecurityModule
+        public byte[]? Decrypt(byte[] encryptedData, byte[] nonce, byte[]? tag = null)
         {
-            var _cipher = Get<T>(key);
-            IEncryptedBase.EncryptionHandler = _cipher.Encrypt;
-            IEncryptedBase.DecryptionHandler = _cipher.Decrypt;
+            return securityModule.Decrypt(encryptedData, nonce, tag);
+        }
+
+        public byte[]? Encrypt(byte[] plaintext, out byte[] nonce, out byte[]? tag)
+        {
+            return securityModule.Encrypt(plaintext, out nonce, out tag);
+        }
+
+        public void SwitchCipher(SecurityMode mode, byte[] key)
+        {
+            securityModule = mode switch
+            {
+                SecurityMode.AesGcm => serviceProvider.GetService<AesGcmModule>()!,
+                SecurityMode.ChaCha20 => serviceProvider.GetService<ChaCha20>()!,
+                _ => serviceProvider.GetService<AesGcmModule>()!,
+            };
+            securityModule.SetArguments(key);
         }
     }
 }

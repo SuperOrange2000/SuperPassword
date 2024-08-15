@@ -13,10 +13,10 @@ namespace SuperPassword.DAL.Implementations.Offline
             _configService = configService;
         }
 
-        public void UpdateInfoGroupDbContext(InfoGroupDbContext infoGroupDbContext)
+        public async Task UpdateInfoGroupDbContextAsync(InfoGroupDbContext infoGroupDbContext)
         {
             _infoGroupDbContext = infoGroupDbContext;
-            _infoGroupDbContext.Database.EnsureCreated();
+            await _infoGroupDbContext.Database.EnsureCreatedAsync();
         }
     }
 }

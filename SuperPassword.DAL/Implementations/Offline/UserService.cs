@@ -10,7 +10,7 @@ namespace SuperPassword.DAL.Implementations.Offline
     {
         public async Task<IDALResponse<byte[]>> LoginAsync(IUser user)
         {
-            if (!_configService.AppConfig.UserNameMap.ContainsKey(user.Name))
+            if (!_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
                 return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
             _configService.SwitchUser(user.Name);
             byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
@@ -20,13 +20,14 @@ namespace SuperPassword.DAL.Implementations.Offline
                 HashAlgorithmName.SHA512,
                 _configService.AppConfig.PasswordLength
             );
-            if ((await DecryptAsync(spwd, _configService.UserProperties.VerificationCode, "VERIFICATION")).All(i => i == 0))
+            var verificationCode = Decrypt(spwd, _configService.UserProperties.VerificationCode);
+            if (verificationCode != null && verificationCode.All(i => i == 0))
             {
                 _configService.MountSaveFunction();
                 return new DALResponse<byte[]>()
                 {
                     DataStatus = ResponseDataStatus.Success,
-                    Content = await DecryptAsync(spwd, _configService.UserProperties.EncryptedPassword, "PASSWORD")
+                    Content = Decrypt(spwd, _configService.UserProperties.EncryptedPassword)
                 };
             }
             else return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.Forbidden };
@@ -34,8 +35,8 @@ namespace SuperPassword.DAL.Implementations.Offline
 
         public async Task<IDALResponse<byte[]>> SignUpAsync(IUser user)
         {
-            byte[] internalpwd;
-            if (_configService.AppConfig.UserNameMap.ContainsKey(user.Name))
+            byte[] internalPwd;
+            if (_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
                 return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.NameConflictError };
             else
             {
@@ -48,71 +49,53 @@ namespace SuperPassword.DAL.Implementations.Offline
                     HashAlgorithmName.SHA512,
                     _configService.AppConfig.PasswordLength
                 );
-                internalpwd = new byte[_configService.AppConfig.PasswordLength];
+                internalPwd = new byte[_configService.AppConfig.PasswordLength];
                 using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
                 {
-                    rng.GetBytes(internalpwd);
+                    rng.GetBytes(internalPwd);
                 }
-                _configService.UserProperties.EncryptedPassword = await EncryptAsync(spwd, internalpwd, "PASSWORD");
-                _configService.UserProperties.VerificationCode = await EncryptAsync(spwd, new byte[16], "VERIFICATION");
+                _configService.UserProperties.EncryptedPassword = Encrypt(spwd, internalPwd);
+                _configService.UserProperties.VerificationCode = Encrypt(spwd, new byte[16]);
             }
             return new DALResponse<byte[]>()
             {
                 DataStatus = ResponseDataStatus.Success,
-                Content = internalpwd
+                Content = internalPwd
             };
         }
 
-        private async Task<byte[]> EncryptAsync(byte[] key, byte[] plainData, string serverName)
+        private byte[] Encrypt(byte[] key, byte[] plainData)
         {
-            using (Aes aes = Aes.Create())
+            using AesGcm aesGcm = new AesGcm(key, 16);
+            byte[] nonce = new byte[12];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
             {
-                aes.Key = key;
-                using (SHA512 sha3Hash = SHA512.Create())
-                {
-                    aes.IV = sha3Hash.ComputeHash(
-                        key.Concat(Encoding.UTF8.GetBytes($"USER_{serverName}_AES_IV")).ToArray()
-                    ).Take(16).ToArray();
-                }
-                aes.Mode = CipherMode.CBC;
-                // 创建加密器
-                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        csEncrypt.Write(plainData, 0, plainData.Length);
-                        csEncrypt.FlushFinalBlock();
-                        return msEncrypt.ToArray();
-                    }
-                }
+                rng.GetBytes(nonce);
             }
+            byte[] encryptedData = new byte[plainData.Length];
+            byte[] tag = new byte[16];
+            aesGcm.Encrypt(nonce, plainData, encryptedData, tag);
+
+            return [.. encryptedData, .. nonce, .. tag];
         }
 
-        private async Task<byte[]> DecryptAsync(byte[] key, byte[] cipherData, string serverName)
+        private byte[]? Decrypt(byte[] key, byte[] cipherData)
         {
-            using (Aes aes = Aes.Create())
+            using AesGcm aesGcm = new AesGcm(key, 16);
+            byte[] encryptedData = cipherData.SkipLast(28).ToArray();
+            byte[] nonce = cipherData.SkipLast(16).TakeLast(12).ToArray();
+            byte[] tag = cipherData.TakeLast(16).ToArray();
+            try
             {
-                aes.Key = key;
-                using (SHA512 sha3Hash = SHA512.Create())
-                {
-                    aes.IV = sha3Hash.ComputeHash(
-                        key.Concat(Encoding.UTF8.GetBytes($"USER_{serverName}_AES_IV")).ToArray()
-                    ).Take(16).ToArray();
-                }
-                aes.Mode = CipherMode.CBC;
-                // 创建解密器
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(cipherData))
-                {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                    {
-                        byte[] decryptedData = new byte[cipherData.Length];
-                        int decryptedCount = csDecrypt.Read(decryptedData, 0, decryptedData.Length);
-                        return decryptedData;
-                    }
-                }
+                byte[] decryptedData = new byte[encryptedData.Length];
+                aesGcm.Decrypt(nonce, encryptedData, tag!, decryptedData);
+                return decryptedData;
+            }
+            catch (CryptographicException e)
+            {
+                // 认证失败，密文可能被篡改
+                Console.WriteLine("Decryption failed: " + e.Message);
+                return null;
             }
         }
     }

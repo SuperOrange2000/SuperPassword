@@ -1,6 +1,4 @@
-﻿using Mapster;
-using SuperPassword.DAL.Interfaces.Models;
-using SuperPassword.Entity.Interface;
+﻿using SuperPassword.DAL.Interfaces.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,24 +11,31 @@ namespace SuperPassword.DAL.Implementations.Models
         public uint Id { get; set; }
 
         [Required]
-        public Guid InfoGroupGuid { get; set; }
+        public Guid InfoGroupGuid { get; set; } = Guid.NewGuid();
 
         [Required]
-        public string Site { get; set; }
+        public byte[] Site { get; set; }
+        [Required]
+        public byte[] SiteNonce { get; set; }
+        [Required]
+        public byte[] SiteTag { get; set; }
+
 
         [Required]
-        public string Username { get; set; }
+        public byte[] Username { get; set; }
+        [Required]
+        public byte[] UsernameNonce { get; set; }
+        [Required]
+        public byte[] UsernameTag { get; set; }
+
 
         [Required]
-        public string Password { get; set; }
+        public byte[] Password { get; set; }
+        [Required]
+        public byte[] PasswordNonce { get; set; }
+        [Required]
+        public byte[] PasswordTag { get; set; }
 
-        internal List<DALTag>? DALTags { get; set; }
-
-        [NotMapped]
-        public IList<string>? Tags
-        {
-            get => DALTags?.Select(tag => tag.Content).ToList();
-            set => DALTags = value?.Select(tag => new DALTag() { Content = tag }).ToList();
-        }
+        public ICollection<DALTag>? Tags { get; set; }
     }
 }

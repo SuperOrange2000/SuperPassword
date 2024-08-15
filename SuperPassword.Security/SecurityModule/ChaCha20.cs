@@ -1,6 +1,8 @@
 ﻿using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
+using System.Formats.Asn1;
+using System.Security.Cryptography;
 
 namespace SuperPassword.Security.SecurityModule
 {
@@ -8,7 +10,7 @@ namespace SuperPassword.Security.SecurityModule
     {
         private ICipherParameters _key;
 
-        public ChaCha20(byte[] key)
+        public void SetArguments(byte[] key)
         {
             _key = new KeyParameter(key);
         }
@@ -27,9 +29,16 @@ namespace SuperPassword.Security.SecurityModule
             return output;
         }
 
-        public byte[] Encrypt(byte[] plaintext, byte[] iv)
+        public byte[] Encrypt(byte[] plaintext, out byte[] nonce, out byte[]? tag)
         {
-            ICipherParameters parameters = new ParametersWithIV(_key, iv);
+            tag = null;
+            nonce = new byte[16];
+            using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(nonce);
+            }
+
+            ICipherParameters parameters = new ParametersWithIV(_key, nonce);
             IStreamCipher chacha = new ChaChaEngine();
             chacha.Init(true, parameters);
 
@@ -40,7 +49,7 @@ namespace SuperPassword.Security.SecurityModule
             return output;
         }
 
-        public byte[] Decrypt(byte[] ciphertext, byte[] iv)
+        public byte[] Decrypt(byte[] ciphertext, byte[] iv, byte[]? tag = null)
         {
             ICipherParameters parameters = new ParametersWithIV(_key, iv);
             IStreamCipher chacha = new ChaChaEngine();

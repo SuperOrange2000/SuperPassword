@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SuperPassword.BLL.Implementations;
 using SuperPassword.BLL.Interfaces;
 using SuperPassword.Config.Service;
-using SuperPassword.Security.Sercvice;
+using SuperPassword.Security.Service;
 using SuperPassword.UI.Services;
 using SuperPassword.UI.ViewModels;
 using SuperPassword.UI.Views;

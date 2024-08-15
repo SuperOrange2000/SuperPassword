@@ -10,7 +10,7 @@ namespace SuperPassword.Config.Models
 
         [ObservableProperty] private string? name;
 
-        [JsonIgnore] public override string DirName { get => CombineDataPath($"{_id}"); }
+        [JsonIgnore] public override string DirName { get => CombineDataPath($"{Id}"); }
         [JsonIgnore] public override string FileName => $"config.json";
 
         public string CombineUserPath(string relativePath)

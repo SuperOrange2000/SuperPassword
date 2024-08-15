@@ -17,9 +17,6 @@ namespace SuperPassword.UI.Models
         private bool isEditable;
 
         [ObservableProperty]
-        private uint id;
-
-        [ObservableProperty]
         private string? site;
 
         [ObservableProperty]

@@ -2,6 +2,7 @@
 using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.DAL.Interfaces.Models;
 using SuperPassword.Entity.Interface;
+using SuperPassword.Security.Sercvice;
 
 namespace SuperPassword.BLL.Implementations
 {
@@ -13,6 +14,8 @@ namespace SuperPassword.BLL.Implementations
             if (responseDAL.DataStatus == ResponseDataStatus.Success)
             {
                 activeUser = new BLLUser(user);
+                if(responseDAL.Content != null) 
+                    securityService.SwitchCipher(SecurityMode.AesGcm, responseDAL.Content);
             }
             return new BLLResponse()
             {
@@ -28,6 +31,8 @@ namespace SuperPassword.BLL.Implementations
             if (responseDAL.DataStatus == ResponseDataStatus.Success)
             {
                 activeUser = new BLLUser(user);
+                if (responseDAL.Content != null)
+                    securityService.SwitchCipher(SecurityMode.AesGcm, responseDAL.Content);
             }
             return new BLLResponse()
             {

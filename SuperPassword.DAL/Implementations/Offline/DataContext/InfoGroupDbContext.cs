@@ -8,5 +8,14 @@ namespace SuperPassword.DAL.Implementations.Offline.DataContext
         public DbSet<DALInfoGroup> InfoGroups { get; set; }
 
         public DbSet<DALTag> Tags { get; set; }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<DALInfoGroup>()
+        //        .HasMany(e => e.Tags)
+        //        .WithOne(e => e.InfoGroup)
+        //        .HasForeignKey(e => e.InfoGroupId)
+        //        .HasPrincipalKey(e => e.Id);
+        //}
     }
 }

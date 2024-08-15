@@ -9,7 +9,7 @@ namespace SuperPassword.Config.Models
     {
         [ObservableProperty] private string apiUrl = string.Empty;
 
-        [ObservableProperty] private ObservableDictionary<string, Guid> userNameMap = new();
+        [ObservableProperty] private ObservableDictionary<string, Guid> usernameMap = new();
 
         [JsonIgnore] public uint MaxLocalId = 10000;
 
@@ -28,7 +28,7 @@ namespace SuperPassword.Config.Models
 
         public void AutoSaveBind()
         {
-            UserNameMap.PropertyChanged += (s, e) => OnPropertyChanged(e);
+            UsernameMap.PropertyChanged += (s, e) => OnPropertyChanged(e);
         }
 
         public string CombineAppPath(string relativePath)

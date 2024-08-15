@@ -8,8 +8,6 @@ namespace SuperPassword.Config.Service
     public class ConfigService : IConfigService
     {
         public AppConfig AppConfig { get; init; }
-
-        private UserConfig _userConfig;
         public UserConfig UserConfig { get; set; }
         public UserProperties UserProperties { get; set; }
 
@@ -34,12 +32,14 @@ namespace SuperPassword.Config.Service
             if (UserConfig != null) { UserConfig.PropertyChanged -= OnPropertyChanged<UserConfig>; }
             if (UserProperties != null) { UserProperties.PropertyChanged -= OnPropertyChanged<UserProperties>; }
 
-            if (!AppConfig.UserNameMap.ContainsKey(name) && userId != null)
-                AppConfig.UserNameMap.Add(name, (Guid)userId);
+            if (!AppConfig.UsernameMap.ContainsKey(name) && userId == null)
+                throw new Exception(nameof(userId));
+            else if (userId != null)
+                AppConfig.UsernameMap.Add(name, (Guid)userId);
 
-            UserConfig = Read<UserConfig>(Path.Combine(AppConfig.DataPath, AppConfig.UserNameMap[name].ToString(), "config.json")) ??
+            UserConfig = Read<UserConfig>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "config.json")) ??
                 new() { Name = name, Id = (Guid)userId! };
-            UserProperties = Read<UserProperties>(Path.Combine(AppConfig.DataPath, AppConfig.UserNameMap[name].ToString(), "properties")) ??
+            UserProperties = Read<UserProperties>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "properties")) ??
                 new() { Id = (Guid)userId! };
         }
 

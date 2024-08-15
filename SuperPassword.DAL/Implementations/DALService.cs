@@ -34,39 +34,39 @@ namespace SuperPassword.DAL.Implementations
             });
         }
 
-        public async Task<IDALResponse> AddAsync(string username, IInfoGroup entity)
+        public async Task<IDALResponse> AddAsync(string name, IDALInfoGroup newInfoGroup)
         {
-            return await offlineService.AddAsync(username, entity);
+            return await offlineService.AddAsync(newInfoGroup);
         }
 
         public async Task<IDALResponse> DeleteAsync(string username, Guid id)
         {
-            return await offlineService.DeleteAsync(username, id);
+            return await offlineService.DeleteAsync(id);
         }
 
         public async Task<IDALResponse<IList<IDALInfoGroup>>> GetAllAsync(string username)
         {
-            return await offlineService.GetAllAsync(username);
+            return await offlineService.GetAllAsync();
         }
 
         public async Task<IDALResponse<IDALInfoGroup>> GetFirstOfDefaultAsync(string username, Guid id)
         {
-            return await offlineService.GetFirstOfDefaultAsync(username, id);
+            return await offlineService.GetFirstOfDefaultAsync(id);
         }
-        public async Task<IDALResponse> UpdateAsync(string username, IInfoGroup entity)
+        public async Task<IDALResponse> UpdateAsync(string username, IDALInfoGroup newInfoGroup)
         {
-            return await offlineService.UpdateAsync(username, entity);
+            return await offlineService.UpdateAsync(newInfoGroup);
         }
 
         public async Task<IDALResponse<byte[]>> LoginAsync(IUser user)
         {
             var result = await offlineService.LoginAsync(user);
-            if(result.DataStatus == ResponseDataStatus.Success)
+            if (result.DataStatus == ResponseDataStatus.Success)
             {
-                var dbContext =  serviceProvider.GetService<InfoGroupDbContext>();
-                if(dbContext != null)
+                var dbContext = serviceProvider.GetService<InfoGroupDbContext>();
+                if (dbContext != null)
                 {
-                    offlineService.UpdateInfoGroupDbContext(dbContext);
+                    await offlineService.UpdateInfoGroupDbContextAsync(dbContext);
                 }
                 else throw new ArgumentNullException(nameof(dbContext));
             }
@@ -81,7 +81,7 @@ namespace SuperPassword.DAL.Implementations
                 var dbContext = serviceProvider.GetService<InfoGroupDbContext>();
                 if (dbContext != null)
                 {
-                    offlineService.UpdateInfoGroupDbContext(dbContext);
+                    await offlineService.UpdateInfoGroupDbContextAsync(dbContext);
                 }
                 else throw new ArgumentNullException(nameof(dbContext));
             }

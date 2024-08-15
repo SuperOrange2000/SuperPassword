@@ -6,12 +6,12 @@ namespace SuperPassword.Entity.Data
 {
     public class UserEntity : EntityBase
     {
-        private string userName;
+        private string username;
 
         public string UserName
         {
-            get { return userName; }
-            set { userName = value; OnPropertyChanged(); }
+            get { return username; }
+            set { username = value; OnPropertyChanged(); }
         }
 
         private string account;
