@@ -9,29 +9,57 @@
     xmlns:vm="using:SuperPassword.UI.ViewModels"
     HorizontalAlignment="Stretch"
     VerticalAlignment="Stretch"
-    d:DesignHeight="550"
+    d:DesignHeight="500"
     d:DesignWidth="300"
     x:CompileBindings="True"
     x:DataType="vm:LoginViewModel"
     mc:Ignorable="d">
     <Grid RowDefinitions="5*,*,*,3*">
         <Image Source="/Assets/logo_512.png" />
-        <TextBox
+        <StackPanel
             Grid.Row="1"
-            Margin="10,0"
-            Padding="10,5"
-            VerticalAlignment="Center"
-            Text="{Binding ActiveUser.Name, Mode=OneWayToSource}"
-            Watermark="账号" />
-        <TextBox
+            Margin="10,5"
+            VerticalAlignment="Center">
+            <TextBox
+                Padding="10,2"
+                VerticalAlignment="Center"
+                Text="{Binding ActiveUser.Name, Mode=OneWayToSource}"
+                Watermark="账号">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="GotFocus">
+                        <InvokeCommandAction Command="{Binding ClearNoticeCommand}" CommandParameter="username" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+            </TextBox>
+            <TextBlock
+                Margin="8,0"
+                Classes="Danger"
+                IsVisible="{Binding !!$self.Text.Length}"
+                Text="{Binding UserNameNotice}" />
+        </StackPanel>
+        <StackPanel
             Grid.Row="2"
-            Margin="10,0"
-            Padding="10,5"
-            VerticalAlignment="Center"
-            Classes="revealPasswordButton"
-            PasswordChar="●"
-            Text="{Binding ActiveUser.Password, Mode=OneWayToSource}"
-            Watermark="密码" />
+            Margin="10,2"
+            VerticalAlignment="Center">
+            <TextBox
+                Padding="10,5"
+                VerticalAlignment="Center"
+                Classes="revealPasswordButton"
+                PasswordChar="●"
+                Text="{Binding ActiveUser.Password, Mode=OneWayToSource}"
+                Watermark="密码">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="GotFocus">
+                        <InvokeCommandAction Command="{Binding ClearNoticeCommand}" CommandParameter="password" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+            </TextBox>
+            <TextBlock
+                Margin="8,0"
+                Classes="Danger"
+                IsVisible="{Binding !!$self.Text.Length}"
+                Text="{Binding PasswordNotice}" />
+        </StackPanel>
 
         <DockPanel Grid.Row="3">
             <Grid
