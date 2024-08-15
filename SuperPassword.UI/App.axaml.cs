@@ -45,16 +45,16 @@ public partial class App : Application
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.MainWindow = new MainWindow()
+            desktop.MainWindow = new MainWindow
             {
                 DataContext = ServiceProvider.GetService<MainWindowViewModel>()
             };
         }
         else if (ApplicationLifetime is ISingleViewApplicationLifetime singleViewPlatform)
         {
-            singleViewPlatform.MainView = new MainView
+            singleViewPlatform.MainView = new SingleView
             {
-                DataContext = ServiceProvider.GetService<MainViewModel>()
+                DataContext = ServiceProvider.GetService<MainWindowViewModel>()
             };
         }
 

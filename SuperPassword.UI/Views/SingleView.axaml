@@ -1,32 +1,23 @@
-<u:UrsaWindow
+<UserControl
     x:Class="SuperPassword.UI.Views.SingleView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:s="using:SuperPassword.UI.Services"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:views="clr-namespace:SuperPassword.UI.Views"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
-    Title="SuperPassword.UI"
     d:DesignHeight="450"
     d:DesignWidth="800"
-    Icon="/Assets/avalonia-logo.ico"
+    x:DataType="vm:MainWindowViewModel"
     mc:Ignorable="d">
-    <u:UrsaWindow.RightContent>
-        <u:ThemeToggleButton
-            Name="ThemeToggleButton"
-            IsThreeState="True"
-            Mode="Controller">
-            <u:ThemeToggleButton.Styles>
-                <Style Selector="#ThemeToggleButton /template/ PathIcon#PART_Icon">
-                    <Setter Property="Width" Value="120" />
-                    <Setter Property="Height" Value="12" />
-                </Style>
-            </u:ThemeToggleButton.Styles>
-        </u:ThemeToggleButton>
-    </u:UrsaWindow.RightContent>
-    <Panel>
-        <views:MainView Margin="0,26,0,0" />
+    <Panel Margin="0,40,0,0">
+        <ContentControl Content="{Binding CurrentViewModel}">
+            <ContentControl.DataTemplates>
+                <s:ViewLocator />
+            </ContentControl.DataTemplates>
+        </ContentControl>
         <u:OverlayDialogHost />
     </Panel>
-</u:UrsaWindow>
+</UserControl>

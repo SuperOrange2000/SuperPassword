@@ -1,8 +1,8 @@
-﻿using Ursa.Controls;
+﻿using Avalonia.Controls;
 
 namespace SuperPassword.UI.Views;
 
-public partial class SingleView : UrsaWindow
+public partial class SingleView : UserControl
 {
     public SingleView()
     {
