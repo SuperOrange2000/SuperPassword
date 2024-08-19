@@ -2,7 +2,9 @@
     x:Class="SuperPassword.UI.Views.MainView"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:SuperPassword.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="using:SuperPassword.UI.Interactions"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
@@ -17,6 +19,7 @@
 
     <UserControl.Resources>
         <StreamGeometry x:Key="Dice" />
+        <converters:MutiParametersConverter x:Key="MutiParametersConverter" />
     </UserControl.Resources>
 
     <Grid Margin="5,0">
@@ -25,6 +28,7 @@
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
         <DockPanel Margin="10" LastChildFill="True">
+
             <Button
                 MinWidth="100"
                 VerticalAlignment="Stretch"
@@ -109,6 +113,16 @@
                                         IsVisible="{Binding !IsEditable}"
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="用户名" />
+                                        <Interaction.Behaviors>
+
+                                            <EventTriggerBehavior EventName="PointerPressed">
+                                                <i:InvokeCommandActionWithArgs
+                                                    Command="{ReflectionBinding $parent[ItemsControl].DataContext.DraggingCommand}"
+                                                    CommandParameter="{Binding Username}"
+                                                    ParametersConverter="{StaticResource MutiParametersConverter}"
+                                                    PassEventArgsToCommand="True" />
+                                            </EventTriggerBehavior>
+                                        </Interaction.Behaviors>
                                     </Border>
                                     <Border
                                         Grid.Column="1"
@@ -117,6 +131,16 @@
                                         IsVisible="{Binding !IsEditable}"
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="密码" />
+                                        <Interaction.Behaviors>
+
+                                            <EventTriggerBehavior EventName="PointerPressed">
+                                                <i:InvokeCommandActionWithArgs
+                                                    Command="{ReflectionBinding $parent[ItemsControl].DataContext.DraggingCommand}"
+                                                    CommandParameter="{Binding Password}"
+                                                    ParametersConverter="{StaticResource MutiParametersConverter}"
+                                                    PassEventArgsToCommand="True" />
+                                            </EventTriggerBehavior>
+                                        </Interaction.Behaviors>
                                     </Border>
                                 </Grid>
                                 <TextBox
@@ -140,8 +164,6 @@
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
-
-
             </ItemsControl>
         </ScrollViewer>
 

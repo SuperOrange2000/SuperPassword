@@ -1,12 +1,17 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SuperPassword.BLL.Interfaces;
 using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.Entity.Interface;
 using SuperPassword.UI.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace SuperPassword.UI.ViewModels;
 
@@ -28,6 +33,7 @@ public partial class MainViewModel : ViewModelBase
 
         InfoGroupViewItems = [];
         InitToDoList();
+
     }
 
     public MainViewModel()
@@ -87,5 +93,20 @@ public partial class MainViewModel : ViewModelBase
     {
         InfoGroupViewItem newItem = new InfoGroupViewItem() { IsEditable = true, IsNew = true };
         InfoGroupViewItems.Add(newItem);
+    }
+
+    [RelayCommand]
+    private async Task Dragging(IList<object?> parameters)
+    {
+        PointerPressedEventArgs? e = parameters[0] as PointerPressedEventArgs;
+        string? content = parameters[1]?.ToString();
+
+        if (e is null || content is null)
+            return;
+
+        var dragData = new DataObject();
+        dragData.Set(DataFormats.Text, content);
+        var result = await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Copy);
+        Console.WriteLine($"DragAndDrop result: {result}");
     }
 }

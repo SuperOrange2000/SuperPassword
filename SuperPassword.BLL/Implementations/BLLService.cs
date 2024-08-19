@@ -14,7 +14,7 @@ namespace SuperPassword.BLL.Implementations
         private ISecurityService securityService;
         private BLLUser activeUser;
 
-        private byte[] internalPassword;
+        //private byte[] internalPassword;
         public BLLService(IDALService DALService, ISecurityService securityService)
         {
             _DALService = DALService;
