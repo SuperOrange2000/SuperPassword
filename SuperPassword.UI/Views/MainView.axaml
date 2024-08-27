@@ -110,7 +110,7 @@
                                         IsTabStop="True"
                                         IsVisible="{Binding IsEditable}"
                                         LostFocusBehavior="Add"
-                                        Tags="{Binding ViewTags}"
+                                        Tags="{Binding EditingTags}"
                                         Watermark="标签" />
                                     <ListBox
                                         Margin="10,0"

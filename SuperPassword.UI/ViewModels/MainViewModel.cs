@@ -43,17 +43,12 @@ public partial class MainViewModel : ViewModelBase
         InitToDoList();
     }
 
-    private void TestFunc(NotifyCollectionChangedEventArgs args)
-    {
-
-    }
-
     public MainViewModel()
     {
         InfoGroupViewItems =
         [
-            new InfoGroup() {Visibility = true,  Site="test1", ViewTags=[] },
-            new InfoGroup() {Visibility = true, Site="test2", ViewTags = [] },
+            new InfoGroup() {Visibility = true,  Site="test1", EditingTags = ["123"] },
+            new InfoGroup() {Visibility = true, Site="test2", EditingTags = [] },
         ];
     }
 
