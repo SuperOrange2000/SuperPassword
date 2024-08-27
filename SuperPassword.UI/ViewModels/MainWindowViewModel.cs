@@ -17,7 +17,7 @@ namespace SuperPassword.UI.ViewModels
             navigator.CurrentViewModelChanged += () =>
             {
                 CurrentViewModel = navigationService.CurrentViewModel;
-                if (CurrentViewModel != null )
+                if (CurrentViewModel != null)
                 {
                     Height = CurrentViewModel.Height;
                     Width = CurrentViewModel.Width;

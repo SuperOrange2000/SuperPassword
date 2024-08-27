@@ -5,6 +5,7 @@
     xmlns:converters="using:SuperPassword.UI.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="using:SuperPassword.UI.Interactions"
+    xmlns:m="using:SuperPassword.UI.Models"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:u="https://irihi.tech/ursa"
     xmlns:vm="using:SuperPassword.UI.ViewModels"
@@ -24,13 +25,12 @@
 
     <Grid Margin="5,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" MaxHeight="45" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="5*" />
         </Grid.RowDefinitions>
         <DockPanel Margin="10" LastChildFill="True">
-
             <Button
-                MinWidth="100"
+                MinWidth="50"
                 VerticalAlignment="Stretch"
                 Command="{Binding AddCommand}"
                 Content="新增"
@@ -38,6 +38,7 @@
             <u:TagInput
                 Margin="0,0,10,0"
                 VerticalAlignment="Stretch"
+                Tags="{Binding FilterTags}"
                 Watermark="筛选" />
         </DockPanel>
         <ScrollViewer Grid.Row="1">
@@ -50,9 +51,21 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border
-                            Classes="Hover"
-                            IsVisible="{Binding Visibility}"
+                            Classes="Hover Hiddenable"
+                            Classes.AllVisiable="{ReflectionBinding !$parent[ItemsControl].DataContext.FilterTags.Count}"
+                            Classes.SelfVisiable="{Binding Visibility, Mode=TwoWay}"
                             Theme="{StaticResource CardBorder}">
+                            <Border.Styles>
+                                <Style Selector="Border.Hiddenable">
+                                    <Setter Property="IsVisible" Value="False" />
+                                </Style>
+                                <Style Selector="Border.AllVisiable.Hiddenable">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </Style>
+                                <Style Selector="Border.SelfVisiable.Hiddenable">
+                                    <Setter Property="IsVisible" Value="True" />
+                                </Style>
+                            </Border.Styles>
                             <StackPanel>
                                 <DockPanel>
                                     <TextBlock
@@ -104,7 +117,28 @@
                                         IsVisible="{Binding !IsEditable}"
                                         ItemsSource="{Binding ViewTags}"
                                         SelectionMode="Multiple,Toggle"
-                                        Theme="{DynamicResource ButtonRadioGroupListBox}" />
+                                        Theme="{DynamicResource ButtonRadioGroupListBox}">
+                                        <ListBox.ItemContainerTheme>
+                                            <!--  x:DataType="m:Tag"  -->
+                                            <ControlTheme BasedOn="{StaticResource ButtonRadioGroupListBoxItem}" TargetType="ListBoxItem">
+                                                <!--<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />-->
+                                                <Setter Property="Padding" Value="0" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                            </ControlTheme>
+                                        </ListBox.ItemContainerTheme>
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border>
+                                                    <Button
+                                                        Classes.Primary="{Binding IsSelected}"
+                                                        Classes.Tertiary="{Binding !IsSelected}"
+                                                        Command="{ReflectionBinding $parent[UserControl].DataContext.TagClickCommand}"
+                                                        CommandParameter="{Binding}"
+                                                        Content="{Binding Content}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
                                 </DockPanel>
                                 <Grid ColumnDefinitions="*,*">
                                     <Border
@@ -114,10 +148,9 @@
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="用户名" />
                                         <Interaction.Behaviors>
-
                                             <EventTriggerBehavior EventName="PointerPressed">
                                                 <i:InvokeCommandActionWithArgs
-                                                    Command="{ReflectionBinding $parent[ItemsControl].DataContext.DraggingCommand}"
+                                                    Command="{ReflectionBinding $parent[UserControl].DataContext.DraggingCommand}"
                                                     CommandParameter="{Binding Username}"
                                                     ParametersConverter="{StaticResource MutiParametersConverter}"
                                                     PassEventArgsToCommand="True" />
@@ -132,10 +165,9 @@
                                         Theme="{StaticResource CardBorder}">
                                         <TextBlock HorizontalAlignment="Center" Text="密码" />
                                         <Interaction.Behaviors>
-
                                             <EventTriggerBehavior EventName="PointerPressed">
                                                 <i:InvokeCommandActionWithArgs
-                                                    Command="{ReflectionBinding $parent[ItemsControl].DataContext.DraggingCommand}"
+                                                    Command="{ReflectionBinding $parent[UserControl].DataContext.DraggingCommand}"
                                                     CommandParameter="{Binding Password}"
                                                     ParametersConverter="{StaticResource MutiParametersConverter}"
                                                     PassEventArgsToCommand="True" />
