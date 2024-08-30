@@ -1,5 +1,4 @@
-﻿using Mapster;
-using SuperPassword.BLL.Implementations.Models;
+﻿using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.DAL.Implementations.Models;
 using SuperPassword.DAL.Interfaces.Models;
@@ -13,39 +12,64 @@ namespace SuperPassword.BLL.Implementations
     {
         public async Task<IBLLResponse> AddAsync(IInfoGroup infoGroup)
         {
-            IDALResponse responseDAL = await _DALService.AddAsync(ActiveUser.Name, Encrypt(infoGroup));
-            return new BLLResponse(responseDAL);
+            BLLResponse response = new();
+            var DALInfoGroup = Encrypt(infoGroup);
+            if (IsOnline)
+                response.OnlineResponse = await onlineService.AddAsync(ActiveUser.Name, DALInfoGroup);
+            if (IsOffline)
+                response.OfflineResponse = await offlineService.AddAsync(DALInfoGroup);
+            return response;
         }
 
         public async Task<IBLLResponse> DeleteAsync(Guid id)
         {
-            IDALResponse responseDAL = await _DALService.DeleteAsync(ActiveUser.Name, id);
-            return new BLLResponse(responseDAL);
+            BLLResponse response = new();
+            if (IsOnline)
+                response.OnlineResponse = await onlineService.DeleteAsync(ActiveUser.Name, id);
+            if (IsOffline)
+                response.OfflineResponse = await offlineService.DeleteAsync(id);
+            return response;
         }
 
-        public async Task<IBLLResponse<IList<IBLLInfoGroup>>> GetAllAsync()
+        public async Task<IBLLResponse<IList<IDALInfoGroup>, IList<IBLLInfoGroup>>> GetAllAsync()
         {
-            IDALResponse<IList<IDALInfoGroup>> responseDAL = await _DALService.GetAllAsync(ActiveUser.Name);
-            BLLResponse<IList<IBLLInfoGroup>> result = new();
-            responseDAL.Adapt(result);
-            result.Content = responseDAL.Content?.Select(Decrypt).ToList();
-            return result;
+            BLLResponse<IList<IDALInfoGroup>, IList<IBLLInfoGroup>> response = new();
+            if (IsOnline)
+                response.OnlineResponse = await onlineService.GetAllAsync(ActiveUser.Name);
+            if (IsOffline)
+                response.OfflineResponse = await offlineService.GetAllAsync();
+
+            if (response.OfflineResponse != null)
+                response.Content = response.OfflineResponse.Content.Select(Decrypt).ToList();
+            else if (response.OnlineResponse != null)
+                response.Content = response.OnlineResponse.Content.Select(Decrypt).ToList();
+            return response;
         }
 
-        public async Task<IBLLResponse<IBLLInfoGroup>> GetFirstOfDefaultAsync(Guid id)
+        public async Task<IBLLResponse<IDALInfoGroup, IBLLInfoGroup>> GetFirstOfDefaultAsync(Guid id)
         {
-            IDALResponse<IDALInfoGroup> responseDAL = await _DALService.GetFirstOfDefaultAsync(ActiveUser.Name, id);
-            BLLResponse<IBLLInfoGroup> result = new();
-            responseDAL.Adapt(result);
-            if (responseDAL.Content != null)
-                result.Content = Decrypt(responseDAL.Content);
-            return result;
+            BLLResponse<IDALInfoGroup, IBLLInfoGroup> response = new();
+            if (IsOnline)
+                response.OnlineResponse = await onlineService.GetFirstOfDefaultAsync(ActiveUser.Name, id);
+            if (IsOffline)
+                response.OfflineResponse = await offlineService.GetFirstOfDefaultAsync(id);
+
+            if (response.OfflineResponse != null)
+                response.Content = Decrypt(response.OfflineResponse.Content);
+            else if (response.OnlineResponse != null)
+                response.Content = Decrypt(response.OnlineResponse.Content);
+            return response;
         }
 
         public async Task<IBLLResponse> UpdateAsync(IInfoGroup infoGroup)
         {
-            IDALResponse responseDAL = await _DALService.UpdateAsync(ActiveUser.Name, Encrypt(infoGroup));
-            return new BLLResponse(responseDAL);
+            BLLResponse response = new();
+            var DALInfoGroup = Encrypt(infoGroup);
+            if (IsOnline)
+                response.OnlineResponse = await onlineService.UpdateAsync(ActiveUser.Name, DALInfoGroup);
+            if (IsOffline)
+                response.OfflineResponse = await offlineService.UpdateAsync(DALInfoGroup);
+            return response;
         }
 
         private DALInfoGroup Encrypt(IInfoGroup infoGroup)
@@ -53,9 +77,9 @@ namespace SuperPassword.BLL.Implementations
             byte[] siteNonce, siteTag;
             byte[]? encryptedSite = securityService.Encrypt(Encoding.UTF8.GetBytes(infoGroup.Site), out siteNonce, out siteTag!);
             byte[] usernameNonce, usernameTag;
-            byte[]? encryptedUsername = securityService.Encrypt(Encoding.UTF8.GetBytes(infoGroup.Site), out usernameNonce, out usernameTag!);
+            byte[]? encryptedUsername = securityService.Encrypt(Encoding.UTF8.GetBytes(infoGroup.Username), out usernameNonce, out usernameTag!);
             byte[] passwordNonce, passwordTag;
-            byte[]? encryptedPassword = securityService.Encrypt(Encoding.UTF8.GetBytes(infoGroup.Site), out passwordNonce, out passwordTag!);
+            byte[]? encryptedPassword = securityService.Encrypt(Encoding.UTF8.GetBytes(infoGroup.Password), out passwordNonce, out passwordTag!);
             if (encryptedPassword == null || encryptedUsername == null || encryptedSite == null)
                 throw new Exception("加密错误");
             return new DALInfoGroup()
@@ -70,7 +94,7 @@ namespace SuperPassword.BLL.Implementations
                 Password = encryptedPassword,
                 PasswordNonce = passwordNonce,
                 PasswordTag = passwordTag,
-                Tags = infoGroup.Tags?.Select((item) => 
+                Tags = infoGroup.Tags?.Select((item) =>
                 {
                     byte[] tagContentNonce, tagContentTag;
                     byte[]? encryptedTagContent = securityService.Encrypt(Encoding.UTF8.GetBytes(item), out tagContentNonce, out tagContentTag!);

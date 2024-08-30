@@ -1,9 +1,13 @@
-﻿using SuperPassword.DAL.Interfaces;
-using SuperPassword.DAL.Online.Clinet;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SuperPassword.Config.Service;
+using SuperPassword.DAL.Implementations.Offline;
+using SuperPassword.DAL.Interfaces.Offline;
+using SuperPassword.DAL.Interfaces.Online;
+using SuperPassword.DAL.Online.Client;
 
 namespace SuperPassword.DAL.Implementations.Online
 {
-    internal partial class OnlineService : IOnlineService
+    public partial class OnlineService : IOnlineService
     {
         private readonly HttpRestClient client;
 
@@ -12,6 +16,10 @@ namespace SuperPassword.DAL.Implementations.Online
         public OnlineService(HttpRestClient client)
         {
             this.client = client;
+        }
+        public static void AddService(ServiceCollection container)
+        {
+            container.AddSingleton(sp => new HttpRestClient(sp.GetService<IConfigService>()!.AppConfig.ApiUrl));
         }
     }
 }

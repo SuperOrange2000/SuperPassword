@@ -1,17 +1,17 @@
 ﻿using SuperPassword.DAL.Implementations.Models;
-using SuperPassword.DAL.Interfaces.Models;
+using SuperPassword.DAL.Interfaces.Offline;
 using SuperPassword.Entity.Interface;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace SuperPassword.DAL.Implementations.Offline
 {
-    internal partial class OfflineService
+    public partial class OfflineService
     {
-        public async Task<IDALResponse<byte[]>> LoginAsync(IUser user)
+        public async Task<IOfflineResponse<byte[]>> LoginAsync(IUser user)
         {
             if (!_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
-                return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
+                return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
             _configService.SwitchUser(user.Name);
             byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(user.Password),
@@ -24,20 +24,21 @@ namespace SuperPassword.DAL.Implementations.Offline
             if (verificationCode != null && verificationCode.All(i => i == 0))
             {
                 _configService.MountSaveFunction();
-                return new DALResponse<byte[]>()
+                await UpdateInfoGroupDbContextAsync();
+                return new OfflineResponse<byte[]>()
                 {
                     DataStatus = ResponseDataStatus.Success,
                     Content = Decrypt(spwd, _configService.UserProperties.EncryptedPassword)
                 };
             }
-            else return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.Forbidden };
+            else return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.Forbidden };
         }
 
-        public async Task<IDALResponse<byte[]>> SignUpAsync(IUser user)
+        public async Task<IOfflineResponse<byte[]>> SignUpAsync(IUser user)
         {
             byte[] internalPwd;
             if (_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
-                return new DALResponse<byte[]>() { DataStatus = ResponseDataStatus.NameConflictError };
+                return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.NameConflictError };
             else
             {
                 _configService.SwitchUser(user.Name, user.UserGuid);
@@ -57,7 +58,8 @@ namespace SuperPassword.DAL.Implementations.Offline
                 _configService.UserProperties.EncryptedPassword = Encrypt(spwd, internalPwd);
                 _configService.UserProperties.VerificationCode = Encrypt(spwd, new byte[16]);
             }
-            return new DALResponse<byte[]>()
+            await UpdateInfoGroupDbContextAsync();
+            return new OfflineResponse<byte[]>()
             {
                 DataStatus = ResponseDataStatus.Success,
                 Content = internalPwd

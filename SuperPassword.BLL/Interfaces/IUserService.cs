@@ -3,11 +3,11 @@ using SuperPassword.Entity.Interface;
 
 namespace SuperPassword.BLL.Interfaces
 {
-    public interface IUserService
+    public partial interface IBLLService
     {
-        Task<IBLLResponse> SignUp(IUser user);
+        Task<IBLLResponse> SignUpAsync(IUser user);
 
-        Task<IBLLResponse> Login(IUser user);
+        Task<IBLLResponse> LoginAsync(IUser user);
 
         IBLLUser ActiveUser { get; }
     }

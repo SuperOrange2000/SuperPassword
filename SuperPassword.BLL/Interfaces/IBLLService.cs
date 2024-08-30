@@ -1,6 +1,6 @@
 ﻿namespace SuperPassword.BLL.Interfaces
 {
-    public interface IBLLService : IDataService, IUserService
+    public partial interface IBLLService
     {
     }
 }

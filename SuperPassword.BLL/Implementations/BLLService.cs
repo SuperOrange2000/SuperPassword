@@ -2,31 +2,59 @@
 using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces;
 using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Implementations;
-using SuperPassword.DAL.Interfaces;
+using SuperPassword.Config.Service;
+using SuperPassword.DAL.Implementations.Offline;
+using SuperPassword.DAL.Implementations.Online;
+using SuperPassword.DAL.Interfaces.Offline;
+using SuperPassword.DAL.Interfaces.Online;
 using SuperPassword.Security.Service;
 
 namespace SuperPassword.BLL.Implementations
 {
     public partial class BLLService : IBLLService
     {
-        private IDALService _DALService;
+        private StorageMode storageMode = StorageMode.LocalOnly;
+
+        private IOfflineService offlineService;
+        private IOnlineService onlineService;
+
         private ISecurityService securityService;
+        private IServiceProvider serviceProvider;
         private BLLUser activeUser;
 
-        //private byte[] internalPassword;
-        public BLLService(IDALService DALService, ISecurityService securityService)
-        {
-            _DALService = DALService;
-            this.securityService = securityService;
-        }
+        private bool IsOnline => (storageMode & StorageMode.ServerOnly) != 0;
+        private bool IsOffline => (storageMode & StorageMode.LocalOnly) != 0;
 
+        //private byte[] internalPassword;
+        public BLLService(IServiceProvider serviceProvider, ISecurityService securityService)
+        {
+            this.securityService = securityService;
+            this.serviceProvider = serviceProvider;
+
+            UpdateStorageMode((StorageMode)serviceProvider.GetService<IConfigService>()!.AppConfig.StorageMode);
+        }
         public static void AddService(ServiceCollection container)
         {
-            container.AddSingleton<IDALService, DALService>();
+            container.AddSingleton<IOnlineService, OnlineService>();
+            container.AddSingleton<IOfflineService, OfflineService>();
             container.AddSingleton<ISecurityService, SecurityService>();
+
+            OnlineService.AddService(container);
+            OfflineService.AddService(container);
             SecurityService.AddService(container);
-            DALService.AddService(container);
+        }
+
+        public void UpdateStorageMode(StorageMode mode)
+        {
+            storageMode = mode;
+            if (IsOffline)
+            {
+                offlineService = serviceProvider.GetService<IOfflineService>()!;
+            }
+            if (IsOnline)
+            {
+                onlineService = serviceProvider.GetService<IOnlineService>()!;
+            }
         }
 
         public IBLLUser ActiveUser { get => activeUser; }

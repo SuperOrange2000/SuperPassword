@@ -2,8 +2,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SuperPassword.BLL.Interfaces;
-using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.Entity.Interface;
 using SuperPassword.UI.Models;
 using System;
 using System.Collections.Generic;
@@ -55,8 +53,8 @@ public partial class MainViewModel : ViewModelBase
     private async void InitToDoList()
     {
         if (BLLService == null) return;
-        IBLLResponse<IList<IBLLInfoGroup>> result = await BLLService.GetAllAsync();
-        if (result.DataStatus == ResponseDataStatus.Success && result.Content != null)
+        var result = await BLLService.GetAllAsync();
+        if (result.IsSuccess)
         {
             foreach (var item in result.Content)
             {
@@ -89,10 +87,9 @@ public partial class MainViewModel : ViewModelBase
         if (!infoGroup.IsNew)
         {
             var result = await BLLService.DeleteAsync(infoGroup.InfoGroupGuid);
-            if (result.DataStatus != ResponseDataStatus.Success)
-                return;
+            if (result.IsSuccess)
+                InfoGroupViewItems.Remove(infoGroup);
         }
-        InfoGroupViewItems.Remove(infoGroup);
     }
 
     [RelayCommand]

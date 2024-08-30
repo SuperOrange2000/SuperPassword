@@ -11,6 +11,8 @@ namespace SuperPassword.Config.Models
 
         [ObservableProperty] private ObservableDictionary<string, Guid> usernameMap = new();
 
+        [ObservableProperty] private byte storageMode = 0b001;
+
         [JsonIgnore] public uint MaxLocalId = 10000;
 
         [JsonIgnore] public static readonly string Version = "0.0.1";
