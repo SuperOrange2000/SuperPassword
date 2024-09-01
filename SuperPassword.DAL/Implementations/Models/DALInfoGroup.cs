@@ -36,6 +36,6 @@ namespace SuperPassword.DAL.Implementations.Models
         [Required]
         public byte[] PasswordTag { get; set; }
 
-        public ICollection<DALTag>? Tags { get; set; }
+        public IList<DALTag>? Tags { get; set; }
     }
 }

@@ -19,6 +19,6 @@ namespace SuperPassword.DAL.Interfaces.Models
         public byte[] Password { get; set; }
         public byte[] PasswordNonce { get; set; }
         public byte[] PasswordTag { get; set; }
-        public ICollection<DALTag>? Tags { get; set; }
+        public IList<DALTag>? Tags { get; set; }
     }
 }

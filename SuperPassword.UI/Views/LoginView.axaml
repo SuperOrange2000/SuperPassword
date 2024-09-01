@@ -14,10 +14,24 @@
     x:CompileBindings="True"
     x:DataType="vm:LoginViewModel"
     mc:Ignorable="d">
-    <Grid RowDefinitions="5*,*,*,3*">
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Initialized">
+            <InvokeCommandAction Command="{Binding LoadCompletedCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+    <Grid RowDefinitions="5*,*,*,*,3*">
         <Image Source="/Assets/logo_512.png" />
-        <StackPanel
+        <ToggleSwitch
             Grid.Row="1"
+            HorizontalAlignment="Center"
+            Classes.Loading="{Binding IsServerSwitching}"
+            Command="{Binding SwitchServerCommand}"
+            IsChecked="{Binding EnableServer}"
+            IsEnabled="{Binding !IsServerSwitching}"
+            OffContent="离线模式"
+            OnContent="同步模式(实验性）" />
+        <StackPanel
+            Grid.Row="2"
             Margin="10,5"
             VerticalAlignment="Center">
             <TextBox
@@ -38,7 +52,7 @@
                 Text="{Binding UserNameNotice}" />
         </StackPanel>
         <StackPanel
-            Grid.Row="2"
+            Grid.Row="3"
             Margin="10,2"
             VerticalAlignment="Center">
             <TextBox
@@ -61,7 +75,7 @@
                 Text="{Binding PasswordNotice}" />
         </StackPanel>
 
-        <DockPanel Grid.Row="3">
+        <DockPanel Grid.Row="4">
             <Grid
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"

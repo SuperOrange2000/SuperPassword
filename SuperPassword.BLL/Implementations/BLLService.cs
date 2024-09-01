@@ -31,7 +31,6 @@ namespace SuperPassword.BLL.Implementations
             this.securityService = securityService;
             this.serviceProvider = serviceProvider;
 
-            UpdateStorageMode((StorageMode)serviceProvider.GetService<IConfigService>()!.AppConfig.StorageMode);
         }
         public static void AddService(ServiceCollection container)
         {
@@ -44,16 +43,16 @@ namespace SuperPassword.BLL.Implementations
             SecurityService.AddService(container);
         }
 
-        public void UpdateStorageMode(StorageMode mode)
+        public async Task UpdateStorageModeAsync(StorageMode mode)
         {
             storageMode = mode;
             if (IsOffline)
             {
-                offlineService = serviceProvider.GetService<IOfflineService>()!;
+                offlineService = await Task.Run(() => serviceProvider.GetService<IOfflineService>()!);
             }
             if (IsOnline)
             {
-                onlineService = serviceProvider.GetService<IOnlineService>()!;
+                onlineService = await Task.Run(() => serviceProvider.GetService<IOnlineService>()!);
             }
         }
 

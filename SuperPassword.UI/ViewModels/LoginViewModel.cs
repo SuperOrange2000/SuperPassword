@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces;
 using SuperPassword.Config.Service;
 using SuperPassword.DAL.Implementations.Models;
@@ -24,6 +25,12 @@ public partial class LoginViewModel : ViewModelBase
     [ObservableProperty]
     private string passwordNotice = string.Empty;
 
+    [ObservableProperty]
+    private bool enableServer = false;
+
+    [ObservableProperty]
+    private bool isServerSwitching = false;
+
     private readonly IBLLService BLLService;
     private readonly IConfigService configService;
     private readonly INavigationService navigationService;
@@ -41,6 +48,32 @@ public partial class LoginViewModel : ViewModelBase
     }
 
     //private bool CanLogin() => !string.IsNullOrWhiteSpace(ActiveUser.Name) && !string.IsNullOrWhiteSpace(ActiveUser.Password);
+
+    [RelayCommand]
+    private async Task LoadCompletedAsync()
+    {
+        IsServerSwitching = true;
+        await BLLService.UpdateStorageModeAsync((StorageMode)configService.AppConfig.StorageMode);
+        EnableServer = (configService.AppConfig.StorageMode & 0b010) != 0;
+        IsServerSwitching = false;
+    }
+
+    [RelayCommand]
+    private async Task SwitchServerAsync()
+    {
+        IsServerSwitching = true;
+        if (EnableServer)
+        {
+            configService.AppConfig.StorageMode = (byte)StorageMode.ServerSync;
+            await BLLService.UpdateStorageModeAsync(StorageMode.ServerSync);
+        }
+        else
+        {
+            configService.AppConfig.StorageMode = (byte)StorageMode.LocalOnly;
+            await BLLService.UpdateStorageModeAsync(StorageMode.LocalOnly);
+        }
+        IsServerSwitching = false;
+    }
 
     [RelayCommand]
     private async Task Login(IUser user)

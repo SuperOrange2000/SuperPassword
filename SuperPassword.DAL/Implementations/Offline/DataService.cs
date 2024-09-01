@@ -28,7 +28,10 @@ namespace SuperPassword.DAL.Implementations.Offline
             var result = await _infoGroupDbContext.InfoGroups.ToListAsync<IDALInfoGroup>();
             foreach (var infoGroup in result)
             {
-                infoGroup.Tags = _infoGroupDbContext.Tags.Where(tag => tag.InfoGroupId == infoGroup.Id).ToList();
+                infoGroup.Tags = _infoGroupDbContext.
+                    Tags.
+                    Where(tag => tag.InfoGroupId == infoGroup.Id).
+                    ToList();
             }
             return new OfflineResponse<IList<IDALInfoGroup>>()
             {

@@ -1,9 +1,4 @@
 ﻿using RestSharp;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Xml.Linq;
 
 namespace SuperPassword.DAL.Online.Client
 {
@@ -17,17 +12,32 @@ namespace SuperPassword.DAL.Online.Client
             AddParameter(new HeaderParameter("Content-Type", "application/x-www-form-urlencoded"));
         }
 
-        public void AddParameter<T>(string? name, List<T> value, ParameterType type = ParameterType.GetOrPost)
+        public void AddParameter<T>(string? name, IList<T> value, ParameterType type = ParameterType.GetOrPost)
         {
             foreach (var v in value)
-                AddParameter(Parameter.CreateParameter(name, v, type));
+                AddParameter(name, v, type);
         }
 
-        public void AddParameter<T>(string? name, ObservableCollection<T> value, ParameterType type = ParameterType.GetOrPost)
+        public void AddParameter<T, TResult>(string? name, IList<T> value, Func<T, TResult> implementationFactory, ParameterType type = ParameterType.GetOrPost)
         {
             foreach (var v in value)
-                AddParameter(Parameter.CreateParameter(name, v, type));
+                AddParameter(name, implementationFactory.Invoke(v), type);
         }
+
+        public void AddParameter<T>(string? name, ICollection<T> value, ParameterType type = ParameterType.GetOrPost)
+        {
+            foreach (var v in value)
+                AddParameter(name, v, type);
+        }
+
+        public void AddParameter<T, TResult>(string? name, ICollection<T> value, Func<T, TResult> implementationFactory, ParameterType type = ParameterType.GetOrPost)
+        {
+            foreach (var v in value)
+                AddParameter(name, implementationFactory.Invoke(v), type);
+        }
+
+        public void AddParameter<T>(string? name, T value, ParameterType type = ParameterType.GetOrPost)
+            => AddParameter(Parameter.CreateParameter(name, value, type));
 
         public void AddParameter(string? name, byte[] value, ParameterType type = ParameterType.GetOrPost) =>
             AddParameter(Parameter.CreateParameter(name, Convert.ToBase64String(value), type));

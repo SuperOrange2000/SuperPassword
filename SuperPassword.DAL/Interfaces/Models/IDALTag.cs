@@ -1,4 +1,5 @@
 ﻿using SuperPassword.DAL.Implementations.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace SuperPassword.DAL.Interfaces.Models
 {
@@ -6,6 +7,8 @@ namespace SuperPassword.DAL.Interfaces.Models
     {
         public Guid TagGuid { get; set; }
         public byte[] Content { get; set; }
+        public byte[] ContentNonce { get; set; }
+        public byte[] ContentTag { get; set; }
         public uint InfoGroupId { get; set; }
         public DALInfoGroup InfoGroup { get; set; }
     }
