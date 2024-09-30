@@ -1,5 +1,4 @@
-﻿using SuperPassword.DAL.Interfaces.Offline;
-using SuperPassword.DAL.Models;
+﻿using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 using System.Security.Cryptography;
 using System.Text;

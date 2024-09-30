@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 
 namespace SuperPassword.DAL.Models
 {
@@ -36,5 +37,16 @@ namespace SuperPassword.DAL.Models
         public byte[] PasswordTag { get; set; }
 
         public IList<DALTag>? Tags { get; set; }
+
+        [NotMapped]
+        public byte[] HashTag
+        {
+            get
+            {
+                using SHA256 hash = SHA256.Create();
+                hash.TransformBlock(Site, 0, Site.Length, null, 0);
+                return hash.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            }
+        }
     }
 }

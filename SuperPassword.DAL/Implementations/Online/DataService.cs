@@ -17,6 +17,7 @@ namespace SuperPassword.DAL.Implementations.Online
                 site = infoGroupDto.Site,
                 username = infoGroupDto.Username,
                 password = infoGroupDto.Password,
+                hashtag = infoGroupDto.HashTag,
                 //tags = infoGroupDto.Tags
             });
             return await client.RequestAsync(request);
@@ -50,6 +51,7 @@ namespace SuperPassword.DAL.Implementations.Online
             request.AddParameter("username", infoGroupDto.Username, ParameterType.QueryString);
             request.AddParameter("site", infoGroupDto.Site, ParameterType.QueryString);
             request.AddParameter("password", infoGroupDto.Password, ParameterType.QueryString);
+            request.AddParameter("hashtag", infoGroupDto.HashTag, ParameterType.QueryString);
             return await client.RequestAsync(request);
         }
     }

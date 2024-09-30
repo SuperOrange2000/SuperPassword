@@ -20,6 +20,10 @@ namespace SuperPassword.DAL.Implementations.Online.Client
         [JsonPropertyName("tags")]
         public IList<string>? Tags { get; set; }
 
+
+        [JsonPropertyName("hashtag")]
+        public byte[] HashTag { get; set; }
+
         public InfoGroupDto() { }
 
         public InfoGroupDto(DALInfoGroup infoGroup)
@@ -28,6 +32,7 @@ namespace SuperPassword.DAL.Implementations.Online.Client
             Site = Convert.ToBase64String([.. infoGroup.Site, .. infoGroup.SiteNonce, .. infoGroup.SiteTag]);
             Username = Convert.ToBase64String([.. infoGroup.Username, .. infoGroup.UsernameNonce, .. infoGroup.UsernameTag]);
             Password = Convert.ToBase64String([.. infoGroup.Password, .. infoGroup.PasswordNonce, .. infoGroup.PasswordTag]);
+            HashTag = infoGroup.HashTag;
             if (infoGroup.Tags != null)
             {
                 Tags = [];
