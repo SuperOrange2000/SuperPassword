@@ -1,5 +1,4 @@
-﻿using SuperPassword.BLL.Implementations.Models;
-using SuperPassword.BLL.Interfaces.Models;
+﻿using SuperPassword.BLL.Models;
 using SuperPassword.Entity.Interface;
 using SuperPassword.Security.Sercvice;
 
@@ -7,7 +6,7 @@ namespace SuperPassword.BLL.Implementations
 {
     public partial class BLLService
     {
-        public async Task<IBLLResponse> SignUpAsync(IUser user)
+        public async Task<BLLResponse> SignUpAsync(IUser user)
         {
             BLLResponse response = new();
             configService.SwitchUser(user.Name, user.UserGuid);
@@ -30,7 +29,7 @@ namespace SuperPassword.BLL.Implementations
             return response;
         }
 
-        public async Task<IBLLResponse> LoginAsync(IUser user)
+        public async Task<BLLResponse> LoginAsync(IUser user)
         {
             BLLResponse response = new();
             configService.SwitchUser(user.Name, user.UserGuid);

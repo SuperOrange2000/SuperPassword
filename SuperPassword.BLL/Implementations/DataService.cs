@@ -1,5 +1,4 @@
-﻿using SuperPassword.BLL.Implementations.Models;
-using SuperPassword.BLL.Interfaces.Models;
+﻿using SuperPassword.BLL.Models;
 using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 using System.Text;
@@ -9,7 +8,7 @@ namespace SuperPassword.BLL.Implementations
 {
     public partial class BLLService
     {
-        public async Task<IBLLResponse> AddAsync(IInfoGroup infoGroup)
+        public async Task<BLLResponse> AddAsync(IInfoGroup infoGroup)
         {
             BLLResponse response = new();
             var DALInfoGroup = Encrypt(infoGroup);
@@ -20,7 +19,7 @@ namespace SuperPassword.BLL.Implementations
             return response;
         }
 
-        public async Task<IBLLResponse> DeleteAsync(Guid id)
+        public async Task<BLLResponse> DeleteAsync(Guid id)
         {
             BLLResponse response = new();
             if (IsOnline)
@@ -30,9 +29,9 @@ namespace SuperPassword.BLL.Implementations
             return response;
         }
 
-        public async Task<IBLLResponse<List<DALInfoGroup>, List<IBLLInfoGroup>>> GetAllAsync()
+        public async Task<BLLResponse<List<DALInfoGroup>, List<BLLInfoGroup>>> GetAllAsync()
         {
-            BLLResponse<List<DALInfoGroup>, List<IBLLInfoGroup>> response = new();
+            BLLResponse<List<DALInfoGroup>, List<BLLInfoGroup>> response = new();
             //if (IsOnline)
             //    response.OnlineResponse = await onlineService.GetAllAsync(ActiveUser.Name);
             if (IsOffline)
@@ -43,9 +42,9 @@ namespace SuperPassword.BLL.Implementations
             return response;
         }
 
-        public async Task<IBLLResponse<DALInfoGroup, IBLLInfoGroup>> GetFirstOfDefaultAsync(Guid id)
+        public async Task<BLLResponse<DALInfoGroup, BLLInfoGroup>> GetFirstOfDefaultAsync(Guid id)
         {
-            BLLResponse<DALInfoGroup, IBLLInfoGroup> response = new();
+            BLLResponse<DALInfoGroup, BLLInfoGroup> response = new();
             if (IsOnline)
                 response.OnlineResponse = await onlineService.GetFirstOfDefaultAsync(ActiveUser.Name, id);
             if (IsOffline)
@@ -58,7 +57,7 @@ namespace SuperPassword.BLL.Implementations
             return response;
         }
 
-        public async Task<IBLLResponse> UpdateAsync(IInfoGroup infoGroup)
+        public async Task<BLLResponse> UpdateAsync(IInfoGroup infoGroup)
         {
             BLLResponse response = new();
             var DALInfoGroup = Encrypt(infoGroup);
@@ -106,7 +105,7 @@ namespace SuperPassword.BLL.Implementations
             };
         }
 
-        private IBLLInfoGroup Decrypt(DALInfoGroup infoGroup)
+        private BLLInfoGroup Decrypt(DALInfoGroup infoGroup)
         {
             var decryptedSite = securityService.Decrypt(infoGroup.Site, infoGroup.SiteNonce, infoGroup.SiteTag);
             var decryptedUsername = securityService.Decrypt(infoGroup.Username, infoGroup.UsernameNonce, infoGroup.UsernameTag);

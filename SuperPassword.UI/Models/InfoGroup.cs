@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SuperPassword.BLL.Models;
 using SuperPassword.Entity.Interface;
 using System;
 using System.Collections.Generic;
@@ -61,7 +62,7 @@ namespace SuperPassword.UI.Models
             InitTagsChangedMethod();
         }
 
-        public InfoGroup(IInfoGroup infoGroup) : this()
+        public InfoGroup(BLLInfoGroup infoGroup) : this()
         {
             InfoGroupGuid = infoGroup.InfoGroupGuid;
             Site = infoGroup.Site;

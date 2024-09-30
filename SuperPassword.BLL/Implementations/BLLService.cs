@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces;
-using SuperPassword.BLL.Interfaces.Models;
+using SuperPassword.BLL.Models;
 using SuperPassword.Config.Service;
 using SuperPassword.DAL.Implementations.Offline;
 using SuperPassword.DAL.Implementations.Online;
@@ -57,6 +56,6 @@ namespace SuperPassword.BLL.Implementations
             }
         }
 
-        public IBLLUser ActiveUser { get => activeUser; }
+        internal BLLUser ActiveUser { get => activeUser; }
     }
 }

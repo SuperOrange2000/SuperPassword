@@ -1,4 +1,4 @@
-﻿namespace SuperPassword.BLL.Implementations.Models
+﻿namespace SuperPassword.BLL.Models
 {
     public enum StorageMode : byte
     {

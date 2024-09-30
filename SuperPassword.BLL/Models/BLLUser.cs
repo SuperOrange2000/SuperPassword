@@ -1,10 +1,9 @@
 ﻿using Mapster;
-using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.Entity.Interface;
 
-namespace SuperPassword.BLL.Implementations.Models
+namespace SuperPassword.BLL.Models
 {
-    internal class BLLUser : IBLLUser
+    public class BLLUser
     {
         public Guid UserGuid { get; set; }
         public string Name { get; set; }

@@ -58,7 +58,7 @@ public partial class MainViewModel : ViewModelBase
         {
             foreach (var item in result.Content)
             {
-                InfoGroupViewItems.Add(new InfoGroup(item));
+                InfoGroupViewItems.Add(new(item));
             }
         }
     }

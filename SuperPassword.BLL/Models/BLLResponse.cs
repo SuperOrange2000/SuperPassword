@@ -1,9 +1,8 @@
-﻿using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Models;
+﻿using SuperPassword.DAL.Models;
 
-namespace SuperPassword.BLL.Implementations.Models
+namespace SuperPassword.BLL.Models
 {
-    public class BLLResponse<T> : BLLResponseBase, IBLLResponse<T>
+    public class BLLResponse<T> : BLLResponseBase
     {
         public OnlineResponse<T>? OnlineResponse { get; set; }
 
@@ -12,7 +11,7 @@ namespace SuperPassword.BLL.Implementations.Models
         public T Content { get; set; }
     }
 
-    public class BLLResponse<TIn, TOut> : BLLResponseBase, IBLLResponse<TIn, TOut>
+    public class BLLResponse<TIn, TOut> : BLLResponseBase
     {
         public OnlineResponse<TIn>? OnlineResponse { get; set; }
 
@@ -21,14 +20,14 @@ namespace SuperPassword.BLL.Implementations.Models
         public TOut Content { get; set; }
     }
 
-    public class BLLResponse : BLLResponseBase, IBLLResponse
+    public class BLLResponse : BLLResponseBase
     {
         public OnlineResponse? OnlineResponse { get; set; }
 
         public OfflineResponse? OfflineResponse { get; set; }
     }
 
-    public class BLLResponseBase : IBLLResponseBase
+    public class BLLResponseBase
     {
         public bool IsSuccess { get; set; } = true;
         public string Message { get; set; } = string.Empty;

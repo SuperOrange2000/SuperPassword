@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces;
+using SuperPassword.BLL.Models;
 using SuperPassword.Config.Service;
 using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;

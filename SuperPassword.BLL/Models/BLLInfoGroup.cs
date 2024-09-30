@@ -1,11 +1,10 @@
 ﻿using Mapster;
-using SuperPassword.BLL.Interfaces.Models;
 using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 
-namespace SuperPassword.BLL.Implementations.Models
+namespace SuperPassword.BLL.Models
 {
-    public class BLLInfoGroup : IBLLInfoGroup
+    public class BLLInfoGroup
     {
         public Guid InfoGroupGuid { get; set; }
 

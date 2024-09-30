@@ -1,4 +1,4 @@
-﻿using SuperPassword.BLL.Implementations.Models;
+﻿using SuperPassword.BLL.Models;
 
 namespace SuperPassword.BLL.Interfaces
 {
