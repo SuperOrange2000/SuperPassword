@@ -1,6 +1,6 @@
 ﻿using Mapster;
 using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Interfaces.Models;
+using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 
 namespace SuperPassword.BLL.Implementations.Models
@@ -23,7 +23,7 @@ namespace SuperPassword.BLL.Implementations.Models
         {
             infoGroup.Adapt(this);
         }
-        public BLLInfoGroup(IDALInfoGroup infoGroup)
+        public BLLInfoGroup(DALInfoGroup infoGroup)
         {
             infoGroup.Adapt(this);
 

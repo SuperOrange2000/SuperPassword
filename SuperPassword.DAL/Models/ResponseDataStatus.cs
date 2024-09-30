@@ -1,4 +1,4 @@
-﻿namespace SuperPassword.DAL.Implementations.Models
+﻿namespace SuperPassword.DAL.Models
 {
     public enum ResponseDataStatus
     {

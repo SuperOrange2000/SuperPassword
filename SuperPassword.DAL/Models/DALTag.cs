@@ -1,11 +1,10 @@
-﻿using SuperPassword.DAL.Interfaces.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SuperPassword.DAL.Implementations.Models
+namespace SuperPassword.DAL.Models
 {
     [Table(nameof(DALTag))]
-    public class DALTag : IDALTag
+    public class DALTag
     {
         [Key]
         public uint Id { get; set; }

@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 using SuperPassword.Config.Service;
-using SuperPassword.DAL.Implementations.Online;
+using SuperPassword.DAL.Models;
 using System.Net;
 using System.Text.Json;
 

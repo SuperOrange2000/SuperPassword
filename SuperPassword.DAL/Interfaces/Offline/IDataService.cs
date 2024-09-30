@@ -1,17 +1,17 @@
-﻿using SuperPassword.DAL.Interfaces.Models;
+﻿using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL.Interfaces.Offline
 {
     public partial interface IOfflineService
     {
-        Task<IOfflineResponse> AddAsync(IDALInfoGroup newInfoGroup);
+        Task<OfflineResponse> AddAsync(DALInfoGroup newInfoGroup);
 
-        Task<IOfflineResponse> DeleteAsync(Guid id);
+        Task<OfflineResponse> DeleteAsync(Guid id);
 
-        Task<IOfflineResponse<IList<IDALInfoGroup>>> GetAllAsync();
+        Task<OfflineResponse<List<DALInfoGroup>>> GetAllAsync();
 
-        Task<IOfflineResponse<IDALInfoGroup>> GetFirstOfDefaultAsync(Guid id);
+        Task<OfflineResponse<DALInfoGroup>> GetFirstOfDefaultAsync(Guid id);
 
-        Task<IOfflineResponse> UpdateAsync(IDALInfoGroup newInfoGroup);
+        Task<OfflineResponse> UpdateAsync(DALInfoGroup newInfoGroup);
     }
 }

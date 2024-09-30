@@ -1,5 +1,5 @@
 ﻿using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Interfaces.Models;
+using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 
 namespace SuperPassword.BLL.Interfaces
@@ -12,8 +12,8 @@ namespace SuperPassword.BLL.Interfaces
 
         Task<IBLLResponse> DeleteAsync(Guid id);
 
-        Task<IBLLResponse<IDALInfoGroup, IBLLInfoGroup>> GetFirstOfDefaultAsync(Guid id);
+        Task<IBLLResponse<DALInfoGroup, IBLLInfoGroup>> GetFirstOfDefaultAsync(Guid id);
 
-        Task<IBLLResponse<IList<IDALInfoGroup>, IList<IBLLInfoGroup>>> GetAllAsync();
+        Task<IBLLResponse<List<DALInfoGroup>, List<IBLLInfoGroup>>> GetAllAsync();
     }
 }

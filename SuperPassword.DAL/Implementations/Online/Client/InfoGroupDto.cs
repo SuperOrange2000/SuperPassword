@@ -1,5 +1,4 @@
-﻿using SuperPassword.DAL.Implementations.Models;
-using SuperPassword.DAL.Interfaces.Models;
+﻿using SuperPassword.DAL.Models;
 using System.Text.Json.Serialization;
 
 namespace SuperPassword.DAL.Implementations.Online.Client
@@ -23,7 +22,7 @@ namespace SuperPassword.DAL.Implementations.Online.Client
 
         public InfoGroupDto() { }
 
-        public InfoGroupDto(IDALInfoGroup infoGroup)
+        public InfoGroupDto(DALInfoGroup infoGroup)
         {
             //InfoGroupGuid = infoGroup.InfoGroupGuid;
             Site = Convert.ToBase64String([.. infoGroup.Site, .. infoGroup.SiteNonce, .. infoGroup.SiteTag]);
@@ -39,7 +38,7 @@ namespace SuperPassword.DAL.Implementations.Online.Client
             }
         }
 
-        public IDALInfoGroup ConvertBack()
+        public DALInfoGroup ConvertBack()
         {
             var result = new DALInfoGroup { InfoGroupGuid = InfoGroupGuid };
             SplitData(Site, out byte[] data, out byte[] nonce, out byte[] tag);

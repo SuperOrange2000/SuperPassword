@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SuperPassword.DAL.Implementations.Models;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL.Implementations.Offline.DataContext
 {

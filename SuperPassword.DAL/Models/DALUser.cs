@@ -1,8 +1,6 @@
-﻿using SuperPassword.DAL.Interfaces.Models;
-
-namespace SuperPassword.DAL.Implementations.Models
+﻿namespace SuperPassword.DAL.Models
 {
-    internal class DALUser : IDALUser
+    internal class DALUser
     {
         public uint Id { get; set; }
 

@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces;
 using SuperPassword.Config.Service;
-using SuperPassword.DAL.Implementations.Models;
+using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 using SuperPassword.UI.Models;
 using SuperPassword.UI.Services;

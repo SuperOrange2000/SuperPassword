@@ -1,10 +1,9 @@
-﻿using SuperPassword.DAL.Interfaces.Online;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json.Serialization;
 
-namespace SuperPassword.DAL.Implementations.Online
+namespace SuperPassword.DAL.Models
 {
-    public class OnlineResponse<T> : OnlineResponse, IOnlineResponse<T>
+    public class OnlineResponse<T> : OnlineResponse
     {
         [JsonPropertyName("data")]
         public T Content { get; set; }
@@ -20,7 +19,7 @@ namespace SuperPassword.DAL.Implementations.Online
         }
     }
 
-    public class OnlineResponse : IOnlineResponse
+    public class OnlineResponse
     {
         public HttpStatusCode? NetworkStatusCode { get; set; }
 

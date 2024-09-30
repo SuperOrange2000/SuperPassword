@@ -1,26 +1,27 @@
 ﻿using SuperPassword.DAL.Interfaces.Offline;
 using SuperPassword.DAL.Interfaces.Online;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.BLL.Interfaces.Models
 {
     public interface IBLLResponse<T> : IBLLResponseBase
     {
-        public IOnlineResponse<T>? OnlineResponse { get; }
-        public IOfflineResponse<T>? OfflineResponse { get; }
+        public OnlineResponse<T>? OnlineResponse { get; }
+        public OfflineResponse<T>? OfflineResponse { get; }
         public T Content { get; }
     }
 
     public interface IBLLResponse<TIn, TOut> : IBLLResponseBase
     {
-        public IOnlineResponse<TIn>? OnlineResponse { get; }
-        public IOfflineResponse<TIn>? OfflineResponse { get; }
+        public OnlineResponse<TIn>? OnlineResponse { get; }
+        public OfflineResponse<TIn>? OfflineResponse { get; }
         public TOut Content { get; }
     }
 
     public interface IBLLResponse : IBLLResponseBase
     {
-        public IOnlineResponse? OnlineResponse { get; }
-        public IOfflineResponse? OfflineResponse { get; }
+        public OnlineResponse? OnlineResponse { get; }
+        public OfflineResponse? OfflineResponse { get; }
     }
 
     public interface IBLLResponseBase

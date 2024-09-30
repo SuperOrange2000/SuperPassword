@@ -1,32 +1,31 @@
 ﻿using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Interfaces.Offline;
-using SuperPassword.DAL.Interfaces.Online;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.BLL.Implementations.Models
 {
     public class BLLResponse<T> : BLLResponseBase, IBLLResponse<T>
     {
-        public IOnlineResponse<T>? OnlineResponse { get; set; }
+        public OnlineResponse<T>? OnlineResponse { get; set; }
 
-        public IOfflineResponse<T>? OfflineResponse { get; set; }
+        public OfflineResponse<T>? OfflineResponse { get; set; }
 
         public T Content { get; set; }
     }
 
     public class BLLResponse<TIn, TOut> : BLLResponseBase, IBLLResponse<TIn, TOut>
     {
-        public IOnlineResponse<TIn>? OnlineResponse { get; set; }
+        public OnlineResponse<TIn>? OnlineResponse { get; set; }
 
-        public IOfflineResponse<TIn>? OfflineResponse { get; set; }
+        public OfflineResponse<TIn>? OfflineResponse { get; set; }
 
         public TOut Content { get; set; }
     }
 
     public class BLLResponse : BLLResponseBase, IBLLResponse
     {
-        public IOnlineResponse? OnlineResponse { get; set; }
+        public OnlineResponse? OnlineResponse { get; set; }
 
-        public IOfflineResponse? OfflineResponse { get; set; }
+        public OfflineResponse? OfflineResponse { get; set; }
     }
 
     public class BLLResponseBase : IBLLResponseBase

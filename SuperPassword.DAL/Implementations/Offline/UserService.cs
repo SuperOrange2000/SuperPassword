@@ -1,5 +1,5 @@
-﻿using SuperPassword.DAL.Implementations.Models;
-using SuperPassword.DAL.Interfaces.Offline;
+﻿using SuperPassword.DAL.Interfaces.Offline;
+using SuperPassword.DAL.Models;
 using SuperPassword.Entity.Interface;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,7 +8,7 @@ namespace SuperPassword.DAL.Implementations.Offline
 {
     public partial class OfflineService
     {
-        public async Task<IOfflineResponse<byte[]>> LoginAsync(IUser user)
+        public async Task<OfflineResponse<byte[]>> LoginAsync(IUser user)
         {
             if (!_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
                 return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
@@ -33,7 +33,7 @@ namespace SuperPassword.DAL.Implementations.Offline
             else return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.Forbidden };
         }
 
-        public async Task<IOfflineResponse<byte[]>> SignUpAsync(IUser user)
+        public async Task<OfflineResponse<byte[]>> SignUpAsync(IUser user)
         {
             byte[] internalPwd;
             if (_configService.AppConfig.UsernameMap.ContainsKey(user.Name))

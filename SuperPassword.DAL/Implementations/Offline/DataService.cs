@@ -1,21 +1,19 @@
 ﻿using Mapster;
 using Microsoft.EntityFrameworkCore;
-using SuperPassword.DAL.Implementations.Models;
-using SuperPassword.DAL.Interfaces.Models;
-using SuperPassword.DAL.Interfaces.Offline;
+using SuperPassword.DAL.Models;
 
 namespace SuperPassword.DAL.Implementations.Offline
 {
     public partial class OfflineService
     {
-        public async Task<IOfflineResponse> AddAsync(IDALInfoGroup newInfoGroup)
+        public async Task<OfflineResponse> AddAsync(DALInfoGroup newInfoGroup)
         {
             await _infoGroupDbContext.AddAsync(newInfoGroup);
             await _infoGroupDbContext.SaveChangesAsync();
             return new OfflineResponse { DataStatus = ResponseDataStatus.Success };
         }
 
-        public async Task<IOfflineResponse> DeleteAsync(Guid id)
+        public async Task<OfflineResponse> DeleteAsync(Guid id)
         {
             DALInfoGroup result = await _infoGroupDbContext.InfoGroups.SingleAsync(item => item.InfoGroupGuid == id);
             _infoGroupDbContext.Remove(result);
@@ -23,9 +21,9 @@ namespace SuperPassword.DAL.Implementations.Offline
             return new OfflineResponse { DataStatus = ResponseDataStatus.Success };
         }
 
-        public async Task<IOfflineResponse<IList<IDALInfoGroup>>> GetAllAsync()
+        public async Task<OfflineResponse<List<DALInfoGroup>>> GetAllAsync()
         {
-            var result = await _infoGroupDbContext.InfoGroups.ToListAsync<IDALInfoGroup>();
+            var result = await _infoGroupDbContext.InfoGroups.ToListAsync<DALInfoGroup>();
             foreach (var infoGroup in result)
             {
                 infoGroup.Tags = _infoGroupDbContext.
@@ -33,20 +31,20 @@ namespace SuperPassword.DAL.Implementations.Offline
                     Where(tag => tag.InfoGroupId == infoGroup.Id).
                     ToList();
             }
-            return new OfflineResponse<IList<IDALInfoGroup>>()
+            return new OfflineResponse<List<DALInfoGroup>>()
             {
                 DataStatus = ResponseDataStatus.Success,
                 Content = result
             };
         }
 
-        public async Task<IOfflineResponse<IDALInfoGroup>> GetFirstOfDefaultAsync(Guid id)
+        public async Task<OfflineResponse<DALInfoGroup>> GetFirstOfDefaultAsync(Guid id)
         {
             DALInfoGroup result = await _infoGroupDbContext.InfoGroups.SingleAsync(item => item.InfoGroupGuid == id);
-            return new OfflineResponse<IDALInfoGroup> { DataStatus = ResponseDataStatus.Success, Content = result };
+            return new OfflineResponse<DALInfoGroup> { DataStatus = ResponseDataStatus.Success, Content = result };
         }
 
-        public async Task<IOfflineResponse> UpdateAsync(IDALInfoGroup newInfoGroup)
+        public async Task<OfflineResponse> UpdateAsync(DALInfoGroup newInfoGroup)
         {
             DALInfoGroup target = await _infoGroupDbContext.InfoGroups.SingleAsync(item => item.InfoGroupGuid == newInfoGroup.InfoGroupGuid);
             var originalId = target.Id;
