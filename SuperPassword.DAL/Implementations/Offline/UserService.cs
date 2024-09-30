@@ -7,18 +7,12 @@ namespace SuperPassword.DAL.Implementations.Offline
 {
     public partial class OfflineService
     {
-        public async Task<OfflineResponse<byte[]>> LoginAsync(IUser user)
+        public async Task<OfflineResponse<byte[]>> LoginAsync(string name, byte[] internalPwd)
         {
-            if (!_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
+            if (!_configService.AppConfig.UsernameMap.ContainsKey(name))
                 return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
-            byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
-                Encoding.UTF8.GetBytes(user.Password),
-                _configService.UserProperties.Salt,
-                _configService.AppConfig.EncryptInterations,
-                HashAlgorithmName.SHA512,
-                _configService.AppConfig.PasswordLength
-            );
-            var verificationCode = Decrypt(spwd, _configService.UserProperties.VerificationCode);
+
+            var verificationCode = Decrypt(internalPwd, _configService.UserProperties.VerificationCode);
             if (verificationCode != null && verificationCode.All(i => i == 0))
             {
                 _configService.MountSaveFunction();
@@ -26,40 +20,33 @@ namespace SuperPassword.DAL.Implementations.Offline
                 return new OfflineResponse<byte[]>()
                 {
                     DataStatus = ResponseDataStatus.Success,
-                    Content = Decrypt(spwd, _configService.UserProperties.EncryptedPassword)
+                    Content = Decrypt(internalPwd, _configService.UserProperties.EncryptedPassword)
                 };
             }
             else return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.Forbidden };
         }
 
-        public async Task<OfflineResponse<byte[]>> SignUpAsync(IUser user)
+        public async Task<OfflineResponse<byte[]>> SignUpAsync(string name, byte[] internalPwd)
         {
-            byte[] internalPwd;
-            if (_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
+            byte[] spwd;
+            if (_configService.AppConfig.UsernameMap.ContainsKey(name))
                 return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.NameConflictError };
             else
             {
                 _configService.MountSaveFunction();
-                byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
-                    Encoding.UTF8.GetBytes(user.Password),
-                    _configService.UserProperties.Salt,
-                    _configService.AppConfig.EncryptInterations,
-                    HashAlgorithmName.SHA512,
-                    _configService.AppConfig.PasswordLength
-                );
-                internalPwd = new byte[_configService.AppConfig.PasswordLength];
+                spwd = new byte[_configService.AppConfig.PasswordLength];
                 using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
                 {
-                    rng.GetBytes(internalPwd);
+                    rng.GetBytes(spwd);
                 }
-                _configService.UserProperties.EncryptedPassword = Encrypt(spwd, internalPwd);
-                _configService.UserProperties.VerificationCode = Encrypt(spwd, new byte[16]);
+                _configService.UserProperties.EncryptedPassword = Encrypt(internalPwd, spwd);
+                _configService.UserProperties.VerificationCode = Encrypt(internalPwd, new byte[16]);
             }
             await UpdateInfoGroupDbContextAsync();
             return new OfflineResponse<byte[]>()
             {
                 DataStatus = ResponseDataStatus.Success,
-                Content = internalPwd
+                Content = spwd
             };
         }
 

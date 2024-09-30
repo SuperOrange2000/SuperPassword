@@ -7,7 +7,8 @@ namespace SuperPassword.Config.Models
     public partial class UserProperties : ConfigBase
     {
         [JsonIgnore][ObservableProperty] private Guid _id;
-        [ObservableProperty] private byte[] salt = new byte[8];
+        [ObservableProperty] private byte[] localSalt = new byte[8];
+        [ObservableProperty] private byte[] serverSalt = new byte[8];
         [ObservableProperty] private byte[] encryptedPassword;
         [ObservableProperty] private byte[] verificationCode;
         [ObservableProperty] private long serverId = -1;
@@ -18,7 +19,8 @@ namespace SuperPassword.Config.Models
         {
             using (var rng = RandomNumberGenerator.Create())
             {
-                rng.GetBytes(Salt);
+                rng.GetBytes(LocalSalt);
+                rng.GetBytes(ServerSalt);
             }
         }
     }

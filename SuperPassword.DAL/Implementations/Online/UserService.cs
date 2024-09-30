@@ -8,13 +8,13 @@ namespace SuperPassword.DAL.Implementations.Online
     public partial class OnlineService
     {
 
-        public async Task<OnlineResponse<LoginResult>> SignUpAsync(string name, string password)
+        public async Task<OnlineResponse<LoginResult>> SignUpAsync(string name, byte[] password)
         {
-            BaseRequest request = new BaseRequest("sign-up", RestSharp.Method.Post);
+            BaseRequest request = new BaseRequest("sign-up", Method.Post);
             request.AddJsonBody(new
             {
                 account = name,
-                password = password,
+                password,
                 device = "windows",
             });
             var response = await client.RequestAsync<LoginResult>(request);
@@ -25,13 +25,13 @@ namespace SuperPassword.DAL.Implementations.Online
             return response;
         }
 
-        public async Task<OnlineResponse<LoginResult>> LoginAsync(long id, string password)
+        public async Task<OnlineResponse<LoginResult>> LoginAsync(long id, byte[] password)
         {
-            BaseRequest request = new BaseRequest("login", RestSharp.Method.Post);
+            BaseRequest request = new BaseRequest("login", Method.Post);
             request.AddJsonBody(new
             {
-                id = id,
-                password = password,
+                id,
+                password,
                 device = "windows",
             });
             var response = await client.RequestAsync<LoginResult>(request);
