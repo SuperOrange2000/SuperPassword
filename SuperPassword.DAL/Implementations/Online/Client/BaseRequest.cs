@@ -1,48 +1,40 @@
 ﻿using RestSharp;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace SuperPassword.DAL.Online.Client
 {
     public class BaseRequest : RestRequest
     {
+        private static Uri baseUri;
+
+        public static void SetBaseUri(string uri)
+        {
+            baseUri ??= new Uri(uri);
+        }
+
+        private static string? token;
+
+        public static void SetToken(string token)
+        {
+            BaseRequest.token = token;
+        }
+
+        private Dictionary<string, string> jsonData = [];
 
         public BaseRequest() : base() { }
 
-        public BaseRequest(string route, Method method = Method.Get) : base(new Uri(@"https://s.oragne.top/" + route), method)
+        public BaseRequest(string route, Method method = Method.Get) : base(new Uri(baseUri, route), method)
         {
-            AddParameter(new HeaderParameter("Content-Type", "application/x-www-form-urlencoded"));
+            if (method == Method.Post)
+                AddParameter(new HeaderParameter("Content-Type", "application/json"));
+            else
+                AddParameter(new HeaderParameter("Content-Type", "application/x-www-form-urlencoded"));
+
+            if (token != null)
+            {
+                AddParameter(new HeaderParameter("Authorization", token));
+            }
         }
-
-        public void AddParameter<T>(string? name, IList<T> value, ParameterType type = ParameterType.GetOrPost)
-        {
-            foreach (var v in value)
-                AddParameter(name, v, type);
-        }
-
-        public void AddParameter<T, TResult>(string? name, IList<T> value, Func<T, TResult> implementationFactory, ParameterType type = ParameterType.GetOrPost)
-        {
-            foreach (var v in value)
-                AddParameter(name, implementationFactory.Invoke(v), type);
-        }
-
-        public void AddParameter<T>(string? name, ICollection<T> value, ParameterType type = ParameterType.GetOrPost)
-        {
-            foreach (var v in value)
-                AddParameter(name, v, type);
-        }
-
-        public void AddParameter<T, TResult>(string? name, ICollection<T> value, Func<T, TResult> implementationFactory, ParameterType type = ParameterType.GetOrPost)
-        {
-            foreach (var v in value)
-                AddParameter(name, implementationFactory.Invoke(v), type);
-        }
-
-        public void AddParameter<T>(string? name, T value, ParameterType type = ParameterType.GetOrPost)
-            => AddParameter(Parameter.CreateParameter(name, value, type));
-
-        public void AddParameter(string? name, byte[] value, ParameterType type = ParameterType.GetOrPost) =>
-            AddParameter(Parameter.CreateParameter(name, Convert.ToBase64String(value), type));
-
-        public void AddParameter(string? name, object? value, ParameterType type = ParameterType.GetOrPost) =>
-            AddParameter(Parameter.CreateParameter(name, value, type));
     }
 }

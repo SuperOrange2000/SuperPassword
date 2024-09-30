@@ -90,6 +90,8 @@ public partial class MainViewModel : ViewModelBase
             if (result.IsSuccess)
                 InfoGroupViewItems.Remove(infoGroup);
         }
+        else
+            InfoGroupViewItems.Remove(infoGroup);
     }
 
     [RelayCommand]

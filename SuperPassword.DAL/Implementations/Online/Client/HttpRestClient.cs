@@ -1,4 +1,5 @@
 ﻿using RestSharp;
+using SuperPassword.Config.Service;
 using SuperPassword.DAL.Implementations.Online;
 using System.Net;
 using System.Text.Json;
@@ -7,9 +8,11 @@ namespace SuperPassword.DAL.Online.Client
 {
     public class HttpRestClient : RestClient
     {
-        public HttpRestClient(string apiUrl) : base(initOptions())
+        public HttpRestClient(IConfigService configService) : base(initOptions())
         {
-            SetCSRFHeader();
+            BaseRequest.SetBaseUri(configService.AppConfig.ApiUrl);
+            //SetCSRFHeader();
+
         }
 
         private static RestClientOptions initOptions()
@@ -88,7 +91,7 @@ namespace SuperPassword.DAL.Online.Client
                     Console.WriteLine(ex.Message);
                     result = new OnlineResponse<T>()
                     {
-                        ServerMessage = jsonText
+                        ErrorMessage = jsonText
                     };
                 }
                 finally
@@ -120,7 +123,7 @@ namespace SuperPassword.DAL.Online.Client
                     Console.WriteLine(ex.Message);
                     result = new OnlineResponse()
                     {
-                        ServerMessage = jsonText
+                        ErrorMessage = jsonText
                     };
                 }
                 finally

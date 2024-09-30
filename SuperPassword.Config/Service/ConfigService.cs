@@ -34,13 +34,18 @@ namespace SuperPassword.Config.Service
 
             if (!AppConfig.UsernameMap.ContainsKey(name) && userId == null)
                 throw new Exception(nameof(userId));
-            else if (userId != null)
-                AppConfig.UsernameMap.Add(name, (Guid)userId);
-
-            UserConfig = Read<UserConfig>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "config.json")) ??
-                new() { Name = name, Id = (Guid)userId! };
-            UserProperties = Read<UserProperties>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "properties")) ??
-                new() { Id = (Guid)userId! };
+            if (AppConfig.UsernameMap.ContainsKey(name))
+            {
+                UserConfig = Read<UserConfig>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "config.json")) ??
+                    new() { Name = name, Id = (Guid)userId! };
+                UserProperties = Read<UserProperties>(Path.Combine(AppConfig.DataPath, AppConfig.UsernameMap[name].ToString(), "properties")) ??
+                    new() { Id = (Guid)userId! };
+            }
+            else
+            {
+                UserConfig = new() { Name = name, Id = (Guid)userId! };
+                UserProperties = new() { Id = (Guid)userId! };
+            }
         }
 
         public void MountSaveFunction()
@@ -49,6 +54,8 @@ namespace SuperPassword.Config.Service
             Write(UserConfig);
             UserProperties.PropertyChanged += (s, e) => Write(s as UserProperties);
             Write(UserProperties);
+            if (!AppConfig.UsernameMap.ContainsKey(UserConfig.Name))
+                AppConfig.UsernameMap.Add(UserConfig.Name, UserConfig.Id);
         }
 
         private void OnPropertyChanged<T>(object? sender, PropertyChangedEventArgs e) where T : ConfigBase

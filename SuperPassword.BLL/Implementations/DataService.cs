@@ -34,15 +34,13 @@ namespace SuperPassword.BLL.Implementations
         public async Task<IBLLResponse<IList<IDALInfoGroup>, IList<IBLLInfoGroup>>> GetAllAsync()
         {
             BLLResponse<IList<IDALInfoGroup>, IList<IBLLInfoGroup>> response = new();
-            if (IsOnline)
-                response.OnlineResponse = await onlineService.GetAllAsync(ActiveUser.Name);
+            //if (IsOnline)
+            //    response.OnlineResponse = await onlineService.GetAllAsync(ActiveUser.Name);
             if (IsOffline)
                 response.OfflineResponse = await offlineService.GetAllAsync();
 
             if (response.OfflineResponse != null)
                 response.Content = response.OfflineResponse.Content.Select(Decrypt).ToList();
-            else if (response.OnlineResponse != null)
-                response.Content = response.OnlineResponse.Content.Select(Decrypt).ToList();
             return response;
         }
 

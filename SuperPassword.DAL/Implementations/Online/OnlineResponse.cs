@@ -6,7 +6,7 @@ namespace SuperPassword.DAL.Implementations.Online
 {
     public class OnlineResponse<T> : OnlineResponse, IOnlineResponse<T>
     {
-        [JsonPropertyName("content")]
+        [JsonPropertyName("data")]
         public T Content { get; set; }
 
         public OnlineResponse<T2> Convert<T2>(Func<T, T2> implementationFactory)
@@ -14,7 +14,7 @@ namespace SuperPassword.DAL.Implementations.Online
             return new OnlineResponse<T2>
             {
                 NetworkStatusCode = NetworkStatusCode,
-                ServerMessage = ServerMessage,
+                ErrorMessage = ErrorMessage,
                 Content = implementationFactory.Invoke(Content)
             };
         }
@@ -24,7 +24,13 @@ namespace SuperPassword.DAL.Implementations.Online
     {
         public HttpStatusCode? NetworkStatusCode { get; set; }
 
-        [JsonPropertyName("message")]
-        public string? ServerMessage { get; set; }
+        [JsonPropertyName("errorMsg")]
+        public string? ErrorMessage { get; set; }
+
+        [JsonPropertyName("errorCode")]
+        public int ErrorCode { get; set; }
+
+        [JsonPropertyName("success")]
+        public bool IsSuccess { get; set; }
     }
 }

@@ -20,17 +20,18 @@ namespace SuperPassword.BLL.Implementations
 
         private ISecurityService securityService;
         private IServiceProvider serviceProvider;
+        private IConfigService configService;
         private BLLUser activeUser;
 
         private bool IsOnline => (storageMode & StorageMode.ServerOnly) != 0;
         private bool IsOffline => (storageMode & StorageMode.LocalOnly) != 0;
 
         //private byte[] internalPassword;
-        public BLLService(IServiceProvider serviceProvider, ISecurityService securityService)
+        public BLLService(IServiceProvider serviceProvider, ISecurityService securityService, IConfigService configService)
         {
             this.securityService = securityService;
             this.serviceProvider = serviceProvider;
-
+            this.configService = configService;
         }
         public static void AddService(ServiceCollection container)
         {

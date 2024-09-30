@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using SuperPassword.Config.Service;
-using SuperPassword.DAL.Implementations.Offline;
-using SuperPassword.DAL.Interfaces.Offline;
 using SuperPassword.DAL.Interfaces.Online;
 using SuperPassword.DAL.Online.Client;
 
@@ -19,7 +16,7 @@ namespace SuperPassword.DAL.Implementations.Online
         }
         public static void AddService(ServiceCollection container)
         {
-            container.AddSingleton(sp => new HttpRestClient(sp.GetService<IConfigService>()!.AppConfig.ApiUrl));
+            container.AddSingleton<HttpRestClient>();
         }
     }
 }

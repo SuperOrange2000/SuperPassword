@@ -1,6 +1,5 @@
 ﻿using SuperPassword.BLL.Implementations.Models;
 using SuperPassword.BLL.Interfaces.Models;
-using SuperPassword.DAL.Implementations.Models;
 using SuperPassword.Entity.Interface;
 using SuperPassword.Security.Sercvice;
 
@@ -11,16 +10,21 @@ namespace SuperPassword.BLL.Implementations
         public async Task<IBLLResponse> SignUpAsync(IUser user)
         {
             BLLResponse response = new();
-            if (IsOnline)
-                response.OnlineResponse = await onlineService.SignUpAsync(user);
+            configService.SwitchUser(user.Name, user.UserGuid);
             if (IsOffline)
             {
                 var offlineResponse = await offlineService.SignUpAsync(user);
                 response.OfflineResponse = offlineResponse;
-                if (offlineResponse.DataStatus == ResponseDataStatus.Success)
+                securityService.SwitchCipher(SecurityMode.AesGcm, offlineResponse.Content);
+                activeUser = new BLLUser(user);
+            }
+            if (IsOnline)
+            {
+                var onlineResponse = await onlineService.SignUpAsync(user.Name, user.Password);
+                response.OnlineResponse = onlineResponse;
+                if (onlineResponse.NetworkStatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    activeUser = new BLLUser(user);
-                    securityService.SwitchCipher(SecurityMode.AesGcm, offlineResponse.Content);
+                    configService.UserProperties.ServerId = onlineResponse.Content.Id;
                 }
             }
             return response;
@@ -29,17 +33,15 @@ namespace SuperPassword.BLL.Implementations
         public async Task<IBLLResponse> LoginAsync(IUser user)
         {
             BLLResponse response = new();
+            configService.SwitchUser(user.Name, user.UserGuid);
             if (IsOnline)
-                response.OnlineResponse = await onlineService.LoginAsync(user);
+                response.OnlineResponse = await onlineService.LoginAsync(configService.UserProperties.ServerId, user.Password);
             if (IsOffline)
             {
                 var offlineResponse = await offlineService.LoginAsync(user);
                 response.OfflineResponse = offlineResponse;
-                if (offlineResponse.DataStatus == ResponseDataStatus.Success)
-                {
-                    activeUser = new BLLUser(user);
-                    securityService.SwitchCipher(SecurityMode.AesGcm, offlineResponse.Content);
-                }
+                activeUser = new BLLUser(user);
+                securityService.SwitchCipher(SecurityMode.AesGcm, offlineResponse.Content);
             }
             return response;
         }

@@ -12,7 +12,6 @@ namespace SuperPassword.DAL.Implementations.Offline
         {
             if (!_configService.AppConfig.UsernameMap.ContainsKey(user.Name))
                 return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.ResourcesNotFoundError };
-            _configService.SwitchUser(user.Name);
             byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
                 Encoding.UTF8.GetBytes(user.Password),
                 _configService.UserProperties.Salt,
@@ -41,7 +40,6 @@ namespace SuperPassword.DAL.Implementations.Offline
                 return new OfflineResponse<byte[]>() { DataStatus = ResponseDataStatus.NameConflictError };
             else
             {
-                _configService.SwitchUser(user.Name, user.UserGuid);
                 _configService.MountSaveFunction();
                 byte[] spwd = Rfc2898DeriveBytes.Pbkdf2(
                     Encoding.UTF8.GetBytes(user.Password),

@@ -10,6 +10,6 @@ namespace SuperPassword.DAL.Interfaces.Online
     public interface IOnlineResponse
     {
         public HttpStatusCode? NetworkStatusCode { get; set; }
-        public string? ServerMessage { get; set; }
+        public string? ErrorMessage { get; set; }
     }
 }

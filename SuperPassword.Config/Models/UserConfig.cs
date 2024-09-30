@@ -8,7 +8,7 @@ namespace SuperPassword.Config.Models
     {
         [ObservableProperty] private Guid _id = Guid.NewGuid();
 
-        [ObservableProperty] private string? name;
+        [ObservableProperty] private string name;
 
         [JsonIgnore] public override string DirName { get => CombineDataPath($"{Id}"); }
         [JsonIgnore] public override string FileName => $"config.json";

@@ -10,6 +10,7 @@ namespace SuperPassword.Config.Models
         [ObservableProperty] private byte[] salt = new byte[8];
         [ObservableProperty] private byte[] encryptedPassword;
         [ObservableProperty] private byte[] verificationCode;
+        [ObservableProperty] private long serverId = -1;
         [JsonIgnore] public override string DirName { get => CombineDataPath($"{Id}"); }
         [JsonIgnore] public override string FileName => $"properties";
 
