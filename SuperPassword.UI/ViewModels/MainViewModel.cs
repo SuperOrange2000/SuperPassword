@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SuperPassword.UI.ViewModels;
@@ -156,5 +159,22 @@ public partial class MainViewModel : ViewModelBase
             FilterTags.Add(tag.Content);
         else
             FilterTags.Remove(tag.Content);
+    }
+
+    const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    [RelayCommand]
+    private void GenerateRandomPassword(InfoGroup infoGroup)
+    {
+        var data = new byte[20];
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(data);
+        }
+        StringBuilder result = new StringBuilder(20);
+        foreach (byte b in data)
+        {
+            result.Append(chars[b % chars.Length]);
+        }
+        infoGroup.Password = result.ToString();
     }
 }

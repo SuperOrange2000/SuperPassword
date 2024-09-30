@@ -185,7 +185,7 @@
                                     Text="{Binding Password}"
                                     Watermark="密码">
                                     <TextBox.InnerRightContent>
-                                        <u:IconButton>
+                                        <u:IconButton Command="{ReflectionBinding $parent[UserControl].DataContext.GenerateRandomPasswordCommand}" CommandParameter="{Binding}">
                                             <u:IconButton.Icon>
                                                 <TextBlock Text="🎲" />
                                             </u:IconButton.Icon>
